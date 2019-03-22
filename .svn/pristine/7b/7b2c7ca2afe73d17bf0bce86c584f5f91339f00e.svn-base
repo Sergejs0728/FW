@@ -1,0 +1,43 @@
+//
+//  PrintSettingsViewController.h
+//  BMSPrinterKit
+//
+//  Created by BMS on 8/8/12.
+//  Copyright (c) 2012 Brother Mobile Solutions. All rights reserved.
+//
+
+// This is shared for each of the <PrinterModel>PrintSettingsViewController.h files.
+
+// This allows setting all of the detail views to the SAME size as each other, provided
+// you use "[self setContentSizeForViewInPopover:MYPOPUPCONTENTSIZE];" in viewDidLoad for
+// each of the view controllers.
+// NOTE: iPad1 and iPad2 size = 1024 x 768, iPad3 = 2048 x 1536
+// 
+//#define MYPOPUPCONTENTSIZE CGSizeMake(800,600)
+#define MYPOPUPCONTENTSIZE CGSizeMake(400,480)
+
+// NOTE: Perhaps a better way to implement this would be using NSNotificationCenter.
+// But, for now I will stay with this approach.
+/*
+ A class that calls the PrintSettingsViewController is a PrintSettingsResponder.
+ It must set the printSettingsDelegate in order to receive the printSettingsDidChange notification.
+ It must implement the printSettingsDidChange function.
+ */
+@protocol PrintSettingsResponder
+- (void)printSettingsDidChange;
+@end
+
+/*
+ A ViewController that modifies print settings is a PrintSettingsSetter.
+ It will call the printSettingsDidChange function that will be implemented by the
+ object class specified in the printSettingsDelegate property, which is a 
+ PrintSettingsResponder. NOTE: It is OK to set this to "nil" if your class does not want to
+ be notified when the settings change.
+ */
+@protocol PrintSettingsSetter
+@property (assign, nonatomic) id <PrintSettingsResponder> printSettingsDelegate;
+@end
+
+
+
+

@@ -1,0 +1,144 @@
+//
+//  MaterialAddController.m
+//  FieldWork
+//
+//  Created by Samir Kha on 11/01/2013.
+//  Copyright (c) 2013 __MyCompanyName__. All rights reserved.
+//
+
+#import "MaterialAddController.h"
+#import "CustomTableCell.h"
+
+@implementation MaterialAddController
+
+@synthesize materialName=materialName_;
+@synthesize epA=epA_;
+
++ (MaterialAddController *)viewControllerWithAppointment:(Appointment *)app {
+    
+    MaterialAddController *ma;
+    
+    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
+        ma = [[MaterialAddController alloc] initWithNibName:@"MaterialAddController_IPad" bundle:nil];
+    }else{
+        ma = [[MaterialAddController alloc] initWithNibName:@"MaterialAddController" bundle:nil];
+        
+    }
+    
+    ma.Appointment = app;
+    return ma;
+
+}
+
+#pragma mark - View lifecycle
+
+- (void)viewDidLoad
+{
+    [super viewDidLoad];
+    self.materialName=@"";
+    self.epA=@"";
+    
+    //UIBarButtonItem *cancelBtn = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:nil action:nil];
+    self.navigationItem.title = @"Add Material";
+   // self.navigationItem.rightBarButtonItem = cancelBtn;
+
+}
+
+- (void)viewDidUnload
+{
+    [super viewDidUnload];
+}
+
+- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
+{
+    // Return YES for supported orientations
+    return (interfaceOrientation == UIInterfaceOrientationPortrait);
+}
+
+- (void)addMaterialType:(id)sender
+{
+    CustomTableCell *cell1 = (CustomTableCell*)[table cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
+    CustomTableCell *cell2 = (CustomTableCell*)[table cellForRowAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:0]];
+    Material *mate = [[Material alloc] init];
+
+    
+    if (cell1)
+    {
+        NSString *materialName = [cell1.txt.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+        mate.name = materialName;
+        
+    }
+    if (cell2) 
+    {
+       NSString *epa_number = [cell2.txt.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+        mate.epaName = epa_number;
+    }
+    
+    [[MaterialList Instance] addmaterialType:mate andDelegate:self];
+    [[ActivityIndicator currentIndicator] displayActivity:@"Please wait..."];
+
+}
+
+
+
+# pragma table method
+
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
+{
+       return 1;
+}
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+{
+    return 2;
+}
+
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    static NSString *CellIdentifier = @"Cell";
+    
+    CustomTableCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+    if (cell == nil) 
+    {
+       NSArray *topLevelObject = [[NSBundle mainBundle] loadNibNamed:@"CustomLableTextCell" owner:self options:nil];
+        
+          cell.selectionStyle = UITableViewCellSelectionStyleNone;
+        
+        for(id currentObject in topLevelObject)
+        {
+            if([currentObject isKindOfClass:[UITableViewCell class]])
+            {
+                cell = (CustomTableCell*) currentObject;
+            }
+        }
+    }
+    if (indexPath.row == 0) {
+            cell.lbl.text = @"Material Name";
+    }
+    if (indexPath.row == 1) {
+        cell.lbl.text = @"EPA#";
+    }
+
+    
+          
+  return cell;
+}
+
+- (void) ListItemAddedSuccessfully{
+    [[ActivityIndicator currentIndicator] displayCompleted];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"Notification_MaterialAdded" object:nil];
+    [self.navigationController popViewControllerAnimated:YES];
+}
+
+- (void) ListItemAdditionFailedWithError:(NSString*) error{
+    [[ActivityIndicator currentIndicator] displayCompletedWithError:@"Fail"];
+    
+}
+- (void) ListItemDeletedSuccessfully{}
+- (void) ListItemDeletionFailedWithError:(NSString*) error{}
+
+
+
+
+@end

@@ -1,0 +1,6 @@
+framework module TouchVG {
+  umbrella header "TouchVG-umbrella.h"
+
+  export *
+  module * { export * }
+}

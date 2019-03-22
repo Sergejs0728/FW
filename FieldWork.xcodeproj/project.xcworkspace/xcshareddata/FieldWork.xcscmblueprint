@@ -1,0 +1,30 @@
+{
+  "DVTSourceControlWorkspaceBlueprintPrimaryRemoteRepositoryKey" : "a32abe61-c2c3-664f-801a-4c6826f13545",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyRepositoryLocationsKey" : {
+    "a32abe61-c2c3-664f-801a-4c6826f13545" : {
+
+    }
+  },
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
+    "a32abe61-c2c3-664f-801a-4c6826f13545" : 0
+  },
+  "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "627785E4-C898-4B1C-97AF-C3CCF30A9A88",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
+    "a32abe61-c2c3-664f-801a-4c6826f13545" : "fieldwork_ios"
+  },
+  "DVTSourceControlWorkspaceBlueprintNameKey" : "FieldWork",
+  "DVTSourceControlWorkspaceBlueprintVersion" : 204,
+  "DVTSourceControlWorkspaceBlueprintRelativePathToProjectKey" : "FieldWork.xcodeproj",
+  "DVTSourceControlWorkspaceBlueprintRemoteRepositoriesKey" : [
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/192.168.1.106:8443\/svn\/Fieldwork_iPhone",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Subversion",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "a32abe61-c2c3-664f-801a-4c6826f13545"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/192.168.1.106:8443\/svn\/Fieldwork_iPhone",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "a32abe61-c2c3-664f-801a-4c6826f13545"
+    }
+  ]
+}

@@ -1,0 +1,250 @@
+//
+//  DataTableViewController.m
+//  FieldWork
+//
+//  Created by Samir Kha on 29/01/2013.
+//  Copyright (c) 2013 __MyCompanyName__. All rights reserved.
+//
+
+#import "DataTableViewController.h"
+
+
+@implementation DataTableViewController
+@synthesize table;
+
+@synthesize type = _type;
+@synthesize delegate = _delegate;
+@synthesize materialUsage;
+@synthesize location_type_id;
+@synthesize Appointment;
+@synthesize dataArray = _dataArray;
+
++ (DataTableViewController *)tableWithDataType:(DataType)type andDelegate:(id<DataSelectionDelegate>)del {
+    DataTableViewController *dt = [[DataTableViewController alloc] initWithNibName:@"DataTableView" bundle:nil];
+    dt.delegate = del;
+    dt.type = type;
+    return dt;
+}
+
+- (id)initWithStyle:(UITableViewStyle)style
+{
+    self = [super initWithStyle:style];
+    if (self) {
+        // Custom initialization
+    }
+    return self;
+}
+
+- (void)didReceiveMemoryWarning
+{
+    // Releases the view if it doesn't have a superview.
+    [super didReceiveMemoryWarning];
+    
+    // Release any cached data, images, etc that aren't in use.
+}
+
+#pragma mark - View lifecycle
+
+- (void)viewDidLoad
+{
+
+    
+    self.dataArray = [[NSMutableArray alloc] init];
+    if (self.type == DilutionRate) {
+        self.dataArray = [DilutionRates fetchAll];
+        self.navigationItem.title = @"Dilution rates";
+    } else if (self.type == AppMethod) {
+        self.dataArray = [ApplicationMethods getAppMethods];
+        self.navigationItem.title = @"Methods";
+    }else if (self.type == Unit) {
+        self.dataArray = [Measurements getMeasurements];
+        self.navigationItem.title = @"Measurements";
+    }else if(self.type == LocationEnum){
+        
+        self.dataArray = [[LocationType getLocationAreasByLocationTypeId:self.location_type_id] mutableCopy];
+        
+        UIBarButtonItem *addBtn = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(addNewLocationArea)];
+        
+        self.navigationItem.rightBarButtonItem = addBtn;
+        self.navigationItem.title = @"Location Areas";
+                [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loadLocationAreaList) name:@"Notification_LocationAdded" object:nil];
+    }
+    [super viewDidLoad];
+
+    // Uncomment the following line to preserve selection between presentations.
+    // self.clearsSelectionOnViewWillAppear = NO;
+ 
+    // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
+    // self.navigationItem.rightBarButtonItem = self.editButtonItem;
+    
+    
+
+}
+
+- (void)viewDidUnload
+{
+    [super viewDidUnload];
+    // Release any retained subviews of the main view.
+    // e.g. self.myOutlet = nil;
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    
+}
+
+- (void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
+    
+        //[self.tableView reloadData];
+}
+
+- (void)viewWillDisappear:(BOOL)animated
+{
+    [super viewWillDisappear:animated];
+}
+
+- (void)viewDidDisappear:(BOOL)animated
+{
+    [super viewDidDisappear:animated];
+}
+
+- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
+{
+    // Return YES for supported orientations
+    return (interfaceOrientation == UIInterfaceOrientationPortrait);
+}
+
+- (void) loadLocationAreaList{
+     self.dataArray = [[LocationType getLocationAreasByLocationTypeId:self.location_type_id] mutableCopy];
+    
+     [self.tableView reloadData];
+}
+
+- (void) addNewLocationArea{
+    AddLocationAreaController *al = [AddLocationAreaController viewControllerWithAppointment:self.Appointment];
+    [self.navigationController pushViewController:al animated:YES];
+}
+
+#pragma mark - Table view data source
+
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
+{       // Return the number of sections.
+    return 1;
+}
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+{
+    // Return the number of rows in the section.
+   // return self.dataArray.count;
+    return [self.dataArray count];
+
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+     //self.dataArray = [LocationType getLocationAreasByLocationTypeId:self.location_type_id];
+    
+    static NSString *CellIdentifier = @"Cell";
+    
+    
+    UITableViewCell *cell = [self.tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+    if (cell == nil) {
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
+    }
+    
+    // Configure the cell...
+    if (self.type == DilutionRate) {
+        DilutionRates *dr = [self.dataArray objectAtIndex:indexPath.row];
+        cell.textLabel.text = dr.name;
+    } else if (self.type == AppMethod) {
+        ApplicationMethods *am = [self.dataArray objectAtIndex:indexPath.row];
+        cell.textLabel.text = am.methodName;
+       
+    }else if (self.type == Unit) {
+        Measurements *m = [self.dataArray objectAtIndex:indexPath.row];
+        cell.textLabel.text = m.measurement;
+    }else if(self.type == LocationEnum){
+        LocationArea *laa = [self.dataArray objectAtIndex:[indexPath row]];
+        NSLog(@"Data :%@      %@",laa.location_area_id,laa.location_area_name);
+        
+        cell.textLabel.text = laa.location_area_name;
+    }
+
+    return cell;
+}
+
+
+
+/*
+// Override to support conditional editing of the table view.
+- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    // Return NO if you do not want the specified item to be editable.
+    return YES;
+}
+*/
+
+/*
+// Override to support editing the table view.
+- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if (editingStyle == UITableViewCellEditingStyleDelete) {
+        // Delete the row from the data source
+        [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
+    }   
+    else if (editingStyle == UITableViewCellEditingStyleInsert) {
+        // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
+    }   
+}
+*/
+
+/*
+// Override to support rearranging the table view.
+- (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath
+{
+}
+*/
+
+/*
+// Override to support conditional rearranging of the table view.
+- (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    // Return NO if you do not want the item to be re-orderable.
+    return YES;
+}
+*/
+
+#pragma mark - Table view delegate
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
+    id data = nil;
+    
+    if (self.type == DilutionRate) {
+        DilutionRates *dr = [self.dataArray objectAtIndex:indexPath.row];
+        data = dr.dilution_id;
+        
+    } else if (self.type == AppMethod) {
+        ApplicationMethods *am = [self.dataArray objectAtIndex:indexPath.row];
+        data = am.methodName;
+    }else if (self.type == Unit) {
+        Measurements *m = [self.dataArray objectAtIndex:indexPath.row];
+        data = m.measurement;
+    } else if(self.type == LocationEnum){
+        LocationArea *la = [self.dataArray objectAtIndex:indexPath.row];
+        data = la.location_area_id;
+        NSLog(@"Laocation id %@",la.location_area_id);
+    }
+    
+    if (self.delegate) {
+        [self.delegate DataSelectedForData:data andType:self.type];
+    }
+    [self.navigationController popViewControllerAnimated:YES];
+}
+
+@end

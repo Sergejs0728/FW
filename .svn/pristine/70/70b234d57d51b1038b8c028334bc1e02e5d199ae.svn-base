@@ -1,0 +1,62 @@
+//
+//  UserInfo.m
+//  FieldWork
+//
+//  Created by Samir Khatri on 22/05/2013.
+//
+//
+
+#import "UserInfo.h"
+
+static UserInfo* singleton = nil;
+
+@implementation UserInfo
+
+@synthesize Id = _Id;
+@synthesize firstName = _firstName;
+@synthesize lastName = _lastName;
+@synthesize accountId = _accountId;
+@synthesize mobileCustomerAccess = _mobileCustomerAccess;
+@synthesize inspectionEnabled = _inspectionEnabled;
+
++(UserInfo*)Instance
+{
+    if (singleton == nil)
+        singleton = [[UserInfo alloc] init];
+    
+    return singleton;
+}
+
+- (void)loadUser {
+    NSString *url = [NSString stringWithFormat:@"%@user?api_key=%@", FIELD_WORK_URL_BASE, [AccountManager Instance].activeAccount.api_key];
+    FieldworkRequest *request = [[FieldworkRequest alloc] initWithUrl:url andDelegate:self];
+    [request startRequest];
+}
+
+#pragma FieldworkRequestDelegate
+
+- (void)FieldworkRequestDidSucceed:(FieldworkRequest *)request {
+    if (request.IsSuccess)
+    {
+        NSDictionary *mainDict = request.responseData;
+        if (mainDict) {
+            NSDictionary *user = [mainDict objectForKey:@"user"];
+            if (user) {
+                self.Id = [[user objectForKey:@"id"] intValue];
+                self.licenseNumber = [user objectForKey:@"license_number"];
+                self.firstName = [user objectForKey:@"first_name"];
+                self.lastName = [user objectForKey:@"last_name"];
+                self.accountId = [[user objectForKey:@"account_id"] intValue];
+                self.mobileCustomerAccess = [[user objectForKey:@"mobile_customers_access"] boolValue];
+                self.inspectionEnabled = [[user objectForKey:@"inspections_enabled"] boolValue];
+            }
+        }
+    }
+}
+
+- (void)FieldworkRequestDidFail:(FieldworkRequest *)request withError:(NSError *)error{
+
+}
+
+
+@end

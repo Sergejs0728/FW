@@ -1,0 +1,15 @@
+//
+//  DataPersistance.h
+//  FieldWork
+//
+//  Created by Samir Kha on 06/03/2013.
+//  Copyright (c) 2013 __MyCompanyName__. All rights reserved.
+//
+
+#import <Foundation/Foundation.h>
+#import "AppointmentList.h"
+#import "Appointment.h"
+@interface DataPersistance : NSObject
+
+- (NSString*) apptJson:(Appointment*) app;
+@end

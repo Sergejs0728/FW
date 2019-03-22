@@ -1,0 +1,67 @@
+//
+//  CustomerTrap.m
+//  FieldWork
+//
+//  Created by Samir Khatri on 2/20/13.
+//
+//
+
+#import "CustomerTrap.h"
+
+@implementation CustomerTrap
+
++ (CustomerTrap *)customerTrapWithDictionsry:(NSDictionary *)dict {
+    CustomerTrap *trap = [[CustomerTrap alloc] init];
+    trap.customerTrapId = [[dict objectForKey:@"id"] intValue];
+    if ([dict objectForKey:@"barcode"] != [NSNull null]) {
+        trap.barcode = [dict objectForKey:@"barcode"];
+    }
+    if ([dict objectForKey:@"building"] != [NSNull null]) {
+        trap.building = [dict objectForKey:@"building"];
+    }
+    if ([dict objectForKey:@"floor"] != [NSNull null]) {
+        trap.floor = [dict objectForKey:@"floor"];
+    }
+    if ([dict objectForKey:@"location_details"] != [NSNull null]) {
+        trap.location_details = [dict objectForKey:@"location_details"];
+    }
+    if ([dict objectForKey:@"notes"] != [NSNull null]) {
+        trap.notes = [dict objectForKey:@"notes"];
+    }
+    return trap;
+}
+
+- (void)sync:(int)custId {
+    NSString *url = [NSString stringWithFormat:@"%@customers/%d/traps?api_key=%@", FIELD_WORK_URL_BASE,custId ,[AccountManager Instance].activeAccount.api_key];
+    NSString *data = [NSString stringWithFormat:@"{\"barcode\":\"%@\",\"building\":\"%@\",\"floor\":\"%@\",\"location_details\":\"%@\"}", self.barcode, self.building, self.floor, self.location_details];
+    FieldworkRequest *request = [[FieldworkRequest alloc] initWithUrl:url andDelegate:self andMethod:POST];
+    request.postData = data;
+    request.Tag = ADD_ITEM_TAG;
+    [request startRequest];
+}
+
+#pragma mark - FieldworkRequestDelegate
+
+- (void)FieldworkRequestDidSucceed:(FieldworkRequest *)request {
+    if ([request.Tag isEqualToString:ADD_ITEM_TAG]) {
+        if (request.IsSuccess) {
+            self.customerTrapId = [Utils RandomIdPlus];
+        }
+    }
+}
+
+- (void)FieldworkRequestDidFail:(FieldworkRequest *)request withError:(NSError *)error {
+    
+}
+
+
+#pragma mark - Propertirs
+@synthesize customerTrapId = _customerTrapId;
+@synthesize barcode = _barcode;
+@synthesize building = _building;
+@synthesize floor = _floor;
+@synthesize notes = _notes;
+@synthesize location_details = _location_details;
+
+
+@end

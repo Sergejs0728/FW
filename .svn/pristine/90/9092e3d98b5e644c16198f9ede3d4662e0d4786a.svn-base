@@ -1,0 +1,21 @@
+//
+//  Utils.h
+//  FieldWork
+//
+//  Created by Samir Khatri on 2/18/13.
+//
+//
+
+#import <Foundation/Foundation.h>
+#import <CoreLocation/CoreLocation.h>
+@interface Utils : NSObject
+{
+
+    
+}
+
++ (int) RandomId;
++ (int)RandomIdPlus;
++ (NSString*) getNonmilitaryTime:(NSString*) str;
+
+@end

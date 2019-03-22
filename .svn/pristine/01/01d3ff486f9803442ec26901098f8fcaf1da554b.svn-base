@@ -1,0 +1,42 @@
+//
+//  NSDate+Extensions.m
+//  FieldWork
+//
+//  Created by Samir Kha on 07/01/2013.
+//  Copyright (c) 2013 __MyCompanyName__. All rights reserved.
+//
+
+#import "NSDate+Extensions.h"
+
+@implementation NSDate (Extensions)
+
+- (BOOL) isSameDayAs:(NSDate *)date2
+{
+    int days1 = [self  timeIntervalSince1970] / 86400;
+    int days2 = [date2 timeIntervalSince1970] / 86400;
+    return (days1 == days2);
+}
+
+- (BOOL) isOneDayPrevious:(NSDate *)date2
+{
+    int days1 = [self  timeIntervalSince1970] / 86400;
+    int days2 = [date2 timeIntervalSince1970] / 86400;
+    return (days1 == days2 - 1);
+}
+
+
++ (NSDate *) date {
+    NSDate* sourceDate = [NSDate dateWithTimeIntervalSinceNow:0];
+    
+    NSTimeZone* sourceTimeZone = [NSTimeZone timeZoneWithAbbreviation:@"GMT"];
+    NSTimeZone* destinationTimeZone = [NSTimeZone systemTimeZone];
+    
+    NSInteger sourceGMTOffset = [sourceTimeZone secondsFromGMTForDate:sourceDate];
+    NSInteger destinationGMTOffset = [destinationTimeZone secondsFromGMTForDate:sourceDate];
+    NSTimeInterval interval = destinationGMTOffset - sourceGMTOffset;
+    
+    NSDate* destinationDate = [[NSDate alloc] initWithTimeInterval:interval sinceDate:sourceDate];
+    return destinationDate;
+}
+
+@end

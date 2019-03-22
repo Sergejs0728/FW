@@ -1,0 +1,46 @@
+//
+//  InspectionRecord.h
+//  FieldWork
+//
+//  Created by Samir Khatri on 2/20/13.
+//
+//
+
+#import <Foundation/Foundation.h>
+#import "InspectionPestRecord.h"
+#import "NSMutableArray+Join.h"
+#import "FieldworkRequest.h"
+#import "FieldworkRequestDelegate.h"
+#import "FieldworkURLSchema.h"
+#import "AccountManager.h"
+
+
+@interface InspectionRecord : NSObject<FieldworkRequestDelegate, NSCopying>
+{
+    int _inspectionId;
+    NSString *_notes;
+    NSString *_barcode;
+    int _location_area_id;
+    NSString *_evidence;
+    NSMutableArray *_inspectionPestRecords;
+    BOOL _isClean;
+    }
+
+@property (nonatomic, assign) int inspectionId;
+@property (nonatomic, readwrite, retain) NSString *notes;
+@property (nonatomic, readwrite, retain) NSString *barcode;
+@property (nonatomic, readwrite, retain) NSString *evidence;
+@property (nonatomic, assign) int location_area_id;
+@property (nonatomic, readwrite, retain) NSMutableArray *inspectionPestRecords;
+@property (nonatomic, assign) BOOL isClean;
+
+
++ (InspectionRecord*) inspectionRecordWithDictionary:(NSDictionary*) dict;
+
+-(void) sync:(int) apptId;
+
+- (void)deleteThis:(int)apptId;
+
+-(BOOL) isInspectionClean;
+
+@end

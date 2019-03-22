@@ -1,0 +1,53 @@
+//
+//  CustomerTrapList.h
+//  FieldWork
+//
+//  Created by Samir Khatri on 2/20/13.
+//
+//
+
+#import <Foundation/Foundation.h>
+#import "FieldworkRequest.h"
+#import "FieldworkRequestDelegate.h"
+#import "FieldworkURLSchema.h"
+#import "Constants.h"
+#import "AccountManager.h"
+#import "CustomerTrap.h"
+#import "ListItemDelegate.h"
+#import "AppDelegate.h"
+#import "Utils.h"
+#import "CustomerTrapListDelegate.h"
+
+@class CustomerTrapList;
+
+
+
+
+@interface CustomerTrapList : NSObject <FieldworkRequestDelegate>
+{
+    NSMutableArray *_customerTraps;
+    
+    id<CustomerTrapListDelegate> _trapListDelegate;
+    
+    int _customerId;
+    
+    id<ListItemDelegate> _listItemDelegate;
+}
+
+@property (nonatomic, readwrite, retain) NSMutableArray *customerTraps;
+
+@property (nonatomic, readwrite, retain) id<CustomerTrapListDelegate> trapListDelegate;
+
+@property (nonatomic, assign) int customerId;
+
+- (int) loadedCount;
+
+- (void) loadWithDelegate:(id<CustomerTrapListDelegate>) del andCustomerId:(int) custId;
+
+- (void) addCustomerTrap:(CustomerTrap*) ctrap withDelegate:(id<ListItemDelegate>) del;
+
+- (CustomerTrap*) customerTrapByBarcode:(NSString*) brcode;
+
+@end
+
+

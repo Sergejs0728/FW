@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.iPad.XIB" version="3.0" toolsVersion="11762" systemVersion="15G1217" targetRuntime="iOS.CocoaTouch.iPad" propertyAccessControl="none" useAutolayout="YES" colorMatched="YES">
+    <device id="ipad9_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11757"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view contentMode="scaleToFill" id="HDp-gU-Hbl" customClass="SamcomActionSheet_iPad">
+            <rect key="frame" x="0.0" y="0.0" width="768" height="260"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+            <subviews>
+                <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translucent="NO" translatesAutoresizingMaskIntoConstraints="NO" id="OGx-dS-qUL">
+                    <rect key="frame" x="0.0" y="0.0" width="768" height="44"/>
+                    <color key="backgroundColor" red="0.90980392160000001" green="0.90980392160000001" blue="0.90980392160000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                    <items>
+                        <barButtonItem title="Cancel" id="gDn-eE-oJe">
+                            <connections>
+                                <action selector="cancelClicked:" destination="HDp-gU-Hbl" id="38q-jU-TAx"/>
+                            </connections>
+                        </barButtonItem>
+                        <barButtonItem style="plain" systemItem="flexibleSpace" id="7QJ-xY-bJR"/>
+                        <barButtonItem title="Done" id="efT-b1-w0W">
+                            <connections>
+                                <action selector="doneClicked:" destination="HDp-gU-Hbl" id="HZJ-f7-G4I"/>
+                            </connections>
+                        </barButtonItem>
+                    </items>
+                    <color key="barTintColor" red="0.90196079019999997" green="0.90196079019999997" blue="0.90196079019999997" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                </toolbar>
+                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="PKE-dB-gEq">
+                    <rect key="frame" x="362" y="11" width="44" height="21"/>
+                    <fontDescription key="fontDescription" type="system" pointSize="18"/>
+                    <nil key="highlightedColor"/>
+                </label>
+            </subviews>
+            <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <constraints>
+                <constraint firstItem="OGx-dS-qUL" firstAttribute="top" secondItem="HDp-gU-Hbl" secondAttribute="top" id="5el-aq-Naz"/>
+                <constraint firstItem="OGx-dS-qUL" firstAttribute="leading" secondItem="HDp-gU-Hbl" secondAttribute="leading" id="aFL-Ba-N2h"/>
+                <constraint firstItem="PKE-dB-gEq" firstAttribute="centerY" secondItem="OGx-dS-qUL" secondAttribute="centerY" id="iOS-YY-QPH"/>
+                <constraint firstAttribute="trailing" secondItem="OGx-dS-qUL" secondAttribute="trailing" id="jwR-0s-7YN"/>
+                <constraint firstItem="PKE-dB-gEq" firstAttribute="centerX" secondItem="OGx-dS-qUL" secondAttribute="centerX" id="wsZ-fF-yR7"/>
+            </constraints>
+            <nil key="simulatedStatusBarMetrics"/>
+            <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+            <connections>
+                <outlet property="_cancelBarButton" destination="gDn-eE-oJe" id="jH9-Gw-cTM"/>
+                <outlet property="_doneBarButton" destination="efT-b1-w0W" id="8DL-wM-cB0"/>
+                <outlet property="_lblTitle" destination="PKE-dB-gEq" id="dc3-y5-uMe"/>
+            </connections>
+        </view>
+    </objects>
+    <simulatedMetricsContainer key="defaultSimulatedMetrics">
+        <simulatedStatusBarMetrics key="statusBar"/>
+        <simulatedOrientationMetrics key="orientation"/>
+        <simulatedScreenMetrics key="destination"/>
+    </simulatedMetricsContainer>
+</document>

@@ -1,0 +1,50 @@
+//
+//  DataTableViewController.h
+//  FieldWork
+//
+//  Created by Samir Kha on 29/01/2013.
+//  Copyright (c) 2013 __MyCompanyName__. All rights reserved.
+//
+
+#import <UIKit/UIKit.h>
+#import "MaterialUsageRecord.h"
+#import "DilutionRates.h"
+#import "Measurements.h"
+#import "ApplicationMethods.h"
+#import "LocationArea.h"
+#import "AddLocationAreaController.h"
+#import "CommonAppointmentViewController.h"
+
+typedef enum _DataType {
+    DilutionRate = 0,
+    Unit = 1,
+    AppMethod = 2,
+    LocationEnum = 3
+    } DataType;
+
+@protocol DataSelectionDelegate <NSObject>
+
+- (void) DataSelectedForData:(id) data andType:(DataType) type;
+
+@end
+
+@interface DataTableViewController : UITableViewController<UITableViewDelegate,UITableViewDataSource>
+{
+    id<DataSelectionDelegate> _delegate;
+    DataType _type;
+    NSMutableArray *_dataArray;
+    IBOutlet UITableView * table;;
+}
+
+@property (nonatomic, readwrite, retain) id<DataSelectionDelegate> delegate;
+@property (nonatomic, readwrite, strong) NSMutableArray *dataArray;
+@property (nonatomic, assign) DataType type;
+@property (nonatomic, retain, readwrite) MaterialUsage *materialUsage;
+@property (nonatomic, assign) int location_type_id;
+@property (nonatomic, retain, readwrite) Appointment *Appointment;
+
+@property (nonatomic ,retain) UITableView * table;
+
++ (DataTableViewController*) tableWithDataType:(DataType) type andDelegate:(id<DataSelectionDelegate>) del;
+
+@end

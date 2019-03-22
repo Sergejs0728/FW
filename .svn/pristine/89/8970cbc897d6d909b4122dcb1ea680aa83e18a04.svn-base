@@ -1,0 +1,52 @@
+//
+//  AppointmentList.h
+//  FieldWork
+//
+//  Created by Samir Kha on 06/01/2013.
+//  Copyright (c) 2013 __MyCompanyName__. All rights reserved.
+//
+
+#import <Foundation/Foundation.h>
+
+#import "FieldworkRequestDelegate.h"
+#import "AppointmentListDelegate.h"
+#import "FieldworkRequest.h"
+#import "FieldworkURLSchema.h"
+#import "AccountManager.h"
+#import "ActivityIndicator.h"
+#import "NSDate+Extensions.h"
+
+#define REFRESH_APPOINTMENT_NOTIFICATION @"REFRESH_APPOINTMENT_NOTIFICATION"
+
+@class Appointment;
+
+@interface AppointmentList : NSObject < FieldworkRequestDelegate>
+{
+    NSMutableArray *_Appointments;
+    
+    id<AppointmentListDelegate> _delegate;
+}
+
+@property (nonatomic, retain, readwrite) NSMutableArray *Appointments;
+
+@property (nonatomic, retain, readwrite) id<AppointmentListDelegate> delegate;
+
+- (int) loadedCount;
+
+- (Appointment*) objectAtIndex:(int) index;
+
++ (AppointmentList*) Instance;
+
+- (void) loadWithDelegate:(id<AppointmentListDelegate>)del;
+
+- (NSMutableArray*) getAppointmentByDate:(NSDate*) dt;
+
+- (BOOL) hasNextRecords:(NSDate*) dt;
+
+- (void) refreshAppointmentsAutomatic:(BOOL) loadAutomatically;
+
+- (void) CallDelegate;
+
+- (void)addAppointment:(Appointment *)appt;
+
+@end

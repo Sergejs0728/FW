@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="11201" systemVersion="16B2657" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11161"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" rowHeight="199" id="KGk-i7-Jjw" customClass="AppSchemeCell">
+            <rect key="frame" x="0.0" y="0.0" width="320" height="199"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+            <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="KGk-i7-Jjw" id="H2p-sc-9uM">
+                <frame key="frameInset" width="320" height="198"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Scheme" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="46h-Ut-LoK">
+                        <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                        <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="JCO-IX-psb" customClass="GiCanvasView">
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="No Scheme added" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="DPZ-CT-efW">
+                                <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                        <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <constraints>
+                            <constraint firstItem="DPZ-CT-efW" firstAttribute="centerY" secondItem="JCO-IX-psb" secondAttribute="centerY" id="MJw-vm-WBU"/>
+                            <constraint firstItem="DPZ-CT-efW" firstAttribute="centerX" secondItem="JCO-IX-psb" secondAttribute="centerX" id="UuM-r8-YNd"/>
+                        </constraints>
+                    </view>
+                </subviews>
+                <constraints>
+                    <constraint firstAttribute="trailing" secondItem="46h-Ut-LoK" secondAttribute="trailing" constant="10" id="1AH-jP-3x6"/>
+                    <constraint firstItem="46h-Ut-LoK" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="10" id="41j-hs-PAh"/>
+                    <constraint firstAttribute="trailing" secondItem="JCO-IX-psb" secondAttribute="trailing" constant="10" id="5i5-4p-O43"/>
+                    <constraint firstItem="JCO-IX-psb" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="10" id="CcE-1a-ewa"/>
+                    <constraint firstItem="JCO-IX-psb" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="10" id="KTf-so-ZcT"/>
+                    <constraint firstAttribute="bottom" secondItem="46h-Ut-LoK" secondAttribute="bottom" constant="10" id="YRi-Rm-KZk"/>
+                    <constraint firstItem="46h-Ut-LoK" firstAttribute="top" secondItem="JCO-IX-psb" secondAttribute="bottom" constant="10" id="azC-Cb-0B2"/>
+                </constraints>
+            </tableViewCellContentView>
+            <connections>
+                <outlet property="canvasView" destination="JCO-IX-psb" id="Y2Y-wd-LEO"/>
+                <outlet property="noSchemeAddedLabel" destination="DPZ-CT-efW" id="veN-l4-4k4"/>
+            </connections>
+            <point key="canvasLocation" x="322" y="383.5"/>
+        </tableViewCell>
+    </objects>
+</document>

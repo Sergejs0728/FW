@@ -1,0 +1,6 @@
+framework module Pods_FieldWork {
+  umbrella header "Pods-FieldWork-umbrella.h"
+
+  export *
+  module * { export * }
+}

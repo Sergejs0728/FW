@@ -1,0 +1,70 @@
+//
+//  StaticModelLoader.m
+//  FieldWork
+//
+//  Created by Samir Kha on 18/01/2013.
+//  Copyright (c) 2013 __MyCompanyName__. All rights reserved.
+//
+
+#import "StaticModelLoader.h"
+
+
+
+@implementation StaticModelLoader
+
+- (void)loadStaticLists {
+    [self requestGet:locationtypes];
+    [self requestGet:application_methods];
+    [self requestGet:statuses];
+    [self requestGet:measurements];
+    
+}
+
+- (void)loadStaticLists:(NSString *)model_type {
+    [self requestGet:model_type];
+}
+
+- (void)requestGet:(NSString *)urlPart {
+    NSString *url = [NSString stringWithFormat:@"%@%@?api_key=%@", FIELD_WORK_URL_BASE, urlPart ,[AccountManager Instance].activeAccount.api_key];
+    FieldworkRequest *request = [[FieldworkRequest alloc] initWithUrl:url andDelegate:self];
+    request.Tag = urlPart;
+    NSLog(@"locading data for : %@", urlPart);
+    [request startRequest];
+}
+
+#pragma FieldworkRequestDelegate
+
+- (void)FieldworkRequestDidSucceed:(FieldworkRequest *)request {
+    if ([request.Tag isEqualToString:application_methods]) {
+        if (request.IsSuccess) 
+        {
+            [ApplicationMethods parseWithArray:request.responseData];
+        }
+    }
+    if ([request.Tag isEqualToString:statuses]) {
+        if (request.IsSuccess) 
+        {
+            [Statuses parseWithArray:request.responseData];
+        }
+    }
+    if ([request.Tag isEqualToString:measurements]) {
+        if (request.IsSuccess) 
+        {
+            [Measurements parseWithArray:request.responseData];
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"DATA_LOAD_COMPLETED" object:nil];
+        }
+    }
+    if ([request.Tag isEqualToString:locationtypes]) {
+        if (request.IsSuccess) 
+        {
+            [LocationType parseWithArray:request.responseData];
+            NSLog(@"Locations Updated");
+        }
+    }
+}
+
+- (void)FieldworkRequestDidFail:(FieldworkRequest *)request withError:(NSError *)error{
+    
+}
+
+@end

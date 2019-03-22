@@ -1,0 +1,20 @@
+https://github.com/rentzsch/mogenerator
+
+First make sure you have installed the mogenerator
+
+Install : $ brew install mogenerator
+
+Update : $ brew update && brew upgrade mogenerator
+
+
+
+Use the below command in this folder in terminal
+
+mogenerator --v2 --model FWModel.xcdatamodeld --machine-dir ./Classes
+
+It will generate the machine files and humans files.
+
+
+HELP : http://stackoverflow.com/questions/3589247/how-do-the-mogenerator-parameters-work-which-can-i-send-via-xcode
+
+View database : /Users/temba/Library/Developer/CoreSimulator/Devices/D377CD94-C99E-4154-A03F-2A92F145C06C/data/Containers/Data/Application/F5E076B7-69CE-43CB-BB73-C01A0F0E3F38/Documents

@@ -1,0 +1,15 @@
+//
+//  MaterialUsageListDelegate.h
+//  FieldWork
+//
+//  Created by Samir Kha on 28/01/2013.
+//  Copyright (c) 2013 __MyCompanyName__. All rights reserved.
+//
+
+#import <Foundation/Foundation.h>
+
+@protocol MaterialUsageListDelegate <NSObject>
+-(void) MaterialUsageListLoaded;
+
+-(void) MaterialUsageListLoadFailed:(NSString*) error;
+@end

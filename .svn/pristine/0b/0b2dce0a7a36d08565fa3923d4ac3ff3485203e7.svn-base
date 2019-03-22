@@ -1,0 +1,90 @@
+//
+//  CoreDataHelper.m
+//  FieldWork
+//
+//  Created by Samir Kha on 18/01/2013.
+//  Copyright (c) 2013 __MyCompanyName__. All rights reserved.
+//
+
+//https://developer.apple.com/library/mac/#documentation/Cocoa/Conceptual/CoreData/Articles/cdFetching.html
+
+#import "CoreDataHelper.h"
+
+static CoreDataHelper *Singlton = nil;
+
+@implementation CoreDataHelper
+
++ (CoreDataHelper*) Instance
+{
+    if(Singlton == nil){
+        Singlton = [[CoreDataHelper alloc] init];   
+    }
+    return Singlton; 
+    
+}
+
+- (NSMutableArray *)fetchWithTable:(NSString *)tableName {
+    return [self fetchWithTable:tableName withPredicate:nil];
+}
+
+- (NSMutableArray *)fetchWithTable:(NSString *)tableName withPredicate:(NSPredicate *)predicate {
+    
+    NSEntityDescription *entity = [NSEntityDescription entityForName:tableName inManagedObjectContext:[AppDelegate appDelegate].managedObjectContext];
+	
+	// Setup the fetch request
+	NSFetchRequest *request = [[NSFetchRequest alloc] init];
+	[request setEntity:entity];
+    if (predicate) {
+        [request setPredicate:predicate];
+    }
+    
+    NSMutableArray *mutableFetchResults = [[[AppDelegate appDelegate].managedObjectContext executeFetchRequest:request error:nil] mutableCopy];
+   
+    return mutableFetchResults;
+}
+
+- (BOOL)isExists:(NSString *)tableName predicate:(NSPredicate *)predicate {
+    NSMutableArray *arr = [self fetchWithTable:tableName withPredicate:predicate];
+    if (arr.count > 0) {
+        return YES;
+    }
+    return NO;
+}
+
+- (NSManagedObject *)newEntityWithTableName:(NSString *)tabelName{
+    return [NSEntityDescription insertNewObjectForEntityForName:tabelName inManagedObjectContext:[AppDelegate appDelegate].managedObjectContext];
+}
+
+- (BOOL)deleteFromData:(NSManagedObject *)obj {
+    [[AppDelegate appDelegate].managedObjectContext deleteObject:obj];
+    NSError *error;
+    [[AppDelegate appDelegate].managedObjectContext save:&error];
+    if (error) {
+        return NO;
+    }
+    return YES;
+}
+
+- (void)saveContext {
+    [[AppDelegate appDelegate] saveManageObjectContext];
+}
+
+- (BOOL)deleteAll:(NSString *)tableName {
+    NSMutableArray *arr = [self fetchWithTable:tableName];
+    if (arr) {
+        for (NSManagedObject *obj in arr) {
+            
+            [[AppDelegate appDelegate].managedObjectContext deleteObject:obj];
+        }
+        
+        NSError *error;
+        if (![[AppDelegate appDelegate].managedObjectContext save:&error]) {
+            NSLog(@"Error deleting %@ - error:%@",tableName,error);
+            return NO;
+        }
+        return YES;
+    }
+    return NO;
+}
+
+@end

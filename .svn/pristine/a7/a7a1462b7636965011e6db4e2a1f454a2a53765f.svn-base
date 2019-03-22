@@ -1,0 +1,291 @@
+//
+//  TrapListController.m
+//  FieldWork
+//
+//  Created by Samir Kha on 12/02/2013.
+//  Copyright (c) 2013 __MyCompanyName__. All rights reserved.
+//
+
+#import "TrapListController.h"
+#import "ZBarSDK.h"
+#import <AudioToolbox/AudioServices.h>
+@implementation TrapListController
+@synthesize Traplisttable=_Traplisttable;
+@synthesize segment=_segment;
+@synthesize resultImage;
+@synthesize isChecked=_isChecked;
+
+
++ (TrapListController*) initWithAppointment:(Appointment*) app;
+{    
+//    TrapListController * trap=[[TrapListController alloc]initWithNibName:@"TrapListView" bundle:nil];
+    
+    TrapListController * trap;
+    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
+        trap = [[TrapListController alloc] initWithNibName:@"TrapListView_IPad" bundle:nil];        
+    }else{
+        trap = [[TrapListController alloc] initWithNibName:@"TrapListView" bundle:nil];
+        
+    }
+
+    
+    trap.title = @"Trap List";
+    
+    trap.Appointment=app;
+    return trap;
+}
+
+#pragma mark - View lifecycle
+-(void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+   }
+- (void)viewDidLoad
+{
+    reader = [[ZBarReaderViewController alloc]init];
+    reader.readerDelegate = self;
+    
+    reader.supportedOrientationsMask = ZBarOrientationMaskAll;
+    scanner = reader.scanner;
+    
+    [scanner setSymbology: ZBAR_I25 config: ZBAR_CFG_ENABLE to: 0];
+    
+    [ _Traplisttable reloadData];
+    [super viewDidLoad];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loadTable) name:@"ReloadTrapListTable" object:nil];
+    [self loadTable];
+       
+    }
+
+- (void)viewDidUnload {
+    [super viewDidUnload];
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
+- (void)loadTable {
+    
+    _checkedList = [[NSMutableArray alloc] init];
+    _unCheckedList = [[NSMutableArray alloc] init];
+    Customer * cust = [self.Appointment getCustomer];
+    NSMutableArray *Traplistlist= [[NSMutableArray alloc]init];
+    Traplistlist=cust.customerTrapList.customerTraps;
+    for (CustomerTrap *trp in Traplistlist) {
+        
+            //
+              
+              
+        if ([self.Appointment.inspectionRecordList isBarcodeContains:trp.barcode]) {
+            [_checkedList addObject:trp];
+             NSLog(@"Barcode :%@",trp.barcode);
+            
+        }else{
+            
+            [_unCheckedList addObject:trp];
+            
+        }
+    }
+    
+    [ _Traplisttable reloadData];
+}
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+{
+    if (self.segment.selectedSegmentIndex == 0) {
+        return _unCheckedList.count;
+    }else{
+        return _checkedList.count;
+    }
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+      
+    static NSString *CellIdentifier = @"Cell";
+    
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+    if (cell == nil) {
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
+        cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+    }
+    //cell.textLabel.font = [UIFont systemFontOfSize:14.0];
+    
+    if (self.segment.selectedSegmentIndex == 0) {
+        CustomerTrap *trap = [_unCheckedList objectAtIndex:indexPath.row];
+        cell.textLabel.text=trap.barcode;
+        NSMutableArray * lsit =[[NSMutableArray alloc]init];
+      
+        [lsit addObject:trap.barcode];
+
+           /*
+        NSUInteger i = 0;
+        if ([lsit containsObject:trap.barcode]) {
+            NSLog(@"list :%@     trap :%@",lsit,trap.barcode);
+           
+             cell.textLabel.text=trap.barcode;
+           
+            
+        } else {
+            [lsit removeObjectAtIndex:i];
+             NSLog(@"duplicate data....");
+            i++;
+        }*/
+ 
+    }
+    else
+    { 
+        CustomerTrap *trap1 = [_checkedList objectAtIndex:indexPath.row];
+        cell.textLabel.text=trap1.barcode;
+    }
+    
+    return cell;  
+   
+ }
+
+-(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
+    if (self.segment.selectedSegmentIndex == 0) {
+        
+        _isChecked=YES;
+        
+        
+        CustomerTrap *ctrap = [_unCheckedList objectAtIndex:indexPath.row];
+       
+        //TrapDetailView * trap = [TrapDetailView initWithAppointment:self.Appointment withCustomerTrap:ctrap];
+        TrapDetailView * trap = [TrapDetailView initWithAppointment:self.Appointment withCustomerTrap:ctrap WithBoolean:_isChecked];
+        [self.navigationController pushViewController:trap animated:YES];
+        
+        
+//        TrapAddController * trapadd = [TrapAddController initWithAppointment:self.Appointment withCustomerTrap:(CustomerTrap*) ctrap];
+//        [self.navigationController pushViewController:trapadd animated:YES];
+
+        
+        
+    }else{
+
+        
+       CustomerTrap *ctrap = [_checkedList objectAtIndex:indexPath.row];
+        InspectionRecord *record = [self.Appointment.inspectionRecordList inspectionRecordByBarcode:ctrap.barcode];
+        TrapDetailView *trap = [TrapDetailView initWithAppointment:self.Appointment withInspectionRecord:record];
+        [self.navigationController pushViewController:trap animated:YES];
+    }
+}
+- (IBAction) scanButtonTapped
+{   NSLog(@"Zbar CAlling.....");
+    
+  /*  ZBarReaderViewController *reader = [[ZBarReaderViewController alloc]init];
+   
+    reader.readerDelegate = self;
+    
+    reader.supportedOrientationsMask = ZBarOrientationMaskAll;
+    ZBarImageScanner *scanner = reader.scanner;
+
+    [scanner setSymbology: ZBAR_I25 config: ZBAR_CFG_ENABLE to: 0];
+    
+    [self presentModalViewController: reader animated: YES];*/
+    
+   
+    
+    
+    
+    [self presentModalViewController: reader animated: YES];
+}
+-(void)playBeep
+{
+    NSString *path = [NSString stringWithFormat:@"%@%@",
+                      [[NSBundle mainBundle] resourcePath],
+                      @"/barcodeBeep.wav"];
+    SystemSoundID soundID;
+    NSURL *filePath = [NSURL fileURLWithPath:path isDirectory:NO];
+    AudioServicesCreateSystemSoundID((__bridge CFURLRef)filePath, &soundID);
+    AudioServicesPlaySystemSound(soundID);
+}
+
+- (void) imagePickerController: (UIImagePickerController*) reader
+ didFinishPickingMediaWithInfo: (NSDictionary*) info
+{
+    id<NSFastEnumeration> results =
+    [info objectForKey: ZBarReaderControllerResults];
+    
+    NSString * barcode_data = @"";
+   
+    for(ZBarSymbol *symbol in results)
+    {   
+       
+        barcode_data = symbol.data;
+                  
+        
+        [self playBeep];
+    }
+    resultImage.image =
+    [info objectForKey: UIImagePickerControllerOriginalImage];
+     [reader dismissModalViewControllerAnimated: YES];
+    
+    Customer *cust = [self.Appointment getCustomer];
+    CustomerTrap *trap = [cust.customerTrapList customerTrapByBarcode:barcode_data];
+    if (trap == nil) {
+        trap = [[CustomerTrap alloc] init];
+        trap.barcode = barcode_data;
+        
+        TrapAddController * trapadd = [TrapAddController initWithAppointment:self.Appointment withCustomerTrap:(CustomerTrap*) trap];
+        [self.navigationController pushViewController:trapadd animated:YES];
+    } else{
+        _customerTrap = trap;
+//        UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"FieldWork"
+//                                                         message:@"This barcode already exists"
+//                                                        delegate:self
+//                                               cancelButtonTitle:@"Ok"
+//                                               otherButtonTitles:nil];
+//        [alert show];
+        
+        TrapDetailView *detailView = [TrapDetailView initWithAppointment:self.Appointment withCustomerTrap:_customerTrap WithBoolean:nil];
+        
+        //TrapDetailView *detailView = [TrapDetailView initWithAppointment:self.Appointment withCustomerTrap:_customerTrap];
+        [self.navigationController pushViewController:detailView animated:YES];
+    }
+    
+        
+     
+}
+
+-(IBAction) segmentedControlIndexChanged
+{
+    switch (self.segment.selectedSegmentIndex) {
+        case 0:
+            [self.Traplisttable reloadData];
+            break;
+        case 1:
+            [self.Traplisttable reloadData];
+            break;
+        default:
+            break;
+    }
+}
+
+
+- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
+{
+    // Return YES for supported orientations
+    return (interfaceOrientation == UIInterfaceOrientationPortrait);
+}
+
+#pragma mark - UIAlertViewDelegate
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex{
+    
+    TrapDetailView * detailView = [TrapDetailView initWithAppointment:self.Appointment withCustomerTrap:_customerTrap WithBoolean:NO];
+   // TrapDetailView *detailView = [TrapDetailView initWithAppointment:self.Appointment withCustomerTrap:_customerTrap];
+    
+    
+    [self.navigationController pushViewController:detailView animated:YES];
+}
+
+// Called when we cancel a view (eg. the user clicks the Home button). This is not called when the user clicks the cancel button.
+// If not defined in the delegate, we simulate a click in the cancel button
+- (void)alertViewCancel:(UIAlertView *)alertView
+{
+    
+}
+
+
+@end

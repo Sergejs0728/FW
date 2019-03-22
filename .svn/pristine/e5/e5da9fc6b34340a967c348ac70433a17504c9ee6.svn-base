@@ -1,0 +1,227 @@
+//
+//  InspectionRecordList.m
+//  FieldWork
+//
+//  Created by Samir Khatri on 2/20/13.
+//
+//
+
+#import "InspectionRecordList.h"
+
+@implementation InspectionRecordList
+
+- (id)init {
+    if (self = [super init]) {
+        self.InspectionRecords =  [[NSMutableArray alloc] init];
+        self.deletedInspectionRecords = [[NSMutableArray alloc] init];
+    }
+    
+    return self;
+}
+
+- (void)parseWithArray:(NSArray *)arr andAppointmentId:(int)apptId {
+    self.InspectionRecords = [[NSMutableArray alloc] init];
+    
+    self.appointmentId = apptId;
+    if (arr != nil && arr.count > 0) {
+        for (NSDictionary *dict in arr) {
+            InspectionRecord *record = [InspectionRecord inspectionRecordWithDictionary:dict];
+            
+            if (record) {
+                
+                [self.InspectionRecords addObject:record];
+            }
+        }
+    }
+}
+
+- (void)refresh {
+    NSString *url = [NSString stringWithFormat:@"%@appointment_occurrences/%d/inspection_records?api_key=%@", FIELD_WORK_URL_BASE, self.appointmentId ,[AccountManager Instance].activeAccount.api_key];
+    FieldworkRequest *request = [[FieldworkRequest alloc] initWithUrl:url andDelegate:self];
+    request.Tag = LOAD_LIST_TAG;
+    [request startRequest];
+}
+
+- (int)loadedCount{
+    return self.InspectionRecords.count;
+}
+
+- (NSMutableArray *)getInspectionRecordArray {
+    return self.InspectionRecords;
+}
+
+- (BOOL)isBarcodeContains:(NSString *)brcode {
+    if (self.InspectionRecords && self.InspectionRecords.count > 0) {
+        for (InspectionRecord *ir in self.InspectionRecords) {
+                //  NSLog(@"Barcode :%@    Barcode1 : %@",ir.barcode,brcode);
+            if ([ir.barcode isEqualToString:brcode]) {
+                return YES;
+            }
+        }
+    }
+    return NO;
+}
+
+- (InspectionRecord *)inspectionRecordByBarcode:(NSString *)brcode {
+    if (self.InspectionRecords && self.InspectionRecords.count > 0) {
+        for (InspectionRecord *ir in self.InspectionRecords) {
+            if ([ir.barcode isEqualToString:brcode]) {
+                return ir;
+            }
+        }
+    }
+    return nil;
+}
+
+- (InspectionRecord *)getInspectionRecordById:(int)mid {
+    for (InspectionRecord *mu in self.InspectionRecords) {
+        if (mu.inspectionId == mid) {
+            return mu;
+        }
+    }
+    return nil;
+}
+
+- (void)addInspectionRecord:(InspectionRecord *)record withDelegate:(id<ListItemDelegate>)del {
+    
+    if (record.inspectionId > 0 && ![self.deletedInspectionRecords containsObject:record])
+    {
+        [self deleteInspectionRecord:[self getInspectionRecordById:record.inspectionId] withDelegate:nil];
+    }
+    if (record.inspectionId < 0)
+    {
+        [self.InspectionRecords removeObject:[self getInspectionRecordById:record.inspectionId] ];
+    }
+    InspectionRecord *rec = [record copy];
+    
+    
+    _listItemDelegate = del;
+    if (![[AppDelegate appDelegate] isReachable]) {
+        rec.inspectionId = [Utils RandomId];
+        [self.InspectionRecords addObject:rec];
+        if (_listItemDelegate) {
+            [_listItemDelegate ListItemAddedSuccessfully];
+        }
+    }else{
+        [self.InspectionRecords addObject:rec];
+        NSString *mainJsonData = @"";
+        if (record.inspectionPestRecords.count > 0) {
+            
+            
+            NSString *mainJson = @"{\"appointment_occurrence\":{\"inspection_records_attributes\":[{\"barcode\":\"%@\", \"location_area_id\":%d,\"evidence\":\"%@\",\"pests_records_attributes\":[%@]}]}}";
+            
+            NSString *innerJson = @"{\"pest_type_id\":%d,\"count\":%d}";
+            
+            NSMutableArray *innerJsonArray = [[NSMutableArray alloc] init];
+            
+            for (InspectionPestRecord *ipr in record.inspectionPestRecords) {
+                NSString *temp = [NSString stringWithFormat:innerJson, ipr.pest_type_id, ipr.count];
+                [innerJsonArray addObject:temp];
+            }
+            
+            NSString *mainInnerJson = [innerJsonArray joinWithDelimeter:@","];
+            mainJsonData = [NSString stringWithFormat:mainJson, record.barcode, record.location_area_id, record.evidence ,mainInnerJson];
+        }else{
+            NSString *mainJson = @"{\"appointment_occurrence\":{\"inspection_records_attributes\":[{\"barcode\":\"%@\", \"location_area_id\":%d,\"evidence\":\"%@\"}]}}";
+            mainJsonData = [NSString stringWithFormat:mainJson, record.barcode, record.location_area_id, record.evidence];
+        }
+        NSString *url = [NSString stringWithFormat:@"%@appointment_occurrences/%d?api_key=%@", FIELD_WORK_URL_BASE, self.appointmentId ,[AccountManager Instance].activeAccount.api_key];
+        
+        FieldworkRequest *request = [[FieldworkRequest alloc] initWithUrl:url andDelegate:self andMethod:PUT];
+        request.postData = mainJsonData;
+        request.Tag = ADD_ITEM_TAG;
+        [request startRequest];
+        
+    }
+}
+
+- (void)deleteInspectionRecord:(InspectionRecord *)record withDelegate:(id<ListItemDelegate>)del {
+    _listItemDelegate = del;
+    if (![[AppDelegate appDelegate] isReachable]) {
+        
+        [_deletedInspectionRecords addObject:record];
+        
+        
+    }else{
+        NSString *url = [NSString stringWithFormat:@"%@appointment_occurrences/%d/inspection_records/%d?api_key=%@", FIELD_WORK_URL_BASE, self.appointmentId , record.inspectionId ,[AccountManager Instance].activeAccount.api_key];
+        FieldworkRequest *request = [[FieldworkRequest alloc] initWithUrl:url andDelegate:self andMethod:DELETE];
+        request.Tag = DELETE_LIST_ITEM;
+        [request startRequest];
+    }
+    [self.InspectionRecords removeObject:record];
+    if (_listItemDelegate) {
+        [_listItemDelegate ListItemDeletedSuccessfully];
+    }
+
+}
+
+- (void) syncInspectionRecords {
+    if (self.InspectionRecords != nil) {
+        for (InspectionRecord *mu in self.InspectionRecords) {
+            if (mu.inspectionId < 0) {
+                [mu sync:self.appointmentId];
+            }
+        }
+        
+        if (self.deletedInspectionRecords.count > 0) {
+            for (InspectionRecord *mu in self.deletedInspectionRecords) {
+                NSLog(@"Deleteing Inspection Record with ID : %d", mu.inspectionId);
+                [mu deleteThis:self.appointmentId];
+            }
+            [self.deletedInspectionRecords removeAllObjects];
+        }
+        [self performSelector:@selector(refresh) withObject:nil afterDelay:10.0];
+    }
+}
+
+
+#pragma mark - FieldworkRequestDelegate
+
+- (void)FieldworkRequestDidSucceed:(FieldworkRequest *)request{
+    if ([request.Tag isEqualToString:ADD_ITEM_TAG]) {
+        if (request.IsSuccess) {
+            if (_listItemDelegate) {
+                [_listItemDelegate ListItemAddedSuccessfully];
+            }
+        }
+    }
+    if ([request.Tag isEqualToString:LOAD_LIST_TAG]) {
+        if (request.IsSuccess) {
+            NSArray *arr = request.responseData;
+            if (arr != nil && arr.count > 0) {
+                [self parseWithArray:arr andAppointmentId:self.appointmentId];
+            }
+        }
+    }
+    if ([request.Tag isEqualToString:DELETE_LIST_ITEM]) {
+        if (_listItemDelegate) {
+            [_listItemDelegate ListItemDeletedSuccessfully];
+        }
+    }
+}
+
+- (void)FieldworkRequestDidFail:(FieldworkRequest *)request withError:(NSError *)error{
+    if ([request.Tag isEqualToString:LOAD_LIST_TAG]) {
+        
+    }
+    if ([request.Tag isEqualToString:ADD_ITEM_TAG]) {
+        if (_listItemDelegate) {
+            [_listItemDelegate ListItemAdditionFailedWithError:[error.userInfo objectForKey:@"message"]];
+        }
+    }
+    if ([request.Tag isEqualToString:DELETE_LIST_ITEM]) {
+        if (_listItemDelegate) {
+            [_listItemDelegate ListItemDeletionFailedWithError:[error.userInfo objectForKey:@"message"]];
+        }
+    }
+}
+
+
+#pragma mark - Properties
+
+@synthesize InspectionRecords = _InspectionRecords;
+@synthesize deletedInspectionRecords = _deletedInspectionRecords;
+@synthesize listItemDelegate = _listItemDelegate;
+@synthesize appointmentId = _appointmentId;
+
+@end

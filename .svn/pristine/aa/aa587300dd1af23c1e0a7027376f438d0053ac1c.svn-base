@@ -1,0 +1,55 @@
+//
+//  Measurements.m
+//  FieldWork
+//
+//  Created by Samir Kha on 18/01/2013.
+//  Copyright (c) 2013 __MyCompanyName__. All rights reserved.
+//
+
+#import "Measurements.h"
+
+
+@implementation Measurements
+
+@dynamic measurement;
+
++ (NSMutableArray *) getMeasurements {
+    return [[CoreDataHelper Instance] fetchWithTable:MEASUREMENTS];
+}
+
+- (void)loadFromService {
+    NSString *url = [NSString stringWithFormat:@"%@measurements?api_key=%@", FIELD_WORK_URL_BASE, [AccountManager Instance].activeAccount.api_key];
+    FieldworkRequest *request = [[FieldworkRequest alloc] initWithUrl:url andDelegate:self];
+    request.Tag = @"Measurements";
+    [request startRequest];
+}
+
++ (void)parseWithArray:(NSArray *)arr {
+    [[CoreDataHelper Instance] deleteAll:MEASUREMENTS];
+    for (NSString *mm in arr)
+    {
+        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"measurement==%@", mm];
+        if (![[CoreDataHelper Instance] isExists:MEASUREMENTS predicate:predicate]) {
+            Measurements *ap = (Measurements*)[[CoreDataHelper Instance] newEntityWithTableName:MEASUREMENTS];
+            [ap setMeasurement:mm];
+            [[CoreDataHelper Instance] saveContext];
+        }
+    }
+
+}
+
+#pragma FieldworkRequestDelegate
+
+- (void)FieldworkRequestDidSucceed:(FieldworkRequest *)request {
+    if (request.IsSuccess) 
+    {
+        //NSArray *arr = request.responseData;
+    }
+}
+
+- (void)FieldworkRequestDidFail:(FieldworkRequest *)request withError:(NSError *)error{
+    
+}
+
+
+@end

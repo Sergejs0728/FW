@@ -1,0 +1,49 @@
+//
+//  CustomerList.h
+//  FieldWork
+//
+//  Created by Samir Kha on 07/01/2013.
+//  Copyright (c) 2013 __MyCompanyName__. All rights reserved.
+//
+
+#import <Foundation/Foundation.h>
+#import "CustomerListDelegate.h"
+
+#import "AccountManager.h"
+#import "FieldworkRequestDelegate.h"
+#import "ActivityIndicator.h"
+#import "FieldworkRequest.h"
+#import "CustomerRetrival.h"
+#import "CustomerRetrivalDelegate.h"
+#import "UserSettings.h"
+@class Customer;
+
+@interface CustomerList : NSObject < FieldworkRequestDelegate, CustomerRetrivalDelegate>
+{
+    NSMutableArray *_Customers;
+    
+    id<CustomerListDelegate> _delegate;
+    
+    BOOL _isLoadedAll;
+}
+@property (nonatomic, retain, readwrite) NSMutableArray *Customers;
+
+@property (nonatomic, retain, readwrite) id<CustomerListDelegate> delegate;
+
+@property (nonatomic, assign) BOOL isLoadedAll;
+
+- (Customer*) objectAtIndex:(int) index;
+
++ (CustomerList*) Instance;
+
+- (void) loadWithDelegate:(id<CustomerListDelegate>)del;
+
+- (void) reloadAllCustomers:(id<CustomerListDelegate>)del;;
+
+- (Customer*) customerbyId:(int) cid;
+
+- (void) addCustomer:(Customer*) cust;
+
+- (void) retriveCustomer:(int) cust_id;
+
+@end

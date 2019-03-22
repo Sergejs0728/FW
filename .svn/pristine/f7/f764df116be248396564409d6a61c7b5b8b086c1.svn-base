@@ -1,0 +1,110 @@
+//
+//  Customer.h
+//  FieldWork
+//
+//  Created by Samir Kha on 07/01/2013.
+//  Copyright (c) 2013 __MyCompanyName__. All rights reserved.
+//
+
+#import <Foundation/Foundation.h>
+#import "NSMutableArray+Join.h"
+#import "CustomerTrapList.h"
+#import "CustomerListDelegate.h"
+#import "CustomerTrapListDelegate.h"
+
+
+@interface Customer : NSObject <CustomerTrapListDelegate>
+{
+    NSString *_account_number;
+    NSString *_customer_type;
+    NSString *_first_name;
+    NSString *_last_name;
+    NSString *_name;
+    NSString *_name_prefix;
+    NSString *_phone;
+    NSString *_phone_kind;
+    NSString *_service_city;
+    NSString *_service_contact;
+    NSString *_service_email_kind;
+    NSMutableDictionary *_service_emails;
+    NSString *_service_record_email;
+    NSString *_service_state;
+    NSString *_service_street;
+    NSString *_service_street2;
+    NSString *_service_suite;
+    NSString *_service_zip;
+   // NSString *_Service_name;
+    
+    // billing
+   
+    NSString *_billing_city;
+    NSString *_billing_state;
+    NSString *_billing_street;
+    NSString *_billing_zip;
+    NSString *_billing_street2;
+    NSString *_billing_suite;
+    
+    
+    NSMutableDictionary *_phones;
+    int _Id;
+    double _latitude;
+    double _longitude;
+    int _location_type_id;
+    
+    CustomerTrapList *_customerTrapList;
+    
+}
+
+@property (nonatomic, retain, readwrite) NSString *account_number;
+@property (nonatomic, retain, readwrite) NSString *customer_type;
+@property (nonatomic, retain, readwrite) NSString *first_name;
+@property (nonatomic, retain, readwrite) NSString *last_name;
+@property (nonatomic, retain, readwrite) NSString *name;
+@property (nonatomic, retain, readwrite) NSString *name_prefix;
+@property (nonatomic, retain, readwrite) NSString *phone;
+@property (nonatomic, retain, readwrite) NSString *phone_kind;
+@property (nonatomic, retain, readwrite) NSString *service_city;
+@property (nonatomic, retain, readwrite) NSString *service_contact;
+@property (nonatomic, retain, readwrite) NSString *service_email_kind;
+@property (nonatomic, retain, readwrite) NSMutableDictionary *service_emails;
+@property (nonatomic, retain, readwrite) NSString *service_record_email;
+@property (nonatomic, retain, readwrite) NSString *service_state;
+@property (nonatomic, retain, readwrite) NSString *service_street;
+@property (nonatomic, retain, readwrite) NSString *service_street2;
+@property (nonatomic, retain, readwrite) NSString *service_suite;
+@property (nonatomic, retain, readwrite) NSString *service_zip;
+// billing
+@property (nonatomic, retain, readwrite) NSString *billing_suite;
+@property (nonatomic, retain, readwrite) NSString *billing_city;
+
+@property (nonatomic, retain, readwrite) NSString *billing_street2;
+@property (nonatomic, retain, readwrite) NSString *billing_state;
+@property (nonatomic, retain, readwrite) NSString *billing_street;
+
+@property (nonatomic, retain, readwrite) NSString *billing_zip;
+//@property (nonatomic, retain, readwrite) NSString *Service_name;
+@property (nonatomic, assign) double latitude;
+@property (nonatomic, assign) double longitude;
+
+@property (nonatomic, retain, readwrite) NSMutableDictionary *phones;
+
+@property (nonatomic, assign) int Id;
+@property (nonatomic, assign) int location_type_id;
+
+@property (nonatomic, readwrite, retain) CustomerTrapList *customerTrapList;
+
+@property (nonatomic, readwrite, retain) NSString *nameForSorting;
+
++ (Customer*) customerWithDictionary:(NSDictionary*) dict;
+
+- (NSString*) getDisplayName;
+
+- (NSString*) getFullAddress;
+
+- (NSString *)getBillingFullAddress;
+
+- (NSString*)SortingName;
+
+
+
+@end

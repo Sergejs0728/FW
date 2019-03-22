@@ -1,0 +1,51 @@
+//
+//  TrapListController.h
+//  FieldWork
+//
+//  Created by Samir Kha on 12/02/2013.
+//  Copyright (c) 2013 __MyCompanyName__. All rights reserved.
+//
+
+#import <UIKit/UIKit.h>
+#import "ZBarSDK.h"
+#import "CommonAppointmentViewController.h"
+#import "TrapDetailView.h"
+#import "CustomerTrapList.h"
+#import "Customer.h"
+#import "TrapAddController.h"
+
+
+@interface TrapListController : CommonAppointmentViewController<ZBarReaderDelegate, UIAlertViewDelegate>
+{
+   
+    UITableView * _Traplisttable;
+    NSMutableArray *barcodeArray;
+    UISegmentedControl * _segment;
+    UIImageView *resultImage;
+    NSString *BarcodeType ;
+    
+    NSMutableArray *_checkedList;
+    NSMutableArray *_unCheckedList;
+    
+    CustomerTrap *_customerTrap;
+     BOOL _isChecked;
+    ZBarReaderViewController *reader;
+    ZBarImageScanner *scanner;
+}
+
+@property (nonatomic, retain) IBOutlet UIImageView * resultImage;
+@property (nonatomic, retain) IBOutlet UITableView * Traplisttable;
+@property (nonatomic, retain) IBOutlet UISegmentedControl * segment;
+@property (nonatomic,readwrite,assign) BOOL isChecked;
+
+
+-(IBAction) segmentedControlIndexChanged;
+-(IBAction) scanButtonTapped;
+
+-(void)playBeep;
+
+- (void) loadTable;
+
++ (TrapListController*) initWithAppointment:(Appointment*) app;
+
+@end

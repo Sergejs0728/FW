@@ -1,0 +1,19 @@
+//
+//  CustomerListDelegate.h
+//  FieldWork
+//
+//  Created by Samir Kha on 07/01/2013.
+//  Copyright (c) 2013 __MyCompanyName__. All rights reserved.
+//
+
+#import <Foundation/Foundation.h>
+
+@class CustomerList;
+
+@protocol CustomerListDelegate <NSObject>
+
+- (void) CustomerListLoaded;
+
+- (void) CustomerListLoadFailed:(NSString*) error;
+
+@end

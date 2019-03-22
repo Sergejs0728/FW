@@ -1,0 +1,253 @@
+//
+//  PestsListController.m
+//  FieldWork
+//
+//  Created by Samir Kha on 15/01/2013.
+//  Copyright (c) 2013 __MyCompanyName__. All rights reserved.
+//
+
+#import "PestsListController.h"
+#import "PestList.h"
+
+
+@implementation PestsListController
+
+@synthesize pestList = _pestList;
+@synthesize filteredListContent;
+@synthesize inspectionPestRecord = _inspectionPestRecord;
+@synthesize isFromInspection = _IsFromInspection;
+@synthesize inspectionPestRecords;
+
++ (PestsListController *)viewControllerWithAppointment:(Appointment *)app {
+    PestsListController *mc = [[PestsListController alloc] initWithNibName:@"PestsListController" bundle:nil];
+    mc.Appointment = app;
+    mc.isFromInspection = NO;
+    return mc;
+}
+
++ (PestsListController *)viewControllerWithAppointment:(Appointment *)app andInspection:(InspectionPestRecord *)ins {
+    PestsListController *mc = [[PestsListController alloc] initWithNibName:@"PestsListController" bundle:nil];
+    mc.Appointment = app;
+    mc.inspectionPestRecord = ins;
+    mc.isFromInspection = YES;
+    return mc;
+}
+
+- (void)didReceiveMemoryWarning
+{
+    // Releases the view if it doesn't have a superview.
+    [super didReceiveMemoryWarning];
+    
+    // Release any cached data, images, etc that aren't in use.
+}
+
+#pragma mark - View lifecycle
+
+
+- (void) viewWillAppear:(BOOL)animated
+{   [super viewWillAppear:animated];
+    
+    NSSortDescriptor * sortDesc = [[NSSortDescriptor alloc] initWithKey:@"name" ascending:YES];
+    [_pestList sortUsingDescriptors:[NSMutableArray arrayWithObject:sortDesc]];
+    [table reloadData];
+}
+
+- (void)viewDidLoad
+{
+    [super viewDidLoad];
+    UIBarButtonItem *addBtn = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(addTargetPests)];
+    self.navigationItem.rightBarButtonItem = addBtn;
+    self.navigationItem.title = @"Pest Types";
+    
+    self.filteredListContent = [[NSMutableArray alloc] init];
+    [[PestList Instance] loadWithDelegate:self];
+    
+    
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loadPestList) name:@"Notification_PestAdded" object:nil];
+}
+
+- (void)viewDidUnload {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
+-(void)addTargetPests
+{
+    PestsAddController *pa = [PestsAddController viewControllerWithAppointment:self.Appointment];
+    [self.navigationController pushViewController:pa animated:YES];
+    
+}
+
+- (void) loadPestList
+{
+    [[PestList Instance] loadWithDelegate:self];
+}
+
+#pragma PestListDelegate
+
+- (void)PestListLoaded 
+{
+    self.pestList = [[NSMutableArray alloc] init];
+    
+    [self.pestList addObjectsFromArray:[[PestList Instance] getPestsArray]];
+    //self.materialList = [[MaterialList Instance] getMaterialArray];
+    
+    [table reloadData];
+    NSLog(@"pest list %@",[[self.pestList objectAtIndex:(self.pestList.count - 1 )] name]);
+    
+}
+
+-(void) PestListLoadFailed:(NSString*) error
+{
+    
+}
+
+- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
+{
+    // Return YES for supported orientations
+    return (interfaceOrientation == UIInterfaceOrientationPortrait);
+}
+
+#pragma table method
+
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
+{
+    return 1;
+}
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+{
+    NSLog(@"pest list %@",self.pestList);
+    if (tableView == self.searchDisplayController.searchResultsTableView)
+	{
+        return [self.filteredListContent count];
+    }
+	else
+	{
+        return [self.pestList count];
+    }
+    
+}
+
+// Customize the appearance of table view cells.
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    static NSString *CellIdentifier = @"Cell";
+    
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+    if (cell == nil)
+    {
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
+        cell.accessoryType = UITableViewCellAccessoryNone;
+    }
+    Pest *pt = [self.pestList objectAtIndex:indexPath.row];
+    if (tableView == self.searchDisplayController.searchResultsTableView)
+    {
+        pt = [self.filteredListContent objectAtIndex:indexPath.row];
+    }
+    
+    cell.textLabel.text = pt.name;
+    cell.textLabel.tag = pt.pestId;
+    return cell;
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
+    Pest *pt = [self.pestList objectAtIndex:indexPath.row];
+    if (tableView == self.searchDisplayController.searchResultsTableView)
+    {
+        pt = [self.filteredListContent objectAtIndex:indexPath.row];
+    }
+    if (pt) {
+        if (self.isFromInspection) {
+            if (self.inspectionPestRecords) {
+                for (InspectionPestRecord *ipr in self.inspectionPestRecords) {
+                    if (ipr.pest_type_id == pt.pestId) {
+                        UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"FieldWork" message:@"You already have this pest selected." delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles:nil];
+                        [alert show];
+                        return;
+                    }
+                }
+            }
+            self.inspectionPestRecord.pest_type_id = pt.pestId;
+            self.inspectionPestRecord.pest = pt;
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"ReloadTable" object:nil];
+            [self.navigationController popViewControllerAnimated:YES];
+        }else{
+            TargetPest *tp = [[TargetPest alloc] init];
+            tp.pestTypeId = pt.pestId;
+            tp.pest = pt;
+            [self.Appointment.targetPestList addPestType:tp andDelegate:self];
+            [[ActivityIndicator currentIndicator] displayActivity:@"Please Wait..."];
+        }
+
+    }
+           
+}
+
+
+#pragma mark Content Filtering
+
+- (void)filterContentForSearchText:(NSString*)searchText scope:(NSString*)scope
+{
+	/*
+	 Update the filtered array based on the search text and scope.
+	 */
+	
+	[self.filteredListContent removeAllObjects]; // First clear the filtered array.
+	
+	/*
+	 Search the main list for products whose type matches the scope (if selected) and whose name matches searchText; add items that match to the filtered array.
+	 */
+    
+    for (Pest *pt in self.pestList) {
+        NSComparisonResult result = [pt.name compare:searchText options:(NSCaseInsensitiveSearch|NSDiacriticInsensitiveSearch) range:NSMakeRange(0, [searchText length])];
+        if (result == NSOrderedSame)
+        {
+            [self.filteredListContent addObject:pt];
+        }
+    }
+}
+
+#pragma mark -
+#pragma mark UISearchDisplayController Delegate Methods
+
+- (BOOL)searchDisplayController:(UISearchDisplayController *)controller shouldReloadTableForSearchString:(NSString *)searchString
+{
+    [self filterContentForSearchText:searchString scope:
+     [[self.searchDisplayController.searchBar scopeButtonTitles] objectAtIndex:[self.searchDisplayController.searchBar selectedScopeButtonIndex]]];
+    
+    // Return YES to cause the search result table view to be reloaded.
+    return YES;
+}
+
+
+- (BOOL)searchDisplayController:(UISearchDisplayController *)controller shouldReloadTableForSearchScope:(NSInteger)searchOption
+{
+    [self filterContentForSearchText:[self.searchDisplayController.searchBar text] scope:
+     [[self.searchDisplayController.searchBar scopeButtonTitles] objectAtIndex:searchOption]];
+    
+    // Return YES to cause the search result table view to be reloaded.
+    return YES;
+}
+
+#pragma ListItemDelegate
+
+
+- (void)ListItemAddedSuccessfully {
+    [[ActivityIndicator currentIndicator] displayCompleted];
+
+    [[NSNotificationCenter defaultCenter] postNotificationName:TARGET_PEST_LOAD_NOTIFICATION object:nil];
+    [self.navigationController popViewControllerAnimated:YES];
+}
+
+- (void)ListItemAdditionFailedWithError:(NSString *)error {
+    [[ActivityIndicator currentIndicator] displayCompleted];
+}
+
+- (void) ListItemDeletedSuccessfully{}
+- (void) ListItemDeletionFailedWithError:(NSString*) error{}
+
+
+@end

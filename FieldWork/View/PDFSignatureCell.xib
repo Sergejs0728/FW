@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="12120" systemVersion="16F73" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12088"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="gTV-IL-0wX" customClass="PDFSignatureCell">
+            <rect key="frame" x="0.0" y="0.0" width="320" height="197"/>
+            <autoresizingMask key="autoresizingMask"/>
+            <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
+                <rect key="frame" x="0.0" y="0.0" width="320" height="197"/>
+                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                <subviews>
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="qEU-Ho-c12">
+                        <rect key="frame" x="5" y="5" width="310" height="161"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="x3z-aY-Jxa" customClass="DottedView">
+                                <rect key="frame" x="0.0" y="0.0" width="310" height="161"/>
+                                <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="161" id="RQL-WN-AXR"/>
+                                </constraints>
+                            </view>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="vSh-dI-WTq">
+                                <rect key="frame" x="0.0" y="0.0" width="310" height="161"/>
+                                <state key="normal" title="Touch to add">
+                                    <color key="titleColor" red="0.66666666666666663" green="0.66666666666666663" blue="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                    <color key="titleShadowColor" red="0.66666666666666663" green="0.66666666666666663" blue="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                </state>
+                                <connections>
+                                    <action selector="btnPreviewClicked:" destination="gTV-IL-0wX" eventType="touchUpInside" id="BRd-Hw-6tq"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <constraints>
+                            <constraint firstAttribute="trailing" secondItem="vSh-dI-WTq" secondAttribute="trailing" id="CDB-Ia-cgD"/>
+                            <constraint firstItem="x3z-aY-Jxa" firstAttribute="top" secondItem="qEU-Ho-c12" secondAttribute="top" id="E82-zS-8Sg"/>
+                            <constraint firstAttribute="trailing" secondItem="x3z-aY-Jxa" secondAttribute="trailing" id="ISl-hz-DFX"/>
+                            <constraint firstAttribute="bottom" secondItem="x3z-aY-Jxa" secondAttribute="bottom" id="LD6-C8-KPM"/>
+                            <constraint firstItem="vSh-dI-WTq" firstAttribute="leading" secondItem="qEU-Ho-c12" secondAttribute="leading" id="NHY-ex-wo0"/>
+                            <constraint firstItem="vSh-dI-WTq" firstAttribute="top" secondItem="qEU-Ho-c12" secondAttribute="top" id="VqB-3c-TgE"/>
+                            <constraint firstItem="x3z-aY-Jxa" firstAttribute="leading" secondItem="qEU-Ho-c12" secondAttribute="leading" id="c98-mX-N4Z"/>
+                            <constraint firstAttribute="bottom" secondItem="vSh-dI-WTq" secondAttribute="bottom" id="zaZ-XI-hpK"/>
+                        </constraints>
+                    </view>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Signature" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="WfB-bQ-AoA">
+                        <rect key="frame" x="10" y="171" width="300" height="11"/>
+                        <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                        <color key="textColor" red="0.23137254900000001" green="0.23137254900000001" blue="0.23137254900000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                </subviews>
+            </view>
+            <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+            <constraints>
+                <constraint firstAttribute="bottom" secondItem="WfB-bQ-AoA" secondAttribute="bottom" constant="15" id="6R4-Cm-zhP"/>
+                <constraint firstAttribute="trailing" secondItem="qEU-Ho-c12" secondAttribute="trailing" constant="5" id="7JM-FU-gkM"/>
+                <constraint firstAttribute="trailing" secondItem="WfB-bQ-AoA" secondAttribute="trailing" constant="10" id="O8e-Ol-LOp"/>
+                <constraint firstItem="qEU-Ho-c12" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" constant="5" id="VGW-7b-bN0"/>
+                <constraint firstItem="WfB-bQ-AoA" firstAttribute="top" secondItem="qEU-Ho-c12" secondAttribute="bottom" constant="5" id="c0C-1P-NGL"/>
+                <constraint firstItem="WfB-bQ-AoA" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" constant="10" id="jLB-Cy-ujd"/>
+                <constraint firstItem="qEU-Ho-c12" firstAttribute="top" secondItem="gTV-IL-0wX" secondAttribute="top" constant="5" id="uc7-Jx-uTF"/>
+            </constraints>
+            <size key="customSize" width="320" height="197"/>
+            <connections>
+                <outlet property="btn" destination="vSh-dI-WTq" id="ZfS-gK-4hu"/>
+                <outlet property="label" destination="WfB-bQ-AoA" id="Utt-IQ-IBY"/>
+                <outlet property="signatureDVView" destination="x3z-aY-Jxa" id="KHS-dV-9iA"/>
+                <outlet property="signatureView" destination="qEU-Ho-c12" id="jOL-XF-QsX"/>
+            </connections>
+            <point key="canvasLocation" x="34" y="62.5"/>
+        </collectionViewCell>
+    </objects>
+</document>

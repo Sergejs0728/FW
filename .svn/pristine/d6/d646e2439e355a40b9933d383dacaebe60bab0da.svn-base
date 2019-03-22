@@ -1,0 +1,132 @@
+//
+//  CustomerTrapList.m
+//  FieldWork
+//
+//  Created by Samir Khatri on 2/20/13.
+//
+//
+
+#import "CustomerTrapList.h"
+
+@implementation CustomerTrapList
+
+
+- (id)init {
+    if (self = [super init]) {
+        self.customerTraps = [[NSMutableArray alloc] init];
+    }
+    return self;
+}
+
+- (int)loadedCount {
+    return self.customerTraps.count;
+}
+
+- (CustomerTrap *)customerTrapByBarcode:(NSString *)brcode {
+    for (CustomerTrap *trps in self.customerTraps) {
+        if ([trps.barcode isEqualToString:brcode]) {
+            return trps;
+        }
+    }
+    return nil;
+}
+
+- (void)loadWithDelegate:(id<CustomerTrapListDelegate>)del andCustomerId:(int)custId {
+    self.trapListDelegate = del;
+    self.customerId = custId;
+    if ([self loadedCount] <= 0) {
+        NSString *url = [NSString stringWithFormat:@"%@customers/%d/traps?api_key=%@", FIELD_WORK_URL_BASE, self.customerId ,[AccountManager Instance].activeAccount.api_key];
+        FieldworkRequest *request = [[FieldworkRequest alloc] initWithUrl:url andDelegate:self];
+        request.Tag = LOAD_LIST_TAG;
+        [request startRequest];
+    }else{
+        if (self.trapListDelegate != nil) {
+            [self.trapListDelegate CustoemrTrapListLoaded:self];
+        }
+    }
+}
+
+- (void)addCustomerTrap:(CustomerTrap *)ctrap withDelegate:(id<ListItemDelegate>)del{
+    _listItemDelegate = del;
+   // [self.customerTraps addObject:ctrap];
+    if (![[AppDelegate appDelegate] isReachable]) {
+        
+        ctrap.customerTrapId = [Utils RandomId];
+        [self.customerTraps addObject:ctrap];
+
+        if (_listItemDelegate) {
+            [_listItemDelegate ListItemAddedSuccessfully];
+        }
+    }else{
+        NSString *url = [NSString stringWithFormat:@"%@customers/%d/traps?api_key=%@", FIELD_WORK_URL_BASE,self.customerId ,[AccountManager Instance].activeAccount.api_key];
+        
+        NSString *building = [ctrap.building JSONStringWithOptions:JKSerializeOptionEscapeForwardSlashes includeQuotes:NO error:nil];
+        NSString *floor = [ctrap.floor JSONStringWithOptions:JKSerializeOptionEscapeForwardSlashes includeQuotes:NO error:nil];
+        NSString *location_details = [ctrap.location_details JSONStringWithOptions:JKSerializeOptionEscapeForwardSlashes includeQuotes:NO error:nil];
+        
+        NSString *data = [NSString stringWithFormat:@"{\"barcode\":\"%@\",\"building\":\"%@\",\"floor\":\"%@\",\"location_details\":\"%@\"}", ctrap.barcode, building, floor, location_details];
+        FieldworkRequest *request = [[FieldworkRequest alloc] initWithUrl:url andDelegate:self andMethod:POST];
+        
+        
+        //NSLog(@"%@", obj);
+        
+        //data = [NSString stringWithFormat:data, building];
+        request.postData = data;
+        request.Tag = ADD_ITEM_TAG;
+        [request startRequest];
+    }
+}
+
+#pragma mark - FieldworkRequestDelegate
+
+- (void)FieldworkRequestDidSucceed:(FieldworkRequest *)request {
+    if ([request.Tag isEqualToString:LOAD_LIST_TAG]) {
+        if (request.IsSuccess) {
+            NSArray *arr = request.responseData;
+            if (arr != nil && arr.count > 0) {
+                self.customerTraps = [[NSMutableArray alloc] init];
+                for (NSDictionary *dict in arr) {
+                    CustomerTrap *trap = [CustomerTrap customerTrapWithDictionsry:dict];
+                    NSLog(@"%@",trap.barcode);
+                    [self.customerTraps addObject:trap];
+                }
+            }
+            if (self.trapListDelegate != nil) {
+                [self.trapListDelegate CustoemrTrapListLoaded:self];
+            }
+        }
+    }
+    if ([request.Tag isEqualToString:ADD_ITEM_TAG]) {
+        if (request.IsSuccess) {
+            NSDictionary *dict = request.responseData;
+            CustomerTrap *ctrap = [CustomerTrap customerTrapWithDictionsry:dict];
+            [self.customerTraps addObject:ctrap];
+            if (_listItemDelegate) {
+                [_listItemDelegate ListItemAddedSuccessfully];
+            }
+        }
+    }
+}
+
+- (void)FieldworkRequestDidFail:(FieldworkRequest *)request withError:(NSError *)error {
+    if ([request.Tag isEqualToString:LOAD_LIST_TAG]) {
+        if (self.trapListDelegate != nil) {
+            [self.trapListDelegate CustomerTrapListLoadFailedWithError:[error.userInfo objectForKey:@"message"]];
+        }
+    }
+    if ([request.Tag isEqualToString:ADD_ITEM_TAG]) {
+        if (_listItemDelegate) {
+            [_listItemDelegate ListItemAdditionFailedWithError:[error.userInfo objectForKey:@"message"]];
+        }
+    }
+}
+
+
+#pragma mark - Properties
+
+@synthesize customerTraps = _customerTraps;
+@synthesize trapListDelegate = _trapListDelegate;
+@synthesize customerId = _customerId;
+
+
+@end

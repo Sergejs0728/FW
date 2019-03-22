@@ -1,0 +1,28 @@
+//
+//  MaterialUseListController.h
+//  FieldWork
+//
+//  Created by Samir Kha on 11/01/2013.
+//  Copyright (c) 2013 __MyCompanyName__. All rights reserved.
+//
+
+#import <UIKit/UIKit.h>
+#import "Appointment.h"
+#import "CommonAppointmentViewController.h"
+#import "MaterialListController.h"
+#import "MaterialUsageRecordController.h"
+#import "ListItemDelegate.h"
+
+@interface MaterialUseListController : CommonAppointmentViewController< ListItemDelegate, UITableViewDataSource, UITableViewDelegate>
+{
+    NSMutableArray *_materialUseagList;
+    IBOutlet UITableView *_mainTable;
+}
+
++ (MaterialUseListController*) viewControllerWithAppointment:(Appointment*) app;
+@property (nonatomic, retain, readwrite) IBOutlet UITableView *tableView;
+@property (nonatomic, retain) IBOutlet NSMutableArray *materialUseagList;
+
+- (void) refreshList;
+
+@end

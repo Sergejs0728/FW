@@ -1,0 +1,96 @@
+//
+//  TargetPest.m
+//  FieldWork
+//
+//  Created by Samir Kha on 16/01/2013.
+//  Copyright (c) 2013 __MyCompanyName__. All rights reserved.
+//
+
+#import "TargetPest.h"
+
+@implementation TargetPest
+
+@synthesize targetPestId=_targetPestId;
+@synthesize pestTypeId=_pestTypeId;
+@synthesize pest = _pest;
+@synthesize isDeleted = _isDeleted;
+@synthesize appointmentId;
+
++ (TargetPest*) targetPestWithDictionary:(NSDictionary*) dict;
+{
+    TargetPest *tarPest = [[TargetPest alloc] init];
+    
+    tarPest.targetPestId =   [[dict objectForKey:@"id"] intValue];
+    tarPest.pestTypeId =  [[dict objectForKey:@"pest_type_id"] intValue];
+    tarPest.appointmentId = [[dict objectForKey:@"appointment_occurrence_id"] intValue];
+    
+    return tarPest;
+}
+
+- (void) sync:(int)apptId{
+    self.appointmentId = apptId;
+    if (self.pest.pestId < 0) {
+        NSLog(@"Syncing Pest Type %d", self.pest.pestId);
+        NSString *url = [NSString stringWithFormat:@"%@pest_types?api_key=%@", FIELD_WORK_URL_BASE, [AccountManager Instance].activeAccount.api_key];
+        NSString *data = [NSString stringWithFormat:@"{\"name\":\"%@\"}", self.pest.name];
+        FieldworkRequest *request = [[FieldworkRequest alloc] initWithUrl:url andDelegate:self andMethod:POST];
+        request.postData = data;
+        request.Tag = ADD_PEST_ITEM_TAG;
+        [request startRequest];
+    }else{
+        NSString *url = [NSString stringWithFormat:@"%@appointment_occurrences/%d?api_key=%@", FIELD_WORK_URL_BASE, apptId ,[AccountManager Instance].activeAccount.api_key];
+        NSString *data = @"{\"appointment_occurrence\":{\"pests_targets_attributes\":[{\"pest_type_id\":%d}]}}";
+        data = [NSString stringWithFormat:data, self.pest.pestId];
+        
+        FieldworkRequest *request = [[FieldworkRequest alloc] initWithUrl:url andDelegate:self andMethod:PUT];
+        request.postData = data;
+        request.Tag = ADD_ITEM_TAG;
+        [request startRequest];
+    }
+}
+
+- (void)deleteThis:(int)apptId {
+    NSString *url = [NSString stringWithFormat:@"%@appointment_occurrences/%d?api_key=%@", FIELD_WORK_URL_BASE, apptId ,[AccountManager Instance].activeAccount.api_key];
+    NSString *data = @"{\"appointment_occurrence\":{\"pests_targets_attributes\":[{\"id\":%d, \"_destroy\":true}]}}";
+    data = [NSString stringWithFormat:data, self.targetPestId];
+    FieldworkRequest *request = [[FieldworkRequest alloc] initWithUrl:url andDelegate:self andMethod:PUT];
+    request.postData = data;
+    request.Tag = DELETE_LIST_ITEM;
+    [request startRequest];
+
+}
+
+
+#pragma mark - FieldworkRequestDelegate
+
+- (void)FieldworkRequestDidSucceed:(FieldworkRequest *)request {
+    if ([request.Tag isEqualToString:ADD_ITEM_TAG]) {
+        if (request.IsSuccess) {
+            self.targetPestId = [Utils RandomIdPlus];
+        }
+    }
+    if ([request.Tag isEqualToString:ADD_PEST_ITEM_TAG]) {
+        if (request.IsSuccess) {
+            NSDictionary *dict = request.responseData;
+            NSDictionary *pest_type = [dict objectForKey:@"pest_type"];
+            self.pest.pestId = [[pest_type objectForKey:@"id"] intValue];
+            
+            NSString *url = [NSString stringWithFormat:@"%@appointment_occurrences/%d?api_key=%@", FIELD_WORK_URL_BASE, self.appointmentId ,[AccountManager Instance].activeAccount.api_key];
+            NSString *data = @"{\"appointment_occurrence\":{\"pests_targets_attributes\":[{\"pest_type_id\":%d}]}}";
+            data = [NSString stringWithFormat:data, self.pest.pestId];
+            
+            FieldworkRequest *request = [[FieldworkRequest alloc] initWithUrl:url andDelegate:self andMethod:PUT];
+            request.postData = data;
+            request.Tag = ADD_ITEM_TAG;
+            [request startRequest];
+        }
+    }
+
+}
+
+- (void)FieldworkRequestDidFail:(FieldworkRequest *)request withError:(NSError *)error {
+    
+}
+
+
+@end

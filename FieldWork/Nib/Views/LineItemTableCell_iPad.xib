@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="11201" systemVersion="16B2555" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" colorMatched="YES">
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11161"/>
+        <capability name="Constraints with non-1.0 multipliers" minToolsVersion="5.1"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <tableViewCell contentMode="scaleToFill" selectionStyle="blue" indentationWidth="10" rowHeight="44" id="24U-si-uX5" customClass="LineItemTableCell">
+            <rect key="frame" x="0.0" y="0.0" width="768" height="44"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+            <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="24U-si-uX5" id="FqH-vQ-bBT">
+                <frame key="frameInset" width="768" height="43"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Label" lineBreakMode="tailTruncation" minimumFontSize="10" translatesAutoresizingMaskIntoConstraints="NO" id="kkc-NV-PKT">
+                        <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                        <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                    <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="" textAlignment="center" lineBreakMode="tailTruncation" minimumFontSize="10" translatesAutoresizingMaskIntoConstraints="NO" id="mxa-Ka-n0n">
+                        <constraints>
+                            <constraint firstAttribute="width" constant="50" id="TiS-b8-2Aa"/>
+                        </constraints>
+                        <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                        <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                    <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Label" textAlignment="right" lineBreakMode="tailTruncation" minimumFontSize="10" translatesAutoresizingMaskIntoConstraints="NO" id="qzh-Fa-EgK">
+                        <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                        <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                </subviews>
+                <constraints>
+                    <constraint firstItem="qzh-Fa-EgK" firstAttribute="leading" secondItem="mxa-Ka-n0n" secondAttribute="trailing" constant="10" id="4Ag-Jb-fuN"/>
+                    <constraint firstItem="kkc-NV-PKT" firstAttribute="width" secondItem="FqH-vQ-bBT" secondAttribute="width" multiplier="0.5" id="9Ug-R6-jLN"/>
+                    <constraint firstItem="kkc-NV-PKT" firstAttribute="top" secondItem="FqH-vQ-bBT" secondAttribute="top" constant="11" id="AKI-oT-bn0"/>
+                    <constraint firstItem="mxa-Ka-n0n" firstAttribute="leading" secondItem="kkc-NV-PKT" secondAttribute="trailing" constant="10" id="AaY-7w-ykd"/>
+                    <constraint firstAttribute="bottom" secondItem="mxa-Ka-n0n" secondAttribute="bottom" constant="10" id="II1-Z3-08n"/>
+                    <constraint firstItem="mxa-Ka-n0n" firstAttribute="top" secondItem="FqH-vQ-bBT" secondAttribute="top" constant="11" id="Pcg-Sm-tqZ"/>
+                    <constraint firstAttribute="bottom" secondItem="kkc-NV-PKT" secondAttribute="bottom" constant="11.5" id="PzG-zx-WJr"/>
+                    <constraint firstAttribute="bottom" secondItem="qzh-Fa-EgK" secondAttribute="bottom" constant="11" id="SvH-Vv-4q1"/>
+                    <constraint firstItem="kkc-NV-PKT" firstAttribute="leading" secondItem="FqH-vQ-bBT" secondAttribute="leading" constant="10" id="V9V-75-Qp6"/>
+                    <constraint firstItem="qzh-Fa-EgK" firstAttribute="leading" secondItem="mxa-Ka-n0n" secondAttribute="trailing" constant="10" id="hB2-44-vvj"/>
+                    <constraint firstAttribute="trailing" secondItem="qzh-Fa-EgK" secondAttribute="trailing" constant="20" id="kTg-7j-6qv"/>
+                    <constraint firstItem="qzh-Fa-EgK" firstAttribute="top" secondItem="FqH-vQ-bBT" secondAttribute="top" constant="11" id="que-gh-7JT"/>
+                </constraints>
+            </tableViewCellContentView>
+            <connections>
+                <outlet property="_lblName" destination="kkc-NV-PKT" id="b5b-en-puc"/>
+                <outlet property="_lblPrice" destination="qzh-Fa-EgK" id="qBi-Fh-Ms4"/>
+                <outlet property="_lblQty" destination="mxa-Ka-n0n" id="tzF-Cf-v8r"/>
+            </connections>
+            <point key="canvasLocation" x="30" y="56"/>
+        </tableViewCell>
+    </objects>
+    <simulatedMetricsContainer key="defaultSimulatedMetrics">
+        <simulatedStatusBarMetrics key="statusBar"/>
+        <simulatedOrientationMetrics key="orientation"/>
+        <simulatedScreenMetrics key="destination" type="retina4_7.fullscreen"/>
+    </simulatedMetricsContainer>
+</document>

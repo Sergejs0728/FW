@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="13189.4" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13165.3"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="UIApplication">
+            <connections>
+                <outlet property="delegate" destination="FWV-bD-1LR" id="YDc-QE-6kj"/>
+            </connections>
+        </placeholder>
+        <customObject id="FWV-bD-1LR" customClass="AppDelegate">
+            <connections>
+                <outlet property="navigationController" destination="Ggd-Z1-36w" id="ZbE-eZ-40h"/>
+                <outlet property="window" destination="Na2-4i-xf1" id="4qw-Pb-LGG"/>
+            </connections>
+        </customObject>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <window opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="Na2-4i-xf1">
+            <rect key="frame" x="0.0" y="0.0" width="320" height="480"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+            <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <simulatedStatusBarMetrics key="simulatedStatusBarMetrics"/>
+            <point key="canvasLocation" x="380" y="130"/>
+        </window>
+        <navigationController id="Ggd-Z1-36w">
+            <simulatedStatusBarMetrics key="simulatedStatusBarMetrics"/>
+            <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" prompted="NO"/>
+            <nil key="simulatedBottomBarMetrics"/>
+            <navigationBar key="navigationBar" contentMode="scaleToFill" translucent="NO" id="hMj-pH-NCg">
+                <rect key="frame" x="0.0" y="20" width="375" height="44"/>
+                <autoresizingMask key="autoresizingMask"/>
+            </navigationBar>
+            <viewControllers>
+                <viewController title="NewAppointmentViewController" nibName="NewAppointmentViewController" id="yIW-Ls-BNW" customClass="NewAppointmentViewController">
+                    <navigationItem key="navigationItem" title="Item" id="yYN-jw-Dlf"/>
+                </viewController>
+            </viewControllers>
+            <point key="canvasLocation" x="758" y="192"/>
+        </navigationController>
+    </objects>
+</document>

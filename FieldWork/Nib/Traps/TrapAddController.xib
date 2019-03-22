@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="12118" systemVersion="16E195" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12086"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="TrapAddController">
+            <connections>
+                <outlet property="TrapAddTable" destination="3" id="9"/>
+                <outlet property="addscrollview" destination="11" id="12"/>
+                <outlet property="view" destination="1" id="10"/>
+            </connections>
+        </placeholder>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view contentMode="scaleToFill" id="1">
+            <rect key="frame" x="0.0" y="0.0" width="320" height="480"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES" flexibleMaxY="YES"/>
+            <subviews>
+                <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="11" customClass="TPKeyboardAvoidingScrollView">
+                    <rect key="frame" x="0.0" y="0.0" width="320" height="480"/>
+                    <subviews>
+                        <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" scrollEnabled="NO" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" style="grouped" separatorStyle="default" rowHeight="44" sectionHeaderHeight="30" sectionFooterHeight="10" translatesAutoresizingMaskIntoConstraints="NO" id="3">
+                            <rect key="frame" x="0.0" y="0.0" width="320" height="322"/>
+                            <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.0" colorSpace="custom" customColorSpace="sRGB"/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="322" id="agE-Lb-SMI"/>
+                            </constraints>
+                            <connections>
+                                <outlet property="dataSource" destination="-1" id="5"/>
+                                <outlet property="delegate" destination="-1" id="6"/>
+                            </connections>
+                        </tableView>
+                    </subviews>
+                    <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.0" colorSpace="custom" customColorSpace="sRGB"/>
+                    <constraints>
+                        <constraint firstAttribute="bottom" secondItem="3" secondAttribute="bottom" id="A8G-Ey-0Lh"/>
+                        <constraint firstItem="3" firstAttribute="top" secondItem="11" secondAttribute="top" id="G8I-GH-krP"/>
+                        <constraint firstAttribute="trailing" secondItem="3" secondAttribute="trailing" id="hkK-NK-gs7"/>
+                        <constraint firstItem="3" firstAttribute="leading" secondItem="11" secondAttribute="leading" id="oFc-z2-Hxv"/>
+                    </constraints>
+                </scrollView>
+            </subviews>
+            <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.0" colorSpace="custom" customColorSpace="sRGB"/>
+            <constraints>
+                <constraint firstItem="3" firstAttribute="width" secondItem="1" secondAttribute="width" id="1Lg-Lg-DuL"/>
+                <constraint firstAttribute="trailing" secondItem="11" secondAttribute="trailing" id="QaW-1J-PGX"/>
+                <constraint firstAttribute="bottom" secondItem="11" secondAttribute="bottom" id="Y6F-cX-YAh"/>
+                <constraint firstItem="11" firstAttribute="top" secondItem="1" secondAttribute="top" id="aY3-X8-zyV"/>
+                <constraint firstItem="11" firstAttribute="leading" secondItem="1" secondAttribute="leading" id="lRt-cp-Xoq"/>
+            </constraints>
+            <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+            <point key="canvasLocation" x="34" y="54"/>
+        </view>
+    </objects>
+</document>

@@ -1,0 +1,31 @@
+//
+//  TargetPest.h
+//  FieldWork
+//
+//  Created by Samir Kha on 16/01/2013.
+//  Copyright (c) 2013 __MyCompanyName__. All rights reserved.
+//
+
+#import <Foundation/Foundation.h>
+#import "Pest.h"
+#import "FieldworkRequestDelegate.h"
+#import "FieldworkRequest.h"
+#import "Utils.h"
+@interface TargetPest : NSObject < FieldworkRequestDelegate>
+{
+    int _targetPestId;
+    int _pestTypeId;
+    Pest *_pest;
+    BOOL _isDeleted;
+   }
+@property(nonatomic,assign)int targetPestId;
+@property(nonatomic,assign)int pestTypeId;
+@property (nonatomic, readwrite, retain) Pest *pest;
+@property (nonatomic, assign) BOOL isDeleted;
+@property (nonatomic, assign) int appointmentId;
+
++ (TargetPest*) targetPestWithDictionary:(NSDictionary*) dict;
+
+- (void) sync:(int) apptId;
+- (void) deleteThis:(int) apptId;
+@end

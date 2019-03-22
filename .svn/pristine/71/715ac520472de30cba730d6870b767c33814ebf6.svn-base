@@ -1,0 +1,164 @@
+//
+//  PestList.m
+//  FieldWork
+//
+//  Created by Samir Kha on 16/01/2013.
+//  Copyright (c) 2013 __MyCompanyName__. All rights reserved.
+//
+
+#import "PestList.h"
+#import "Constants.h"
+#import "AppDelegate.h"
+#import "Utils.h"
+
+static PestList *Singlton = nil;
+
+@implementation PestList
+
+@synthesize Pests=_Pests;
+@synthesize delegate=_delegate;
+
+
+- (id)init {
+    self = [super init];
+    if (self) {
+        _Pests = [[NSMutableArray alloc] init];
+        _delegate = nil;
+    }
+    return self;
+}
+
++ (PestList*) Instance
+{
+    if(Singlton == nil){
+        Singlton = [[PestList alloc] init];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshList) name:REFRESH_PEST_LIST_NOTIFICATION object:nil];
+    }
+    
+    return Singlton; 
+}
+
+- (void) refreshList{
+    _Pests = [[NSMutableArray alloc] init];
+    _delegate = nil;
+    NSString *url = [NSString stringWithFormat:@"%@pest_types?api_key=%@", FIELD_WORK_URL_BASE, [AccountManager Instance].activeAccount.api_key];
+    FieldworkRequest *request = [[FieldworkRequest alloc] initWithUrl:url andDelegate:self];
+    request.Tag = LOAD_LIST_TAG;
+    [request startRequest];
+}
+
+- (int)loadedCount 
+{
+    return _Pests.count;
+}
+
+- (Pest *)getPestById:(int)pest_type_id 
+{
+    for (Pest *pest in _Pests) {
+        if (pest.pestId == pest_type_id) {
+            return pest;
+        }
+    }
+    return nil;
+    
+}
+
+- (NSMutableArray*) getPestsArray
+{
+    return self.Pests;
+}
+
+- (void)addPestType:(Pest *)pest andDelegate:(id)del {
+    _itemListDelegate = del;
+    if (![[AppDelegate appDelegate] isReachable]) {
+        pest.pestId = [Utils RandomId];
+        [self.Pests addObject:pest];
+        if (_itemListDelegate != nil) {
+            [_itemListDelegate ListItemAddedSuccessfully];
+        }
+    }else{
+        NSString *url = [NSString stringWithFormat:@"%@pest_types?api_key=%@", FIELD_WORK_URL_BASE, [AccountManager Instance].activeAccount.api_key];
+        NSString *data = [NSString stringWithFormat:@"{\"name\":\"%@\"}", pest.name];
+        FieldworkRequest *request = [[FieldworkRequest alloc] initWithUrl:url andDelegate:self andMethod:POST];
+        request.postData = data;
+        request.Tag = ADD_ITEM_TAG;
+        [request startRequest];
+    }
+}
+
+- (void)loadWithDelegate:(id<PestListDelegate>)del
+{
+    _delegate=del;
+    
+    if([self loadedCount] <= 0)
+    {
+        NSString *url = [NSString stringWithFormat:@"%@pest_types?api_key=%@", FIELD_WORK_URL_BASE, [AccountManager Instance].activeAccount.api_key];
+        FieldworkRequest *request = [[FieldworkRequest alloc] initWithUrl:url andDelegate:self];
+        request.Tag = LOAD_LIST_TAG;
+        [request startRequest];
+        
+        
+    }
+    else
+    {
+        if (_delegate != nil) {
+            [_delegate PestListLoaded];
+        }
+    }
+}
+
+
+
+-(void)FieldworkRequestDidSucceed:(FieldworkRequest *)request
+{
+    if([request.Tag isEqualToString:LOAD_LIST_TAG])
+    {
+        if(request.IsSuccess)
+        {
+            self.Pests = [[NSMutableArray alloc] init]; 
+            NSArray *arr = request.responseData;
+            
+            for (NSDictionary *data in arr) 
+            {
+                Pest *pt = [Pest pestWithDictionary:data];
+                [self.Pests addObject:pt];
+                
+            }
+            if (_delegate != nil) 
+            {
+                [_delegate PestListLoaded];
+            }
+        }
+    }
+    if ([request.Tag isEqualToString:ADD_ITEM_TAG]) {
+        if (request.IsSuccess) {
+            NSDictionary *dict = request.responseData;
+            NSDictionary *pest_type = [dict objectForKey:@"pest_type"];
+            Pest *pt = [Pest pestWithDictionary:pest_type];
+            if (pt && self.Pests) {
+                [self.Pests addObject:pt];
+            }
+            [_itemListDelegate ListItemAddedSuccessfully];
+        }else{
+            [_itemListDelegate ListItemAdditionFailedWithError:request.message];
+        }
+    }
+}
+
+- (void)FieldworkRequestDidFail:(FieldworkRequest *)request withError:(NSError *)error{
+    if ([request.Tag isEqualToString:LOAD_LIST_TAG]) {
+        if (_delegate != nil) {
+            [_delegate PestListLoadFailed:[error.userInfo objectForKey:@"message"]];
+        }
+    }
+    if ([request.Tag isEqualToString:ADD_ITEM_TAG]) {
+        if (_itemListDelegate) {
+            [_itemListDelegate ListItemAdditionFailedWithError:[error.userInfo objectForKey:@"message"]];
+        }
+    }
+    
+}
+
+
+
+@end

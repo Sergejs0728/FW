@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>627785E4-C898-4B1C-97AF-C3CCF30A9A88</string>
+	<key>IDESourceControlProjectName</key>
+	<string>FieldWork</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>D1C718164296924721B0EC7C261A790289F0E46D</key>
+		<string>https://192.168.1.106:8443/svn/Fieldwork_iPhone</string>
+		<key>a32abe61-c2c3-664f-801a-4c6826f13545</key>
+		<string>https://192.168.1.106:8443/svn/Fieldwork_iPhone</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>FieldWork.xcodeproj</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>D1C718164296924721B0EC7C261A790289F0E46D</key>
+		<string>../..</string>
+		<key>a32abe61-c2c3-664f-801a-4c6826f13545</key>
+		<string>../..</string>
+	</dict>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>111</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>D1C718164296924721B0EC7C261A790289F0E46D</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.subversion</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>D1C718164296924721B0EC7C261A790289F0E46D</string>
+			<key>IDESourceControlWCCName</key>
+			<string>fieldwork_ios</string>
+		</dict>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>a32abe61-c2c3-664f-801a-4c6826f13545</string>
+			<key>IDESourceControlWCCName</key>
+			<string>fieldwork_ios</string>
+		</dict>
+	</array>
+</dict>
+</plist>

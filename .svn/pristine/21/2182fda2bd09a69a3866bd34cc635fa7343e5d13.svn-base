@@ -1,0 +1,303 @@
+//
+//  CustomerListViewController.m
+//  FieldWork
+//
+//  Created by Samir Kha on 06/01/2013.
+//  Copyright (c) 2013 __MyCompanyName__. All rights reserved.
+//
+
+#import "CustomerListViewController.h"
+
+@implementation CustomerListViewController
+@synthesize listContent, filteredListContent, sectionedListContent, savedSearchTerm, savedScopeButtonIndex, searchWasActive, tableView, LoadAll;
+
++ (CustomerListViewController *)init {
+  
+   CustomerListViewController *customer;
+    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
+        customer = [[CustomerListViewController alloc] initWithNibName:@"CustomerListViewController_IPad" bundle:nil];        
+    }else{
+        customer = [[CustomerListViewController alloc] initWithNibName:@"CustomerListViewController" bundle:nil];
+        
+    }
+    // keep this YES otherwise it will not go for service call ever.
+    customer.LoadAll = YES;
+    customer.title = @"Customers";
+   return customer;
+}
+
+
+#pragma mark - View lifecycle
+
+- (void)viewDidLoad
+{
+    [super viewDidLoad]; 
+       // create a filtered list that will contain products for the search results table.
+	self.filteredListContent = [NSMutableArray arrayWithCapacity:[self.listContent count]];
+	
+	// restore search settings if they were saved in didReceiveMemoryWarning.
+    if (self.savedSearchTerm)
+	{
+        [self.searchDisplayController setActive:self.searchWasActive];
+        [self.searchDisplayController.searchBar setSelectedScopeButtonIndex:self.savedScopeButtonIndex];
+        [self.searchDisplayController.searchBar setText:savedSearchTerm];
+        
+        self.savedSearchTerm = nil;
+    }
+	
+	//[self.tableView reloadData];
+	self.tableView.scrollEnabled = YES;
+    if (self.LoadAll) {
+        [[CustomerList Instance] reloadAllCustomers:self];
+        if (![[CustomerList Instance] isLoadedAll]) {
+            [[ActivityIndicator currentIndicator] displayActivity:@"Please wait..."];
+        }
+
+    }else{
+        [[CustomerList Instance] loadWithDelegate:self];
+    }
+
+}
+
+- (void)viewDidUnload
+{
+    [super viewDidUnload];
+    self.searchWasActive = [self.searchDisplayController isActive];
+    self.savedSearchTerm = [self.searchDisplayController.searchBar text];
+    self.savedScopeButtonIndex = [self.searchDisplayController.searchBar selectedScopeButtonIndex];
+	
+	self.filteredListContent = nil;
+    sectionedListContent = nil;
+}
+
+- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
+{
+    // Return YES for supported orientations
+    return (interfaceOrientation == UIInterfaceOrientationPortrait);
+}
+
+#pragma mark UITableView data source and delegate methods
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tblView
+{
+    if (tblView == self.searchDisplayController.searchResultsTableView)
+	{
+        return 1;
+    }
+	else
+	{
+        return [self.sectionedListContent count];
+    }
+}
+
+- (NSInteger)tableView:(UITableView *)tblView numberOfRowsInSection:(NSInteger)section
+{
+	/*
+	 If the requesting table view is the search display controller's table view, return the count of the filtered list, otherwise return the count of the main list.
+	 */
+	if (tblView == self.searchDisplayController.searchResultsTableView)
+	{
+        return [self.filteredListContent count];
+    }
+	else
+	{
+        return [[self.sectionedListContent objectAtIndex:section] count];
+    }
+}
+- (UITableViewCell *)tableView:(UITableView *)tblView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+	static NSString *kCellID = @"cellID";
+	
+	UITableViewCell *cell = [tblView dequeueReusableCellWithIdentifier:kCellID];
+	if (cell == nil)
+	{
+		cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:kCellID];
+		cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+	}
+	
+	/*
+	 If the requesting table view is the search display controller's table view, configure the cell using the filtered content, otherwise use the main list.
+	 */
+	Customer *cust = nil;
+	if (tblView == self.searchDisplayController.searchResultsTableView)
+	{
+        cust = [self.filteredListContent objectAtIndex:indexPath.row];
+    }
+	else
+	{
+        cust = [self.sectionedListContent objectAtIndexPath:indexPath];
+     
+    }
+	
+	cell.textLabel.text = [cust getDisplayName];
+    
+	return cell;
+}
+
+- (void)tableView:(UITableView *)tblView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+   // UIViewController *detailsViewController = [[UIViewController alloc] init];
+    
+	/*
+	 If the requesting table view is the search display controller's table view, configure the next view controller using the filtered content, otherwise use the main list.
+	 */
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
+	Customer *cust = nil;
+	if (tblView == self.searchDisplayController.searchResultsTableView)
+	{
+        cust = [self.filteredListContent objectAtIndex:indexPath.row];
+    }
+	else
+	{
+        cust = [self.sectionedListContent objectAtIndexPath:indexPath];
+    }
+	//detailsViewController.title = cust.first_name;
+     //Appointment *app = [appointmentArray objectAtIndex:indexPath.row];
+    CustomerDetailViewController * customer = [CustomerDetailViewController initWithAppointment:cust];
+   [self.navigationController pushViewController:customer animated:YES];
+
+   }
+
+#pragma mark -
+#pragma mark Content Filtering
+
+- (void)filterContentForSearchText:(NSString*)searchText scope:(NSString*)scope
+{
+	/*
+	 Update the filtered array based on the search text and scope.
+	 */
+	
+	[self.filteredListContent removeAllObjects]; // First clear the filtered array.
+	
+	/*
+	 Search the main list for products whose type matches the scope (if selected) and whose name matches searchText; add items that match to the filtered array.
+	 */
+//    for (NSArray *section in self.sectionedListContent) {
+//        for (Customer *cust in section)
+//        {
+//            //if ([scope isEqualToString:@"All"] || [cust.name isEqualToString:scope])
+//            if ([cust getDisplayName] != nil)
+//            {//[cust getDisplayName]
+//                NSComparisonResult result = [[cust getDisplayName] compare:searchText options:(NSCaseInsensitiveSearch|NSDiacriticInsensitiveSearch) range:NSMakeRange(0, [searchText length])];
+//                if (result == NSOrderedSame)
+//                {
+//                    [self.filteredListContent addObject:cust];
+//                }
+//            }
+//        }
+//    }
+    
+    
+    for (Customer *cust in self.listContent) {
+        if ([cust getDisplayName] != nil)
+        {
+                NSRange range = [[[cust getDisplayName] lowercaseString] rangeOfString:[searchText lowercaseString]];
+                if (range.location != NSNotFound) {
+                    [self.filteredListContent addObject:cust];
+                }
+        }
+    }
+}
+
+
+
+#pragma mark -
+#pragma mark UISearchDisplayController Delegate Methods
+
+- (BOOL)searchDisplayController:(UISearchDisplayController *)controller shouldReloadTableForSearchString:(NSString *)searchString
+{
+    
+    if (searchString.length > 2) {
+        [self filterContentForSearchText:searchString scope:
+         [[self.searchDisplayController.searchBar scopeButtonTitles] objectAtIndex:[self.searchDisplayController.searchBar selectedScopeButtonIndex]]];
+    }
+    
+    
+    // Return YES to cause the search result table view to be reloaded.
+    return YES;
+}
+
+
+- (BOOL)searchDisplayController:(UISearchDisplayController *)controller shouldReloadTableForSearchScope:(NSInteger)searchOption
+{
+    [self filterContentForSearchText:[self.searchDisplayController.searchBar text] scope:
+     [[self.searchDisplayController.searchBar scopeButtonTitles] objectAtIndex:searchOption]];
+    
+    // Return YES to cause the search result table view to be reloaded.
+    return YES;
+}
+
+#pragma mark -
+- (NSString *)tableView:(UITableView *)tblView titleForHeaderInSection:(NSInteger)section
+{
+	if (tblView == self.searchDisplayController.searchResultsTableView) {
+        return nil;
+    } else {
+        return [[self.sectionedListContent objectAtIndex:section] count] ? [[[UILocalizedIndexedCollation currentCollation] sectionTitles] objectAtIndex:section] : nil;
+    }
+}
+
+- (NSArray *)sectionIndexTitlesForTableView:(UITableView *)tblView
+{
+    if (tblView == self.searchDisplayController.searchResultsTableView) {
+        return nil;
+    } else {
+        return [[NSArray arrayWithObject:UITableViewIndexSearch] arrayByAddingObjectsFromArray:
+                [[UILocalizedIndexedCollation currentCollation] sectionIndexTitles]];
+    }
+}
+- (NSInteger)tableView:(UITableView *)tblView sectionForSectionIndexTitle:(NSString *)title atIndex:(NSInteger)index
+{
+    if (tblView == self.searchDisplayController.searchResultsTableView) {
+        return 0;
+    } else {
+        if (title == UITableViewIndexSearch) {
+            [tblView scrollRectToVisible:self.searchDisplayController.searchBar.frame animated:NO];
+            return -1;
+        } else {
+            return [[UILocalizedIndexedCollation currentCollation] sectionForSectionIndexTitleAtIndex:index-1];
+        }
+    }
+}
+
+#pragma CustomerListDelegate
+
+- (void)CustomerListLoaded {
+    
+    [[ActivityIndicator currentIndicator] displayCompleted];
+    
+    listContent = [[NSArray alloc] init];
+    listContent = [CustomerList Instance].Customers;
+    sectionedListContent = [[NSArray alloc] init];
+    sections = [NSMutableArray array];
+    UILocalizedIndexedCollation *collation = [UILocalizedIndexedCollation currentCollation];
+    for (Customer *cust in listContent) {
+        if ([cust getDisplayName] != nil) {
+            NSInteger section = [collation sectionForObject:cust collationStringSelector:@selector(SortingName)];
+            [sections addObject:cust toSubarrayAtIndex:section];
+        }
+    }
+    
+    NSInteger section = 0;
+    for (section = 0; section < [sections count]; section++) {
+            //NSArray *sortedSubarray = [collation sortedArrayFromArray:[sections objectAtIndex:section] collationStringSelector:@selector(SortingName)];
+        NSArray *sortedSubarray;
+        sortedSubarray = [[sections objectAtIndex:section] sortedArrayUsingComparator:^NSComparisonResult(id a, id b) {
+            NSString *first = [(Customer*)a SortingName];
+            NSString *second = [(Customer*)b SortingName];
+            return [first compare:second];
+        }];
+        [sections replaceObjectAtIndex:section withObject:sortedSubarray];
+       
+    }
+    
+    sectionedListContent = sections;
+    [self.tableView reloadData];
+}
+
+- (void)CustomerListLoadFailed:(NSString *)error {
+    [[ActivityIndicator currentIndicator] displayCompleted];
+    
+}
+
+
+@end

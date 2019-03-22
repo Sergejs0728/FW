@@ -1,0 +1,32 @@
+//
+//  SyncHelper.h
+//  FieldWork
+//
+//  Created by Samir Khatri on 2/18/13.
+//
+//
+
+#import <Foundation/Foundation.h>
+#import "AppointmentList.h"
+#import "Appointment.h"
+#import "TargetPestList.h"
+#import "PestList.h"
+#import "TargetPest.h"
+#import "Pest.h"
+#import "InspectionRecord.h"
+#import "InspectionRecordList.h"
+@interface SyncHelper : NSObject{
+    NSDate *_lastSynced;
+}
+
+@property (nonatomic, readwrite, retain) NSDate *lastSynced;
+
++ (SyncHelper *)Instance;
+- (void) startSync;
+
+- (void) startPestSyncing;
+- (void) startMaterialSyncing;
+- (void) startInspectionSyncing;
+- (void) startAppointmentSyncing;
+
+@end

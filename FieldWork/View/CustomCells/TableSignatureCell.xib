@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="12120" systemVersion="16F73" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12088"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" id="ASr-5F-FcN" customClass="TableSignatureCell">
+            <rect key="frame" x="0.0" y="0.0" width="320" height="180"/>
+            <autoresizingMask key="autoresizingMask"/>
+            <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="ASr-5F-FcN" id="Yyb-7H-Y3G">
+                <rect key="frame" x="0.0" y="0.0" width="320" height="179.5"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="nSy-Fc-ajT">
+                        <rect key="frame" x="5" y="8" width="310" height="140.5"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="aI7-cW-pnk" customClass="DottedView">
+                                <rect key="frame" x="0.0" y="0.0" width="310" height="140.5"/>
+                                <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            </view>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ji7-zt-oSE">
+                                <rect key="frame" x="0.0" y="0.0" width="310" height="140.5"/>
+                                <state key="normal" title="Touch to add">
+                                    <color key="titleColor" red="0.66666666669999997" green="0.66666666669999997" blue="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                    <color key="titleShadowColor" red="0.66666666669999997" green="0.66666666669999997" blue="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                </state>
+                                <connections>
+                                    <action selector="btnPreviewClicked:" destination="ASr-5F-FcN" eventType="touchUpInside" id="dxI-vi-ktJ"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <constraints>
+                            <constraint firstItem="aI7-cW-pnk" firstAttribute="leading" secondItem="nSy-Fc-ajT" secondAttribute="leading" id="253-O6-Cl2"/>
+                            <constraint firstItem="ji7-zt-oSE" firstAttribute="leading" secondItem="nSy-Fc-ajT" secondAttribute="leading" id="9y2-dE-FDD"/>
+                            <constraint firstAttribute="bottom" secondItem="ji7-zt-oSE" secondAttribute="bottom" id="DWA-XN-VBv"/>
+                            <constraint firstItem="ji7-zt-oSE" firstAttribute="top" secondItem="nSy-Fc-ajT" secondAttribute="top" id="ENB-75-g1X"/>
+                            <constraint firstItem="aI7-cW-pnk" firstAttribute="top" secondItem="nSy-Fc-ajT" secondAttribute="top" id="Z4R-0u-S6E"/>
+                            <constraint firstAttribute="trailing" secondItem="aI7-cW-pnk" secondAttribute="trailing" id="dQn-Yr-AHz"/>
+                            <constraint firstAttribute="bottom" secondItem="aI7-cW-pnk" secondAttribute="bottom" id="gr0-mR-PsN"/>
+                            <constraint firstAttribute="trailing" secondItem="ji7-zt-oSE" secondAttribute="trailing" id="wF8-4h-537"/>
+                        </constraints>
+                    </view>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Signature" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="YsA-OC-ult">
+                        <rect key="frame" x="5" y="153.5" width="303" height="18"/>
+                        <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                        <color key="textColor" red="0.23137254900000001" green="0.23137254900000001" blue="0.23137254900000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                </subviews>
+                <constraints>
+                    <constraint firstItem="YsA-OC-ult" firstAttribute="leading" secondItem="Yyb-7H-Y3G" secondAttribute="leading" constant="5" id="4jG-bW-QZW"/>
+                    <constraint firstItem="nSy-Fc-ajT" firstAttribute="leading" secondItem="Yyb-7H-Y3G" secondAttribute="leading" constant="5" id="5Is-Hw-O4E"/>
+                    <constraint firstAttribute="trailing" secondItem="YsA-OC-ult" secondAttribute="trailing" constant="12" id="GCU-4s-cK9"/>
+                    <constraint firstItem="nSy-Fc-ajT" firstAttribute="top" secondItem="Yyb-7H-Y3G" secondAttribute="top" constant="8" id="OVa-xc-4br"/>
+                    <constraint firstItem="YsA-OC-ult" firstAttribute="top" secondItem="nSy-Fc-ajT" secondAttribute="bottom" constant="5" id="R6U-9J-aBW"/>
+                    <constraint firstAttribute="trailing" secondItem="nSy-Fc-ajT" secondAttribute="trailing" constant="5" id="enY-ss-g4F"/>
+                    <constraint firstAttribute="bottom" secondItem="YsA-OC-ult" secondAttribute="bottom" constant="8" id="m3C-i7-Qef"/>
+                </constraints>
+            </tableViewCellContentView>
+            <constraints>
+                <constraint firstItem="ji7-zt-oSE" firstAttribute="leading" secondItem="ASr-5F-FcN" secondAttribute="leading" constant="5" id="PSe-fM-aQn"/>
+            </constraints>
+            <connections>
+                <outlet property="btn" destination="ji7-zt-oSE" id="cEQ-74-3Y7"/>
+                <outlet property="label" destination="YsA-OC-ult" id="kXQ-d6-Knc"/>
+                <outlet property="signatureDVView" destination="aI7-cW-pnk" id="OYu-4E-Ptj"/>
+                <outlet property="signatureView" destination="nSy-Fc-ajT" id="Yfe-ns-ned"/>
+            </connections>
+            <point key="canvasLocation" x="-201" y="125"/>
+        </tableViewCell>
+    </objects>
+</document>

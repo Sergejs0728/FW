@@ -1,0 +1,1072 @@
+//
+//  AppointmentDetailController.m
+//  FieldWork
+//
+//  Created by Samir Kha on 07/01/2013.
+//  Copyright (c) 2013 __MyCompanyName__. All rights reserved.
+//
+
+#import "AppointmentDetailController.h"
+#import <MessageUI/MessageUI.h>
+#import <MessageUI/MFMailComposeViewController.h>
+#import "DrivingDirectionMap.h"
+//#import "TrapListView.h"
+
+@implementation AppointmentDetailController
+
+@synthesize appointment = _appointment;
+@synthesize cust = _cust;
+@synthesize statusPickerContainer=_statusPickerContainer;
+@synthesize popoverController;
+@synthesize maintable=_mainTable;
+
+
++ (AppointmentDetailController *)initWithAppointment:(Appointment *)app {
+    //AppointmentDetailController *controller = [[AppointmentDetailController alloc] initWithNibName:@"AppointmentDetailController" bundle:nil];
+    
+    AppointmentDetailController *controller;
+    
+    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
+        controller = [[AppointmentDetailController alloc] initWithNibName:@"AppointmentDetailController_IPad" bundle:nil];
+    }else{
+        controller = [[AppointmentDetailController alloc] initWithNibName:@"AppointmentDetailController" bundle:nil];
+        
+    }
+    
+    
+    controller.appointment = app;
+    controller.title = @"Appointment Details";
+    return controller;
+}
+
+
+
+#pragma mark - View lifecycle
+
+- (void)viewDidLoad
+{
+    [self DateAndTimeCustomPicker];
+    
+    
+    /* [[NSNotificationCenter defaultCenter] addObserver:self
+     selector:@selector(reachabilityChanged:)
+     name:kReachabilityChangedNotification
+     object:nil];
+     */
+    
+    
+    [super viewDidLoad];
+    self.cust = [self.appointment getCustomer];
+    _scrollView.alwaysBounceVertical = TRUE;
+    lblTitleLable1.text = [[self.appointment getCustomer] getDisplayName];
+    
+    lblTitleLable2.text = @"Appointment Overview";
+   
+    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+    [formatter setDateFormat:@"hh:mm a"];
+    [formatter setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];
+    timeLbl.text = [formatter stringFromDate:self.appointment.starts_at];
+    
+    self.navigationItem.titleView = titleView;
+    _scrollView.contentSize = CGSizeMake(self.view.frame.size.width, self.view.frame.size.height);
+    
+    _statuses = [[NSMutableArray alloc] init];
+    _statuses = [Statuses getStatues];
+    
+        // _btnStatus.titleLabel.text = self.appointment.status;
+    [_btnStatus setTitle:self.appointment.status forState:UIControlStateNormal];
+    
+    // _SavebtnStatus.titleLabel.text =
+    /*
+     DataPersistance *p = [[DataPersistance alloc] init];
+     [p apptJson:self.appointment];*/
+    
+    
+    
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    
+    addressViewRoundCornerbtn.layer.cornerRadius = 9;
+    BillingAddressViewRoundCornerbtn.layer.cornerRadius = 9;
+    
+    if([UserSettings getPrintOnOff]==false)
+    {
+    [_SavebtnStatus setTitle:@"Save Appointment" forState:UIControlStateNormal];
+        // _SavebtnStatus.titleLabel.text = @"Save Appointment";
+    }else
+    {
+    [_SavebtnStatus setTitle:@"Save & Print" forState:UIControlStateNormal];
+        //_SavebtnStatus.titleLabel.text = @"      Save & Print   ";
+        
+    }
+    
+    lblServiceType.text =  self.cust.customer_type;
+    
+    lblContactName.text = [self.cust getDisplayName];
+    
+    NSString *address= [self.cust getFullAddress];
+    
+    
+    lblCustomerName.text = [self.cust getDisplayName];
+    
+    
+    lblAddress.text = address;
+    lblAddress.numberOfLines = 0;
+    [lblAddress sizeToFit];
+    [self setButtonFrameProper];
+    [[Location Instance] startLocationManager];
+}
+
+-(IBAction)displayDrivingDirectionMap
+{
+    [[ActivityIndicator currentIndicator] displayActivity:@"Please wait..."];
+    NSString *addr = [self.cust getFullAddress];
+    //addr = @"Bhattha, Paldi, AHmedabad, India";
+    [SVGeocoder geocode:addr
+             completion:^(NSArray *placemarks, NSHTTPURLResponse *urlResponse, NSError *error) {
+                 if (placemarks.count > 0) {
+                     SVPlacemark *place = [placemarks objectAtIndex:0];
+                     
+                     Class itemClass = [MKMapItem class];
+                     if (itemClass && [itemClass respondsToSelector:@selector(openMapsWithItems:launchOptions:)]) {
+                         MKMapItem *currentLocation = [MKMapItem mapItemForCurrentLocation];
+                         MKMapItem *toLocation = [[MKMapItem alloc] initWithPlacemark:[[MKPlacemark alloc] initWithCoordinate:place.coordinate addressDictionary:nil] ];
+                         toLocation.name = [self.cust getDisplayName];
+                         [MKMapItem openMapsWithItems:[NSArray arrayWithObjects:currentLocation, toLocation, nil]
+                                        launchOptions:[NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:MKLaunchOptionsDirectionsModeDriving, [NSNumber numberWithBool:YES], nil]
+                                                                                  forKeys:[NSArray arrayWithObjects:MKLaunchOptionsDirectionsModeKey, MKLaunchOptionsShowsTrafficKey, nil]]];
+                         
+                     } else {
+                         NSString* urlStr = [NSString stringWithFormat: @"http://maps.google.com/maps?saddr=Current%%20Location&daddr=%f,%f", place.coordinate.latitude, place.coordinate.longitude];
+                         [[UIApplication sharedApplication] openURL: [NSURL URLWithString:urlStr]];
+                     }
+                     
+                 }else{
+                     UIAlertView * locationalert = [[UIAlertView alloc]initWithTitle:@"FieldWork" message:@"Could not find location for this address, please check your GPS and internet connection." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil, nil];
+                     [locationalert show];
+                 }
+                 [[ActivityIndicator currentIndicator] displayCompleted];
+             }];
+    
+    
+    //    DrivingDirectionMap *map = [DrivingDirectionMap controllerWithAppointment:self.appointment];
+    //    [self.navigationController pushViewController:map animated:YES];
+}
+
+- (void)viewDidUnload
+{
+    [super viewDidUnload];
+    
+}
+
+- (void)viewWillDisappear:(BOOL)animated{
+    [super viewWillDisappear:animated];
+    [[Location Instance] stopLocationManager];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"StatusChangedNotification" object:nil];
+}
+
+- (void)saveApoointment:(id)sender {
+    
+    CustomTableCell *cell1 = (CustomTableCell*)[self.maintable cellForRowAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:1]];
+    
+    CustomTableCell *cell2 = (CustomTableCell*)[self.maintable  cellForRowAtIndexPath:[NSIndexPath indexPathForRow:2 inSection:1]];
+    
+    
+    if (cell1.txt.text.length <=0)
+    {
+        UIAlertView * alrt = [[UIAlertView alloc]initWithTitle:@"FieldWork" message:@"Started at is required" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil, nil];
+        [alrt show];
+    }else if(cell2.txt.text.length <= 0)
+    {
+        UIAlertView * alrts = [[UIAlertView alloc]initWithTitle:@"FieldWork" message:@"Finished at is required" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil, nil];
+        [alrts show];
+    }else  if ([_btnStatus.titleLabel.text isEqualToString:@"Set Status"]) {
+        UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"FieldWork" message:@"Please select appointment status to save the appointment." delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles:nil];
+        [alert show];
+        return;
+    }else
+    {    self.appointment.status = _btnStatus.titleLabel.text;
+        
+        [[ActivityIndicator currentIndicator] displayActivity:@"Please Wait..."];
+        
+        [self.appointment saveAppointmentWithDelegate:self];
+        
+        
+    }
+    
+}
+
+#pragma mark - Custom Date And Time Picker
+
+-(void)DateAndTimeCustomPicker
+{
+    
+    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad)
+    {
+        CGRect IPadpickerFrame = CGRectMake(0,84, 768, 216);
+        IPadtimerPicker = [[UIDatePicker alloc] initWithFrame:IPadpickerFrame];
+        [IPadtimerPicker setDatePickerMode:UIDatePickerModeTime];
+        IPadtimerPicker.date = [NSDate dateWithTimeIntervalSinceNow:0];
+        
+        timePickerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0,768,309)];
+        
+        
+        [timePickerView addSubview:IPadtimerPicker];
+        
+        // date and time
+        
+        _IPaddatePicker = [[UIDatePicker alloc] initWithFrame:CGRectMake(0,84, 768, 216)];
+        _IPaddatePicker.datePickerMode = UIDatePickerModeDate;
+        //_datePicker.date = [NSDate date];
+        DateAndTimeView = [[UIView alloc] initWithFrame:CGRectMake(0, 0,768,309)];
+        [DateAndTimeView addSubview:_IPaddatePicker];
+        
+    }
+    else
+    {
+        CGRect pickerFrame = CGRectMake(0,0,200,216);
+        _timerPicker = [[UIDatePicker alloc] initWithFrame:pickerFrame];
+        [_timerPicker setDatePickerMode:UIDatePickerModeTime];
+        _timerPicker.date = [NSDate dateWithTimeIntervalSinceNow:0];
+        
+        timePickerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 200, 216)];
+        [timePickerView addSubview:_timerPicker];
+        [asPickerContainer addSubview:timePickerView];
+        
+        // date and time
+        
+        _datePicker = [[UIDatePicker alloc] initWithFrame:CGRectMake(0, 0, 325, 300)];
+        _datePicker.datePickerMode = UIDatePickerModeDate;
+        //_datePicker.date = [NSDate date];
+        DateAndTimeView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 200, 216)];
+        [DateAndTimeView addSubview:_datePicker];
+        
+        
+    }
+    
+}
+
+
+- (void)clickOnStartedAt{
+    [self loadPickerViewForDateTime:timePickerView :11];
+}
+
+- (void)clickOnFinishedAt {
+    [self loadPickerViewForDateTime:timePickerView :30];
+}
+-(void)scheduleDateClicked {
+    [self loadPickerViewForDateTime:DateAndTimeView :10];
+}
+- (void)loadPickerViewForDateTime:(UIView *)v :(int)tag {
+    
+    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad)
+    {
+        UIViewController* popoverContent = [[UIViewController alloc]init];
+        
+        
+        popoverContent.view = [[UIView alloc]initWithFrame:CGRectMake(0.0, 0.0, 768.0, 309.0)];
+        [popoverContent.view addSubview:v];
+        
+        popoverContent.contentSizeForViewInPopover = CGSizeMake(768,309);//768,216
+        popoverviewController = [[UIPopoverController alloc]
+                                 initWithContentViewController:popoverContent];
+        
+        
+        // Done Button
+        
+        UIButton *Done = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+        [Done addTarget:self
+                 action:@selector(ipadActionsheetDoneClicked:)
+       forControlEvents:UIControlEventTouchUpInside];
+        Done.tag = tag;
+        [Done setTitle:@" Done " forState:UIControlStateNormal];
+        [Done setTitle:@" Done " forState:UIControlStateHighlighted];
+        Done.frame = CGRectMake(296.0, 8.0, 177.0, 30.0);
+        
+        [popoverContent.view addSubview:Done];
+        
+        //Cancel Button
+        
+        UIButton *btnCencel = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+        [btnCencel addTarget:self
+                      action:@selector(cancelDate:)
+            forControlEvents:UIControlEventTouchUpInside];
+        [btnCencel setTitle:@" Cancel" forState:UIControlStateNormal];
+        [btnCencel setTitle:@" Cancel" forState:UIControlStateHighlighted];
+        btnCencel.frame = CGRectMake(296.0, 46.0, 177.0, 30.0);
+        [popoverContent.view addSubview:btnCencel];
+        
+        
+        [popoverviewController  presentPopoverFromRect:CGRectMake(0,667,900, 216)
+                                                inView:self.view permittedArrowDirections:0 animated:YES];
+        
+    }
+    else
+    {
+    asPickerContainer = [[UIActionSheet alloc] initWithTitle:@" " delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:@"Done",nil];
+    
+    
+    CGRect viewFarme = CGRectMake(0,150+50, 320, 216);
+    [v setFrame:viewFarme];
+    asPickerContainer.tag = tag;
+    [asPickerContainer addSubview:v];
+    
+    
+    asPickerContainer.delegate = self;
+    
+    [asPickerContainer showInView:self.navigationController.view];
+        [asPickerContainer setBounds:CGRectMake(0,0,320,550+100)];
+        // [asPickerContainer setFrame:CGRectMake(0,self.view.frame.size.height-366,320,366)];
+    [self.view endEditing:YES];
+    
+    }
+    
+}
+-(IBAction)cancelDate:(id)sender{
+    [popoverviewController dismissPopoverAnimated:YES];
+}
+
+
+- (IBAction)ipadActionsheetDoneClicked:(id)sender
+{
+    NSDateFormatter *timeFormatter = [[NSDateFormatter alloc] init];
+    [timeFormatter setDateFormat:@"hh:mm a"];
+    
+    CustomTableCell *cell = nil;
+    //
+    UIButton *btn = (UIButton*) sender;
+    if (btn.tag == 10) {
+        cell = (CustomTableCell*)[self.maintable cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:1]];
+        NSDateFormatter *df = [[NSDateFormatter alloc] init];
+        df.dateStyle = NSDateFormatterNoStyle;
+        
+        NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+        [formatter setDateFormat:@"MM-dd-yyyy"];
+        NSString *dateformat = [formatter stringFromDate:_IPaddatePicker.date];
+        
+        [formatter setDateFormat:@"HH:mm:ss"];
+        NSString *timeformat = [formatter stringFromDate: self.appointment.starts_at];
+        
+        NSString* dateAndTimeFormat = [NSString stringWithFormat:@"%@ %@",dateformat,timeformat];
+        
+        [formatter setDateFormat:@"MM-dd-yyyy HH:mm:ss"];
+        self.appointment.starts_at = [formatter dateFromString:dateAndTimeFormat];
+        [formatter setDateFormat:@"yyyy-MM-dd"];
+        cell.txt.text =  [NSString stringWithFormat:@"%@",[formatter stringFromDate:self.appointment.starts_at]];
+
+    } else if (btn.tag == 11){
+        cell = (CustomTableCell*)[self.maintable cellForRowAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:1]];
+        cell.txt.text =  [NSString stringWithFormat:@"%@",[timeFormatter stringFromDate:IPadtimerPicker.date]];
+        self.appointment.started_at_time = cell.txt.text;
+    } else if (btn.tag == 30) {
+        cell = (CustomTableCell*)[self.maintable cellForRowAtIndexPath:[NSIndexPath indexPathForRow:2 inSection:1]];
+        cell.txt.text =  [NSString stringWithFormat:@"%@",[timeFormatter stringFromDate:IPadtimerPicker.date]];
+        self.appointment.finished_at_time = cell.txt.text;
+    }
+    
+    [timePickerView removeFromSuperview];
+    [popoverviewController dismissPopoverAnimated:YES];
+    
+}
+
+
+
+-(IBAction)done:(id)sender
+{
+    
+    if ([sender tag]== 0) {
+        NSUInteger ixd = [_statusPicker selectedRowInComponent:0];
+        
+        Statuses *s = [_statuses objectAtIndex:ixd];
+       
+            // _btnStatus.titleLabel.text = s.statusName;
+        [_btnStatus setTitle:s.statusName forState:UIControlStateNormal];
+        if([s.statusName isEqualToString:@"Complete"]){
+            if(self.appointment!=nil && self.appointment.payment_info!=nil){
+                //[self.appointment savePaymentData:nil];
+            }
+        }
+    }
+    
+    [popoverController dismissPopoverAnimated:YES];
+    
+    
+    
+}
+-(IBAction)cancel:(id)sender{
+    [popoverController dismissPopoverAnimated:YES];
+    
+}
+
+- (void) setButtonFrameProper
+{
+    [_tableContainer expand];
+    
+        
+        float buttons_y = _tableContainer.frame.origin.y + _tableContainer.frame.size.height;
+        _buttonHolder.frame = CGRectMake(0,(buttons_y+23),//23
+                                         _buttonHolder.frame.size.width, _buttonHolder.frame.size.height);
+        _scrollView.contentSize = CGSizeMake(self.view.frame.size.width, buttons_y + _buttonHolder.frame.size.height +50);//20
+   
+     
+}
+- (void)setStatusClicked:(id)sender {
+    
+    [self loadPickerWithView:_statusPickerContainer withTag:100];
+    
+}
+
+#pragma mark - pdfOpenInReaderForEdit
+-(void)pdfOpenInReaderForEdit:(id)sender{
+    
+    UIButton *button = (UIButton *)sender;
+
+    //[AppDelegate appDelegate].appointmentID = _appointment.Id;
+    
+   NSURL * URL = [NSURL fileURLWithPath:[_appointment appointmentPDFfile]];
+   
+    
+    if (URL) {
+        // Initialize Document Interaction Controller
+//        self.documentInteractionController = [UIDocumentInteractionController interactionControllerWithURL:URL];
+//        
+//        // Configure Document Interaction Controller
+//        [self.documentInteractionController setDelegate:self];
+//        
+//        // Present Open In Menu
+//        [self.documentInteractionController presentOpenInMenuFromRect:[button frame] inView:self.view animated:YES];
+    }
+    
+}
+
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
+{
+    return 4;
+}
+
+- (void)loadPickerWithView:(UIView *)v withTag:(int)tag {
+    
+    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad)
+    {
+        UIViewController* popoverContent = [[UIViewController alloc]init];
+        // popoverContent.view = _statusPickerContainer;
+        
+        popoverContent.view = [[UIView alloc]initWithFrame:CGRectMake(0.0, 0.0, 768.0, 309.0)];//309
+        [popoverContent.view addSubview:v];
+        
+        popoverContent.contentSizeForViewInPopover = CGSizeMake(768,309);//768,216
+        
+        self.popoverController = [[UIPopoverController alloc]
+                                  initWithContentViewController:popoverContent];
+    
+        
+        [self.popoverController  presentPopoverFromRect:CGRectMake(0,667,900, 216) //900
+                                                 inView:self.view permittedArrowDirections:0 animated:YES];
+        
+    }
+    else
+    {
+        asPickerContainer = [[UIActionSheet alloc] initWithTitle:@" " delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:@"Done",nil];
+        CGRect viewFarme = CGRectMake(0,150+24, 320, 165);
+        [v setFrame:viewFarme];
+        asPickerContainer.tag = tag;
+        // asPickerContainer.actionSheetStyle = UIActionSheetStyleAutomatic;
+        [asPickerContainer addSubview:v];
+        [asPickerContainer showInView:self.navigationController.view];
+        [asPickerContainer setBounds:CGRectMake(0,0,320,550+50)];
+    
+    
+    asPickerContainer.delegate = self;
+        // asPickerContainer.actionSheetStyle = UIActionSheetStyleDefault;
+    
+    }
+    
+}
+
+- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
+    
+    switch (buttonIndex)
+    {
+		case 0:
+		{
+            NSDateFormatter *timeFormatter = [[NSDateFormatter alloc] init];
+            [timeFormatter setDateFormat:@"hh:mm a"];
+            if (actionSheet.tag == 100)  { // Statues
+                NSUInteger ixd = [_statusPicker selectedRowInComponent:0];
+                
+                Statuses *s = [_statuses objectAtIndex:ixd];
+                NSLog(@"%@",s.statusName);
+                    // _btnStatus.titleLabel.text = s.statusName;
+                [_btnStatus setTitle:s.statusName forState:UIControlStateNormal];
+            } else if(actionSheet.tag == 10){ // Schedule Date
+                CustomTableCell *cell = (CustomTableCell*)[self.maintable cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:1]];
+                NSDateFormatter *df = [[NSDateFormatter alloc] init];
+                df.dateStyle = NSDateFormatterNoStyle;
+                
+                NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+                [formatter setDateFormat:@"MM-dd-yyyy"];
+                NSString *dateformat = [formatter stringFromDate:_datePicker.date];
+                
+                [formatter setDateFormat:@"HH:mm:ss"];
+                NSString *timeformat = [formatter stringFromDate: self.appointment.starts_at];
+                
+                NSString* dateAndTimeFormat = [NSString stringWithFormat:@"%@ %@",dateformat,timeformat];
+                
+                [formatter setDateFormat:@"MM-dd-yyyy HH:mm:ss"];
+                self.appointment.starts_at = [formatter dateFromString:dateAndTimeFormat];
+                [formatter setDateFormat:@"yyyy-MM-dd"];
+                cell.txt.text =  [NSString stringWithFormat:@"%@",[formatter stringFromDate:self.appointment.starts_at]];
+            } else if (actionSheet.tag == 11) { // Start at time
+               CustomTableCell *cell = (CustomTableCell*)[self.maintable cellForRowAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:1]];
+                cell.txt.text =  [NSString stringWithFormat:@"%@",[timeFormatter stringFromDate:_timerPicker.date]];
+                self.appointment.started_at_time = cell.txt.text;
+            } else if (actionSheet.tag == 30) { // finished at time
+                
+                CustomTableCell *cell = (CustomTableCell*)[self.maintable cellForRowAtIndexPath:[NSIndexPath indexPathForRow:2 inSection:1]];
+                cell.txt.text =  [NSString stringWithFormat:@"%@",[timeFormatter stringFromDate:_timerPicker.date]];
+                self.appointment.finished_at_time = cell.txt.text;
+            }            
+        }
+	}
+}
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+{
+    if(section == 0)
+    {
+        return 4;
+    }
+    else if(section == 1)
+    {
+        return 3;
+    }
+    else if(section == 2)
+    {
+        if (!_appointment.datapdf) {
+            return 0;
+        }
+        return 1;
+    }else{
+        return 8;
+    }
+    
+    
+}
+
+- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
+{
+	if(section == 0)
+    {
+		return nil;
+	}
+    else if(section == 1)
+        
+    {
+		return nil;
+	}
+    else if(section == 2)
+    {
+        return nil;
+    } else{
+        return @"Actions";;
+    }
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
+{
+    if(section == 0)
+    {
+		return 10;
+	}
+    else if(section == 1)
+    {
+		return 20;
+	}
+    else if(section == 2)
+    { if(!_appointment.datapdf){
+        return 1;
+    }
+        return 10;
+    }else{
+        return 20;
+    }
+    
+}
+- (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section
+{
+        return 10;
+}
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if(indexPath.section == 0)
+    {
+        static NSString *CellIdentifier = @"Cell1";
+        AppotmentDetailCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+        if (cell == nil)
+        {
+            NSArray *topLevelObject = [[NSBundle mainBundle] loadNibNamed:@"AppointmentDetailTableCell" owner:self options:nil];
+            
+            for (AppotmentDetailCell *AppointmentCurrentObject in topLevelObject)
+            {
+                if([AppointmentCurrentObject isKindOfClass:[UITableViewCell class]])
+                {
+                    cell = (AppotmentDetailCell*)AppointmentCurrentObject;
+                }
+            }
+        }
+        if(indexPath.row == 0)
+        {
+            cell.lbl1.text = @"Contact";
+            cell.lbl2.text = self.cust.service_contact;
+        }
+        else if(indexPath.row == 1)
+        {
+            cell.lbl1.text = self.cust.phone_kind;
+            NSString * x = self.cust.phone;
+            /* if (cell.lbl1.text.length <= 0) {
+             cell.lbl1.text = @"Other";
+             }*/
+            if ((cell.lbl1.text.length > 0) || (x.length > 0)) {
+                if (cell.lbl1.text.length <= 0) {
+                    cell.lbl1.text = @"Other";
+                }
+            }
+            
+            cell.lbl2.text = self.cust.phone;
+            
+        }
+        else if(indexPath.row == 2)
+        {
+            if (self.cust.phones.count > 0) {
+                cell.lbl1.text = [[self.cust.phones allKeys] objectAtIndex:0];
+                if (cell.lbl1.text.length <= 0) {
+                    //  cell.lbl1.text = @"Other";
+                }
+                    cell.lbl2.text = [self.cust.phones objectForKey:[[self.cust.phones allKeys] objectAtIndex:0]];
+            }
+        }
+        else if(indexPath.row == 3)
+        {
+            cell.lbl1.text = @"Email";
+            cell.lbl2.text = self.cust.service_record_email;
+        }
+        return cell;
+    }
+    else if(indexPath.section == 1)
+    {
+        static NSString *CellIdentifier = @"DateTimeCell";
+        
+        
+        CustomTableCell *cell = [self.maintable dequeueReusableCellWithIdentifier:CellIdentifier];
+        if (cell == nil)
+        {
+            NSArray *topLevelObject = [[NSBundle mainBundle] loadNibNamed:@"CustomLableTextCell" owner:self options:nil];
+            
+            for(id currentObject in topLevelObject)
+            {
+                if([currentObject isKindOfClass:[UITableViewCell class]])
+                {
+                    cell = (CustomTableCell*) currentObject;
+                }
+            }
+        }
+        
+        UIButton *btn = [[UIButton alloc] initWithFrame:cell.txt.frame];
+        
+        [btn setBackgroundColor:[UIColor clearColor]];
+        NSString *lbl = @"";
+        
+        
+        if (indexPath.row == 0) {
+            lbl = @"Schedule Date";
+            [btn addTarget:self action:@selector(scheduleDateClicked) forControlEvents:UIControlEventTouchDown];
+            NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+            [formatter setDateFormat:@"yyyy-MM-dd"];
+            cell.txt.text =  [NSString stringWithFormat:@"%@",[formatter stringFromDate:self.appointment.starts_at]];
+        } else if (indexPath.row == 1){
+            lbl = @"Started At";
+            [btn addTarget:self action:@selector(clickOnStartedAt) forControlEvents:UIControlEventTouchDown];
+            cell.txt.text = self.appointment.started_at_time;
+        }else if(indexPath.row == 2)
+        {
+            lbl = @"Finished At";
+            [btn addTarget:self action:@selector(clickOnFinishedAt) forControlEvents:UIControlEventTouchDown];
+            cell.txt.text = self.appointment.finished_at_time;
+        
+        }
+      
+        
+        [cell.txt setEnabled:NO];
+        [cell addSubview:btn];
+        cell.lbl.text = lbl;
+        return cell;
+        
+    }else if (indexPath.section == 2){
+        static NSString *CellIdentifier = @"Cell";
+        OpenPdfCell *cell = [self.maintable dequeueReusableCellWithIdentifier:CellIdentifier];
+        if (cell == nil)
+        {
+            NSArray *topLevelObject;
+            if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
+                topLevelObject = [[NSBundle mainBundle] loadNibNamed:@"PdfOpenCell_IPad" owner:self options:nil];
+                
+            }else{
+                topLevelObject = [[NSBundle mainBundle] loadNibNamed:@"PdfOpenCell" owner:self options:nil];
+            }
+
+            for(id currentObject in topLevelObject)
+            {
+                if([currentObject isKindOfClass:[UITableViewCell class]])
+                {
+                    cell = (OpenPdfCell*) currentObject;
+                }
+            }
+        }
+
+        cell.appointment = self.appointment;
+        cell.controller = self;
+        
+        BOOL isPrinterOn = [UserSettings getPrintOnOff];
+        if (!isPrinterOn) {
+            cell.btnPrint.hidden = YES;
+        }
+        
+//        UIButton *btn = [[UIButton alloc] initWithFrame:cell.frame];
+//        
+//        [btn setBackgroundColor:[UIColor clearColor]];
+//      
+//        if(indexPath.row == 0)
+//        {
+//            
+//            [btn addTarget:self action:@selector(pdfOpenInReaderForEdit:) forControlEvents:UIControlEventTouchUpInside];
+//            
+//            [cell.btnPrint addTarget:self action:@selector(printFilePrintbtnClicked) forControlEvents:UIControlEventTouchUpInside];
+//           
+//        }
+//        [cell addSubview:btn];
+        return cell;
+}
+    else if(indexPath.section == 3)
+    {
+        
+        static NSString *CellIdentifier = @"Cell";
+        
+        UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+        if (cell == nil)
+        {
+            cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
+        
+        }
+  
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 70000
+    if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0"))
+        {
+        cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+        }else{
+            cell.accessoryType = UITableViewCellAccessoryDetailDisclosureButton;
+       }
+#endif
+    
+        if(indexPath.row == 0)
+        {
+            cell.textLabel.text = @"Payment Info";
+        }else if(indexPath.row == 1)
+        {
+            cell.textLabel.text=@"Environment";
+            
+        }
+        
+        else if(indexPath.row == 2)
+        {
+            cell.textLabel.text = @"Instructions";
+            
+        }
+        else if(indexPath.row == 3)
+        {
+            cell.textLabel.text = @"Material Use";
+            
+        }
+        else if(indexPath.row == 4)
+        {
+            cell.textLabel.text = @"Notes";
+            
+        }
+        else if(indexPath.row == 5)
+        {
+            cell.textLabel.text = @"Target Pests";
+            
+        }
+        else if(indexPath.row == 6)
+        {
+            cell.textLabel.text = @"Traps";
+            
+        }else if(indexPath.row==7)
+        {
+            cell.textLabel.text = @"Signature";
+        }
+        return cell;
+    }
+    return nil;
+   /* else
+    {
+        static NSString *CellIdentifier = @"DateTimeCell";
+        
+        
+        CustomTableCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+        if (cell == nil)
+        {
+            NSArray *topLevelObject = [[NSBundle mainBundle] loadNibNamed:@"CustomLableTextCell" owner:self options:nil];
+            
+            for(id currentObject in topLevelObject)
+            {
+                if([currentObject isKindOfClass:[UITableViewCell class]])
+                {
+                    cell = (CustomTableCell*) currentObject;
+                }
+            }
+        }
+        
+        UIButton *btn = [[UIButton alloc] initWithFrame:cell.txt.frame];
+        
+        [btn setBackgroundColor:[UIColor clearColor]];
+        NSString *lbl = @"";
+        
+        
+        if (indexPath.row == 0){
+            lbl = @"Finished At";
+            [btn addTarget:self action:@selector(clickOnFinishedAt) forControlEvents:UIControlEventTouchDown];
+            cell.txt.text = self.appointment.finished_at_time;
+        }
+        [cell.txt setEnabled:NO];
+        [cell addSubview:btn];
+        cell.lbl.text = lbl;
+        return cell;
+        
+        
+    }
+    
+    
+    return nil;*/
+}
+
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
+    if(indexPath.section == 0)
+    {
+        if (indexPath.row == 1) {
+            if (self.cust.phone.length <= 0) {
+                return 0;
+            }
+        }else if(indexPath.row == 2){
+            if (self.cust.phones.count <= 0) {
+                return 0;
+            }
+        }
+    }else if (indexPath.section == 2)
+    {
+        if (!_appointment.datapdf) {
+            return 0;
+        }
+    }
+    return 45;
+}
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
+    
+    if (indexPath.section == 3)
+    {
+        if(indexPath.row == 0)
+        {   AppointmentInformation *appoint = [AppointmentInformation viewControllerWithAppointment:self.appointment];
+            [self.navigationController pushViewController:appoint animated:YES];
+        } else if(indexPath.row == 1)
+        {
+            //Environment
+            EnvironmentViewController *controller=[EnvironmentViewController initWithAppointment:self.appointment];
+            [self.navigationController pushViewController:controller animated:YES];
+        }
+        else if(indexPath.row == 2)
+        {
+            InstructionController * inst = [InstructionController
+                                            initWithAppointment:self.appointment];
+            [self.navigationController pushViewController:inst animated:YES];
+        }
+        else if(indexPath.row == 3)
+        {
+            MaterialUseListController *ma = [MaterialUseListController viewControllerWithAppointment:self.appointment];
+            [self.navigationController pushViewController:ma animated:YES];
+        }
+        else if(indexPath.row == 4)
+        {
+            NoteController *note = [NoteController initWithAppointment:self.appointment];
+            [self.navigationController pushViewController:note animated:YES];
+        }
+        else if(indexPath.row == 5)
+        {
+            PestsUseListController *pests = [PestsUseListController viewControllerWithAppointment:self.appointment];
+            [self.navigationController pushViewController:pests animated:YES];
+        }
+        
+        else if(indexPath.row == 6)
+        {
+            TrapListController *trap3 = [TrapListController initWithAppointment:self.appointment];
+            [self.navigationController pushViewController:trap3 animated:YES];
+        }
+        else if(indexPath.row==7)
+        {
+            SignatureController *controller = [SignatureController viewControllerWithAppointment:self.appointment];
+            [self.navigationController pushViewController:controller animated:YES];
+        }
+    }
+    
+    if (indexPath.section == 0)
+    {
+        if (indexPath.row == 1)
+        {
+            [[UIApplication sharedApplication] openURL:[NSURL URLWithString:[NSString stringWithFormat:@"tel://%@",self.cust.phone]]];
+        }
+        else if(indexPath.row == 2)
+        {
+            if(self.cust.phones.count >0 )
+            {
+                
+                [[UIApplication sharedApplication] openURL:[NSURL URLWithString:[NSString stringWithFormat:@"tel://%@",[self.cust.phones objectForKey:[[self.cust.phones allKeys] objectAtIndex:0]]]]];
+            }
+        }
+        else if(indexPath.row == 3)
+        {
+            MFMailComposeViewController *mailPicker = [[MFMailComposeViewController alloc] init];
+            mailPicker.mailComposeDelegate = self;
+            NSArray *toRecipients = [NSArray arrayWithObject:self.cust.service_record_email];
+            
+            [mailPicker setSubject:@"Hello"];
+            [mailPicker setToRecipients:toRecipients];
+            [mailPicker setMessageBody: @"" isHTML:NO];
+            [self presentModalViewController:mailPicker animated:YES];
+        }
+    }
+}
+
+- (void)mailComposeController:(MFMailComposeViewController*)controller didFinishWithResult:(MFMailComposeResult)result error:(NSError*)error
+{
+    [self dismissModalViewControllerAnimated:YES];
+}
+
+#pragma mark - UIPickerViewDelegate , UIPickerViewDataSource
+
+- (NSInteger)pickerView:(UIPickerView *)pickerView numberOfRowsInComponent:(NSInteger)component{
+    return _statuses.count;
+}
+
+-(NSString *)pickerView:(UIPickerView *)pickerView titleForRow:(NSInteger)row forComponent:(NSInteger)component
+{
+    Statuses *status = [_statuses objectAtIndex:row];
+    return status.statusValue;
+}
+-(NSInteger)numberOfComponentsInPickerView:(UIPickerView *)pickerView
+{
+    return 1;
+}
+
+#pragma mark - AppointmentDelegate
+
+- (void)AppointmentSavedSuccessfully {
+    [[ActivityIndicator currentIndicator] displayCompleted];
+    [self.navigationController popViewControllerAnimated:YES];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"StatusChangedNotification" object:nil];
+    
+    
+    if([UserSettings getPrintOnOff]==false)
+    {
+        
+    }
+    else
+    {
+        UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"FieldWork"
+                                                         message:@"Do you want to print service report?"
+                                                        delegate:self
+                                               cancelButtonTitle:@"Yes"
+                                               otherButtonTitles:@"No",nil];
+        [alert show];
+        
+    }
+    
+    
+    //  onoffsetting
+    
+    //[self.navigationController popViewControllerAnimated:YES];
+}
+
+- (void)AppointmentSaveFailedWithError:(NSString *)error {
+    [[ActivityIndicator currentIndicator] displayCompleted];
+    UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"FieldWork"
+                                                     message:error
+                                                    delegate:nil
+                                           cancelButtonTitle:@"Ok"
+                                           otherButtonTitles:nil];
+   
+    [alert show];
+}
+
+- (void)PrintFileDownloaded {
+    //[self performSelectorOnMainThread:@selector(printFile) withObject:nil waitUntilDone:NO];
+    [NSThread detachNewThreadSelector:@selector(printFile) toTarget:self withObject:nil];
+    
+    //[self printFile];
+}
+
+- (void)PrintFileDownloadFailWithError:(NSString *)error {
+    [[ActivityIndicator currentIndicator] displayCompleted];
+    UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"FieldWork"
+                                                     message:error
+                                                    delegate:nil
+                                           cancelButtonTitle:@"Ok"
+                                           otherButtonTitles:nil];
+    [alert show];
+}
+
+#pragma mark - UIAlertViewDelegate
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    if (buttonIndex == 0) {
+        [self performSelectorInBackground:@selector(startPrinting) withObject:nil];
+        [alertView dismissWithClickedButtonIndex:0 animated:YES];
+        
+    }else{
+        [self.navigationController popViewControllerAnimated:YES];
+    }
+     [alertView dismissWithClickedButtonIndex:0 animated:YES];
+}
+
+
+- (void)startPrinting {
+    //[[ActivityIndicator currentIndicator] displayActivity:@"Downloading..."];
+    [self.appointment printServiceReportWithDelegate:self];
+}
+
+
+-(void)printFilePrintbtnClicked{
+    NSString *filePath = [_appointment appointmentPDFfile];
+    PrinterHelper *helper = [[PrinterHelper alloc] init];
+    [helper printFile:filePath];
+}
+
+- (void)printFile {
+    //[[ActivityIndicator currentIndicator] displayCompleted];
+    NSString *filePath = [Appointment ServiceReportPath];
+    PrinterHelper *helper = [[PrinterHelper alloc] init];
+    [helper printFile:filePath];
+    
+    [self.navigationController popViewControllerAnimated:YES];
+}
+- (void) InvoiceDataSaveFailedWithError:(NSString*) error{}
+- (void) InvoiceDataSaved{}
+- (void)showPicker:(id)sender{}
+- (void)displayComposerSheet{}
+- (void)launchMailAppOnDevice{}
+- (void) loadMapForIos6:(SVPlacemark*) place{}
+
+@end

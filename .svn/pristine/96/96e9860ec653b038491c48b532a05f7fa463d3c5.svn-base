@@ -1,0 +1,274 @@
+//
+//  Customer.m
+//  FieldWork
+//
+//  Created by Samir Kha on 07/01/2013.
+//  Copyright (c) 2013 __MyCompanyName__. All rights reserved.
+//
+
+#import "Customer.h"
+
+@implementation Customer
+//@synthesize Service_name=_Service_name;
+@synthesize account_number = _account_number;
+@synthesize customer_type = _customer_type;
+@synthesize first_name = _first_name;
+@synthesize last_name = _last_name;
+@synthesize name = _name;
+@synthesize name_prefix = _name_prefix;
+@synthesize phone = _phone;
+@synthesize phone_kind = _phone_kind;
+@synthesize service_city = _service_city;
+@synthesize service_contact = _service_contact;
+@synthesize service_email_kind = _service_email_kind;
+@synthesize service_emails = _service_emails;
+@synthesize service_record_email = _service_record_email;
+@synthesize service_state = _service_state;
+@synthesize service_street = _service_street;
+@synthesize service_street2 = _service_street2;
+@synthesize service_suite = _service_suite;
+@synthesize service_zip = _service_zip;
+
+//billing
+@synthesize billing_city=_billing_city;
+@synthesize  billing_street=_billing_street;
+@synthesize  billing_street2=_billing_street2;
+@synthesize  billing_suite=_billing_suite;
+@synthesize  billing_zip=_billing_zip;
+@synthesize billing_state=_billing_state;
+@synthesize phones = _phones;
+@synthesize Id = _Id;
+@synthesize latitude = _latitude;
+@synthesize longitude = _longitude;
+@synthesize location_type_id = _location_type_id;
+@synthesize customerTrapList = _customerTrapList;
+
++ (Customer *)customerWithDictionary:(NSDictionary *)dict {
+    Customer *cust = [[Customer alloc] init];
+    
+    cust.Id = [[dict objectForKey:@"id"] intValue];
+    cust.account_number = [dict objectForKey:@"account_number"];
+    cust.customer_type = [dict objectForKey:@"customer_type"];
+    if ([dict objectForKey:@"first_name"] != [NSNull null]) {
+        cust.first_name = [dict objectForKey:@"first_name"];
+        cust.first_name = [cust.first_name stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+    }else{
+        cust.first_name = @"";
+    }
+    if ([dict objectForKey:@"last_name"] != [NSNull null]) {
+        cust.last_name = [dict objectForKey:@"last_name"];
+        cust.last_name = [cust.last_name stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+    }else{
+        cust.last_name = @"";
+    }
+    if ([dict objectForKey:@"name"] != [NSNull null]) {
+        cust.name = [dict objectForKey:@"name"];
+        cust.name = [cust.name stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+    }else{
+        cust.name = @"";
+    }
+    
+    
+    if ([dict objectForKey:@"name_prefix"] != [NSNull null] && [[dict objectForKey:@"name_prefix"] length] > 0) {
+        cust.name_prefix = [dict objectForKey:@"name_prefix"];
+    }else{
+        cust.name_prefix = @"";
+    }
+    
+    cust.phone = [dict objectForKey:@"phone"];
+    if ([dict objectForKey:@"phone_kind"] != [NSNull null]){
+        cust.phone_kind = [dict objectForKey:@"phone_kind"];}else{
+            cust.phone_kind = @"";
+        }
+    if ([dict objectForKey:@"service_city"] != [NSNull null]){
+        cust.service_city = [dict objectForKey:@"service_city"];}else{
+            cust.service_city = @"";
+        }
+    
+    if ([dict objectForKey:@"service_contact"] != [NSNull null]){
+        cust.service_contact = [dict objectForKey:@"service_contact"];}else{
+            cust.service_contact = @"";
+        }
+    
+    if ([dict objectForKey:@"service_record_email"] != [NSNull null]){
+        cust.service_record_email = [dict objectForKey:@"service_record_email"];}
+    else{
+        cust.service_record_email = @"";
+    }
+    
+    if ([dict objectForKey:@"service_state"] != [NSNull null]){
+        cust.service_state = [dict objectForKey:@"service_state"];}else{
+            cust.service_state = @"";
+        }
+    
+    if ([dict objectForKey:@"service_street"] != [NSNull null]){
+        cust.service_street = [dict objectForKey:@"service_street"];}else{
+            cust.service_street = @"";
+        }
+    
+    if ([dict objectForKey:@"service_street2"] != [NSNull null]){
+        cust.service_street2 = [dict objectForKey:@"service_street2"];}else{
+            cust.service_street2 = @"";
+        }
+    
+    if ([dict objectForKey:@"service_suite"] != [NSNull null]){
+        cust.service_suite = [dict objectForKey:@"service_suite"];}else{
+            cust.service_suite =@"";
+        }
+    
+    if ([dict objectForKey:@"service_zip"] != [NSNull null]){
+        cust.service_zip = [dict objectForKey:@"service_zip"];}else{
+            cust.service_zip = @"";
+        }
+    
+    
+        // billing
+    if ([dict objectForKey:@"billing_city"] != [NSNull null]) {
+        cust.billing_city = [dict objectForKey:@"billing_city"];}else{
+            cust.billing_city = @"";
+        }
+    
+    
+    if ([dict objectForKey:@"billing_state"] != [NSNull null]) {
+        cust.billing_state = [dict objectForKey:@"billing_state"];}else{
+            cust.billing_state = @"";
+        }
+    
+    if ([dict objectForKey:@"billing_street"] != [NSNull null]) {
+        
+        cust.billing_street = [dict objectForKey:@"billing_street"];}else{
+            cust.billing_street = @"";
+        }
+    
+    if ([dict objectForKey:@"billing_street2"] != [NSNull null]) {
+        
+        cust.billing_street2 = [dict objectForKey:@"billing_street2"];}else{
+            cust.billing_street2 = @"";
+        }
+    
+    if ([dict objectForKey:@"billing_suite"] != [NSNull null]) {
+        cust.billing_suite = [dict objectForKey:@"billing_suite"];}else{
+            cust.billing_suite = @"";
+        }
+    if ([dict objectForKey:@"billing_zip"] != [NSNull null]) {
+        
+        cust.billing_zip = [dict objectForKey:@"billing_zip"];}else{
+            cust.billing_zip = @"";
+        }
+    
+    
+    
+    if ([dict objectForKey:@"location_type_id"] != [NSNull null]) {
+        cust.location_type_id = [[dict objectForKey:@"location_type_id"] intValue];
+    }else{
+        cust.location_type_id = @"";
+    }
+    
+    
+    NSArray *arrPhoneKinds= [dict objectForKey:@"phones_kinds"];
+    NSArray *arrPhones =[dict objectForKey:@"phones"];
+    if (arrPhones.count > 0  && arrPhoneKinds.count > 0) {
+        cust.phones = [[NSMutableDictionary alloc] init];
+        for (int i = 0; i< arrPhones.count; i++) {
+            [cust.phones setValue:[arrPhones objectAtIndex:i] forKey:[arrPhoneKinds objectAtIndex:i]];
+        }
+    }
+    
+    NSArray *arrSEmails = [dict objectForKey:@"service_emails"];
+    NSArray *arrSEmailKinds = [dict objectForKey:@"service_emails_kinds"];
+    cust.service_emails = [[NSMutableDictionary alloc] init];
+    for (int i = 0; i< arrSEmails.count; i++) {
+        [cust.service_emails setValue:[arrSEmails objectAtIndex:i] forKey:[arrSEmailKinds objectAtIndex:i]];
+    }
+    
+    if ([dict objectForKey:@"latitude"] != [NSNull null]) {
+        cust.latitude = [[dict objectForKey:@"latitude"] doubleValue];
+    }
+    
+    if ([dict objectForKey:@"longitude"] != [NSNull null]) {
+        cust.longitude = [[dict objectForKey:@"longitude"] doubleValue];
+    }
+    
+    cust.customerTrapList = [[CustomerTrapList alloc] init];
+    [cust.customerTrapList loadWithDelegate:cust andCustomerId:cust.Id];
+    cust.nameForSorting = [cust.customer_type isEqualToString:@"Commercial"] ? cust.name : cust.last_name;
+    
+    return cust;
+}
+
+- (NSString *)getDisplayName {
+    if ([self.customer_type isEqualToString:@"Commercial"]) {
+        
+    return self.name;
+       
+    }else {
+        NSString *fullname = [NSString stringWithFormat:@"%@ %@ %@", self.name_prefix, self.first_name, self.last_name];
+            //NSLog(@"%@",fullname);
+        return fullname;
+    }
+}
+
+- (NSString*)SortingName
+{
+    return self.nameForSorting;
+    
+//    return [self.customer_type isEqualToString:@"Commercial"] ? self.name : self.last_name;
+    
+//    if ([self.customer_type isEqualToString:@"Commercial"]) {
+//        return self.name;
+//    }else{
+//        return self.last_name;
+//        
+//    }
+
+}
+- (NSString *)getFullAddress {
+    NSMutableArray *aarr = [[NSMutableArray alloc] init];
+    [aarr addObject:self.service_suite];
+    [aarr addObject:self.service_street];
+    [aarr addObject:[NSString stringWithFormat:@"%@%@", self.service_street2, @"\n"]];
+    [aarr addObject:self.service_city];
+    [aarr addObject:self.service_state];
+    [aarr addObject:self.service_zip];
+    //NSString *address = [NSString stringWithFormat:@"%@, %@, %@, %@, %@, %@", self.service_suite, self.service_street, self.service_street2, self.service_city, self.service_state, self.service_zip];
+    return [aarr joinWithDelimeter:@","];
+}
+// billing
+- (NSString *)getBillingFullAddress {
+    NSMutableArray *aarr = [[NSMutableArray alloc] init];
+    [aarr addObject:self.billing_suite];
+    [aarr addObject:self.billing_street];
+    [aarr addObject:[NSString stringWithFormat:@"%@%@", self.billing_street2, @"\n"]];
+    
+    [aarr addObject:self.billing_city];
+    [aarr addObject:self.billing_state];
+    [aarr addObject:self.billing_zip];
+    //NSString *address = [NSString stringWithFormat:@"%@, %@, %@, %@, %@, %@", self.service_suite, self.service_street, self.service_street2, self.service_city, self.service_state, self.service_zip];
+    return [aarr joinWithDelimeter:@","];
+    
+}
+
+
+
+#pragma mark - CustomerTrapListDelegate
+
+- (void)CustoemrTrapListLoaded:(CustomerTrapList *)customerTrapList {
+    if (customerTrapList != nil) {
+        
+        self.customerTrapList = customerTrapList;
+    }
+}
+
+- (void)CustomerTrapListLoadFailedWithError:(NSString *)error {
+    
+}
+
+- (BOOL)isEqual:(id)object {
+    Customer *cust = (Customer*) object;
+    if (self.Id == cust.Id) {
+        return YES;
+    }
+    return NO;
+}
+
+@end

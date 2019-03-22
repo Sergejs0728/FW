@@ -1,0 +1,320 @@
+//
+//  ScheduleViewController.m
+//  FieldWork
+//
+//  Created by Samir Kha on 06/01/2013.
+//  Copyright (c) 2013 __MyCompanyName__. All rights reserved.
+//
+
+#import "ScheduleViewController.h"
+
+@implementation ScheduleViewController
+@synthesize tblAppList;
+@synthesize selecteddate = _selecteddate;
+
++ (ScheduleViewController *)init {
+     ScheduleViewController * schedule;
+    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
+        schedule = [[ScheduleViewController alloc] initWithNibName:@"ScheduleViewController_IPad" bundle:nil];        
+    }else{
+        schedule = [[ScheduleViewController alloc] initWithNibName:@"ScheduleViewController" bundle:nil];
+     }
+    
+      schedule.title = @"Schedule";
+    return schedule;
+    
+
+}
+
+
+#pragma mark - View lifecycle
+
+-(void)viewWillAppear:(BOOL)animated{
+    
+
+    
+    dateView.backgroundColor = [UIColor colorWithRed:190.0/255.0 green:195.0/255.0 blue:199.0/255.0 alpha:1.0];
+    appointmentView.backgroundColor = [UIColor colorWithRed:236.0/255.0 green:240.0/255.0 blue:241.0/255.0 alpha:1.0];
+
+}
+- (void)viewDidLoad
+{   //self.title = @"Schedule";
+   
+
+    [super viewDidLoad];
+    
+         
+    UIBarButtonItem *rightItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh target:self action:@selector(refreshAppointments)];
+    self.navigationItem.rightBarButtonItem = rightItem;
+
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(reachabilityChanged:)
+                                                 name:kReachabilityChangedNotification
+                                               object:nil];
+        
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reloadAppointment) name:@"StatusChangedNotification" object:nil];
+    
+    self.selecteddate = [NSDate date];
+
+    [[AppointmentList Instance] loadWithDelegate:self];
+  
+    if ([[AppointmentList Instance] loadedCount] <= 0) 
+    {
+        [[ActivityIndicator currentIndicator] displayActivity:@"Please wait..."];
+        _isLoading = YES;
+    }
+    
+    dateView.backgroundColor = [UIColor colorWithRed:132.0/255.0 green:153.0/255.0 blue:181.0/255.0 alpha:1.0];
+    appointmentView.backgroundColor = [UIColor colorWithRed:218.0/255.0 green:224.0/255.0 blue:228.0/255.0 alpha:1.0];
+    
+    if ([self.selecteddate isSameDayAs:[NSDate date]]) 
+    {
+        previousBtn.hidden = YES;
+    }
+    else
+    {
+        previousBtn.hidden = NO;
+        
+    }
+    
+}
+
+- (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+    if (![[ActivityIndicator currentIndicator] ishidden]) {
+        [[ActivityIndicator currentIndicator] displayCompleted];
+    }
+        //[self.view setAlpha:0];
+}
+
+- (void)viewDidUnload
+{
+    [super viewDidUnload];
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    // Release any retained subviews of the main view.
+    // e.g. self.myOutlet = nil;
+}
+
+- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
+{
+    // Return YES for supported orientations
+    return (interfaceOrientation == UIInterfaceOrientationPortrait);
+}
+
+-(void)reachabilityChanged:(NSNotification*)note
+{  UIBarButtonItem *rightItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh target:self action:@selector(refreshAppointments)];
+    
+    Reachability * reach = [note object];
+    
+    if([reach isReachable])
+    {  
+        self.navigationItem.rightBarButtonItem = rightItem;
+    }
+    else
+    {  
+        self.navigationItem.rightBarButtonItem.enabled=NO;
+    }
+}
+- (void)reloadAppointment {
+    [[AppointmentList Instance] loadWithDelegate:self];
+    
+    if ([[AppointmentList Instance] loadedCount] <= 0) 
+    {
+        [[ActivityIndicator currentIndicator] displayActivity:@"Please wait..."];
+        _isLoading = YES;
+    }
+}
+
+
+- (void) refreshAppointments{
+    [[AppDelegate appDelegate] loadAllLists];
+    [[AppointmentList Instance] refreshAppointmentsAutomatic:NO];
+    [[AppointmentList Instance] loadWithDelegate:self];
+    [[ActivityIndicator currentIndicator] displayActivity:@"Please wait..."];
+}
+
+- (void)nextClicked:(id)sender {
+    
+    previousBtn.hidden = NO;
+    
+//    if (![[AppointmentList Instance] hasNextRecords:self.selecteddate]) {
+//        return;
+//    }
+    
+    
+    int daysToAdd = 1;
+    self.selecteddate = [self.selecteddate dateByAddingTimeInterval:60*60*24*daysToAdd];
+    [self loadTable];
+    NSDate *checkDate = [self.selecteddate dateByAddingTimeInterval:60*60*24*-4];
+    if ([checkDate isSameDayAs:[NSDate date]]) 
+    {
+        nextBtn.hidden = YES;
+    }
+}
+
+- (void)previousClicked:(id)sender {
+    
+    int daysToAdd = -1;
+    self.selecteddate = [self.selecteddate dateByAddingTimeInterval:60*60*24*daysToAdd];
+    if ([self.selecteddate isSameDayAs:[NSDate date]])
+    {
+        previousBtn.hidden = YES;
+    }
+    
+    [self loadTable];
+    nextBtn .hidden = NO;
+}
+
+- (void)showSelectedDate {
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+   // [dateFormatter setDateFormat:@"EEE dd/MM"];
+    [dateFormatter setDateFormat:@"EEE MM/dd"];
+    NSString *seldate = [dateFormatter stringFromDate:self.selecteddate];
+    lblSelectedDate.text = seldate;
+}
+
+- (void)loadTable {
+    NSLog(@"Loading APPT LIST Table");
+    NSMutableArray *tmp = [[AppointmentList Instance] getAppointmentByDate:self.selecteddate];
+    appointmentArray = [[NSMutableArray alloc] init];
+    appointmentArray = tmp;
+    [self showSelectedDate];
+    // appointmentArray = [[NSMutableArray alloc] init];
+    [tblAppList reloadData];
+    _lblTotalApp.text = [NSString stringWithFormat:@"%d",appointmentArray.count];
+    [_lblTotalApp setTextColor:[UIColor colorWithRed:92.0/255.0 green:118.0/255.0 blue:153.0/255.0 alpha:1.0]];
+    float total = 0;
+    for (Appointment *ap in appointmentArray) {
+        total = total + ap.price;
+    }
+    _lblTotalAmount.text = [NSString stringWithFormat:@"$%.02f", total];
+    [_lblTotalAmount setTextColor:[UIColor colorWithRed:92.0/255.0 green:118.0/255.0 blue:153.0/255.0 alpha:1.0]];
+    
+}
+
+#pragma AppointmentListDelegate
+
+- (void)AppointmentListLoaded {
+    
+     NSLog(@"Appointment Load........");
+    
+    
+    _isLoading = NO;
+    [self loadTable];
+    [[ActivityIndicator currentIndicator] displayCompleted];
+    
+}
+
+- (void)AppointmentListLoadFailed:(NSString *)error {
+    
+  /*  UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"Fieldwork"
+                                                     message:error
+                                                    delegate:nil
+                                           cancelButtonTitle:@"Ok"
+                                           otherButtonTitles:nil];
+    [alert show];*/
+    [[ActivityIndicator currentIndicator] displayCompleted];
+}
+
+#pragma UITableViewDelegate
+
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
+{
+    return 1;
+}
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+{
+    if([appointmentArray count] == 0)
+    {
+        return 1;
+    }
+    else
+    {
+        return appointmentArray.count;
+        
+    }
+    
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
+    
+    if([appointmentArray count] == 0 && !_isLoading)
+    {
+        static NSString *CellIdentifier = @"Cell";
+        
+        UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+        if (cell == nil) 
+        {
+         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
+           
+          
+        }
+        cell.textLabel.textAlignment = UITextAlignmentCenter;
+      
+        cell.textLabel.text = @"No appointments scheduled";
+        [[cell textLabel] setFont:[UIFont systemFontOfSize:14.0]];
+        cell.selectionStyle = UITableViewCellSelectionStyleNone;
+        
+        return cell;
+    }
+    else 
+    {
+        static NSString *CellTableIdentifier = @"CellTableIdentifier";
+        
+        AppointmentCell *cell = (AppointmentCell*)[tableView dequeueReusableCellWithIdentifier:CellTableIdentifier];
+        if (cell == nil) 
+        {  
+             if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) 
+             {
+                  NSArray *topLevelObject = [[NSBundle mainBundle] loadNibNamed:@"AppointmentCell_IPad" owner:self options:nil]; 
+                 for(id appcell in topLevelObject)
+                 {
+                     if([appcell isKindOfClass:[UITableViewCell class]])
+                     {
+                         cell = (AppointmentCell*) appcell;
+                     }
+                 }
+             }
+             else
+             {
+                 NSArray *topLevelObject = [[NSBundle mainBundle] loadNibNamed:@"AppointmentCell" owner:self options:nil];
+                 for(id appcell in topLevelObject)
+                 {
+                     if([appcell isKindOfClass:[UITableViewCell class]])
+                     {
+                         cell = (AppointmentCell*) appcell;
+                     }
+                 }
+             }
+            
+        }
+         
+        //NSLog(@"current date : %@",[NSDate date]);
+        NSLog(@"%@",[appointmentArray objectAtIndex:indexPath.row]); 
+        Appointment *app = [appointmentArray objectAtIndex:indexPath.row];
+         
+        [cell setAppointment:app];
+        return cell;
+    }
+
+}
+
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
+    return 60;
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if (appointmentArray.count <= 0) {
+        return;
+    }
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
+    Appointment *app = [appointmentArray objectAtIndex:indexPath.row];
+    AppointmentDetailController *controller = [AppointmentDetailController initWithAppointment:app];
+    [self.navigationController pushViewController:controller animated:YES];
+}
+
+@end

@@ -1,0 +1,30 @@
+//
+//  InspectionPestRecord.h
+//  FieldWork
+//
+//  Created by Samir Khatri on 2/20/13.
+//
+//
+
+#import <Foundation/Foundation.h>
+#import "Pest.h"
+#import "PestList.h"
+@interface InspectionPestRecord : NSObject
+{
+    int _inspectionPestId;
+    int _pest_type_id;
+    int _count;
+    
+    Pest *_pest;
+}
+
+@property (nonatomic, assign) int inspectionPestId;
+@property (nonatomic, assign) int pest_type_id;
+@property (nonatomic, assign) int count;
+
+@property (nonatomic, readwrite, retain) Pest *pest;
+
+
++ (InspectionPestRecord*) initWithDictionary:(NSDictionary*) dict;
+
+@end

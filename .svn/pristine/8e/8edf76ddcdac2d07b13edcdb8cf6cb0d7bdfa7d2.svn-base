@@ -1,0 +1,698 @@
+//
+//  AppointmentInformation.m
+//  FieldWork
+//
+//  Created by Samir Kha on 19/01/2013.
+//  Copyright (c) 2013 __MyCompanyName__. All rights reserved.
+//
+
+#import "AppointmentInformation.h"
+
+
+@implementation AppointmentInformation
+@synthesize instructionlbl=_instructionlbl;
+@synthesize timerPicker=_timerPicker;
+
++ (AppointmentInformation *)viewControllerWithAppointment:(Appointment *)app
+{
+      AppointmentInformation *appoint;
+    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
+        appoint = [[AppointmentInformation alloc] initWithNibName:@"AppointmentInformation_IPad" bundle:nil];        
+    }else{
+        appoint = [[AppointmentInformation alloc] initWithNibName:@"AppointmentInformation" bundle:nil];
+        
+    }
+    
+    appoint.Appointment = app;
+    return appoint;
+}
+
+- (void)didReceiveMemoryWarning
+{
+    // Releases the view if it doesn't have a superview.
+    [super didReceiveMemoryWarning];
+    
+    // Release any cached data, images, etc that aren't in use.
+}
+
+- (void)viewDidLoad
+{
+    /*_instructionlbl.numberOfLines = 0;
+    _instructionlbl.lineBreakMode = UILineBreakModeWordWrap;
+   // NSString * instruction = self.Appointment.instruction;
+    
+    
+
+    if (instruction.length <= 0) {
+       _instructionlbl.text= @"No Instructions.";
+    }else
+    {
+        
+         _instructionlbl.text = instruction;
+        
+    }
+    
+       
+    NSLog(@"%u",instruction.length);
+    
+    
+    [_instructionlbl setNumberOfLines:0];
+    
+        CGSize labelsize=[_instructionlbl.text sizeWithFont:_instructionlbl.font constrainedToSize:CGSizeMake(217, 1000.0) lineBreakMode:UILineBreakModeWordWrap];
+     y=0;
+    
+    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
+        _instructionlbl.frame=CGRectMake(133,6, 590, labelsize.height);//6
+    }else{
+       _instructionlbl.frame=CGRectMake(90,6,217, labelsize.height);//90,6,217
+        
+    }
+
+   
+      y+=labelsize.height;
+   
+   
+   _instructionlbl.textColor= [UIColor grayColor];
+*/
+     
+    self.title = @"Payment Info";
+    _isChecked = NO;
+    
+      
+    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) 
+    {
+        CGRect IPadpickerFrame = CGRectMake(0,84, 768, 216);
+        IPadtimerPicker = [[UIDatePicker alloc] initWithFrame:IPadpickerFrame];
+        [IPadtimerPicker setDatePickerMode:UIDatePickerModeTime];
+        IPadtimerPicker.date = [NSDate dateWithTimeIntervalSinceNow:0];
+
+        timePickerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0,768,309)];
+        
+        
+        [timePickerView addSubview:IPadtimerPicker];
+        
+        // date and time
+        
+        _IPaddatePicker = [[UIDatePicker alloc] initWithFrame:CGRectMake(0,84, 768, 216)];
+        _IPaddatePicker.datePickerMode = UIDatePickerModeDate;
+               //_datePicker.date = [NSDate date];
+        DateAndTimeView = [[UIView alloc] initWithFrame:CGRectMake(0, 0,768,309)];
+        [DateAndTimeView addSubview:_IPaddatePicker]; 
+
+    }
+    else
+    {
+        CGRect pickerFrame = CGRectMake(0,0,200,216);
+        _timerPicker = [[UIDatePicker alloc] initWithFrame:pickerFrame];
+        [_timerPicker setDatePickerMode:UIDatePickerModeTime];
+        _timerPicker.date = [NSDate dateWithTimeIntervalSinceNow:0];
+        [_timerPicker setBackgroundColor:[UIColor redColor]];
+             
+          timePickerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 200, 216)];
+        [timePickerView addSubview:_timerPicker];
+        [asPickerContainer addSubview:timePickerView]; 
+        
+        // date and time
+        
+        _datePicker = [[UIDatePicker alloc] initWithFrame:CGRectMake(0, 0, 325, 300)];
+        _datePicker.datePickerMode = UIDatePickerModeDate;
+        //_datePicker.date = [NSDate date];
+        DateAndTimeView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 200, 216)];
+        [DateAndTimeView addSubview:_datePicker]; 
+        
+
+    }
+      
+    selectedMethod = self.Appointment.payment_info.payment_method;
+    if (selectedMethod != nil && [selectedMethod isEqualToString:@"check"]) {
+        _isChecked = YES;
+    }
+    [mainTable reloadData];
+    [self resizeControls];
+    [super viewDidLoad];
+    
+}
+
+-(float) calculateHeightOfTextFromWidth:(NSString*)text   font:(UIFont*)withFont  width:(float)width mode:(UILineBreakMode)lineBreakMode
+{
+    
+    CGSize suggestedSize = [text sizeWithFont:withFont constrainedToSize:CGSizeMake(width,26) lineBreakMode:lineBreakMode];
+    
+    return suggestedSize.height;
+}
+
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    [self resizeControls];
+}
+
+- (void)resizeControls {
+     
+    float labelEnd= _instructionlbl.frame.origin.y+_instructionlbl.frame.size.height;
+    tableExpander.frame = CGRectMake(tableExpander.frame.origin.x, labelEnd + 10, tableExpander.frame.size.width , tableExpander.frame.size.height);
+    //
+
+    
+    [tableExpander expand];
+    int topmargin = 20;
+    _btnSave.frame = CGRectMake(_btnSave.frame.origin.x, tableExpander.frame.size.height +tableExpander.frame.origin.y+topmargin, _btnSave.frame.size.width, _btnSave.frame.size.height);//10
+    
+    scrollView.contentSize = CGSizeMake(scrollView.contentSize.width, tableExpander.frame.origin.y + tableExpander.frame.size.height + 20 + _btnSave.frame.size.height+topmargin);//20
+}
+
+- (int)checkedRowCall {
+    for (int i =0; i < 3; i++) {
+        NSIndexPath *path = [NSIndexPath indexPathForRow:i inSection:1];
+        UITableViewCell *cell = [mainTable cellForRowAtIndexPath:path];
+        if (cell.accessoryType == UITableViewCellAccessoryCheckmark) {
+            return i;
+        }
+    }
+    return -1;
+}
+
+- (void)saveClicked:(id)sender {
+         
+    int checked = [self checkedRowCall];
+    
+    if (checked >= 0 ) {
+        self.Appointment.invoice_paid = YES;
+        if (checked == 1) {
+            CustomTableCell *checkNumber = (CustomTableCell*)[mainTable cellForRowAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:2]];
+            self.Appointment.payment_info.check_number = checkNumber.txt.text;
+        }else{
+            self.Appointment.payment_info.check_number = @"";
+        }
+    }else{
+        self.Appointment.invoice_paid = NO;
+    }
+    
+    for (int i = 0; i < 3; i++) {
+        UITableViewCell *paymentType = [mainTable cellForRowAtIndexPath:[NSIndexPath indexPathForRow:i inSection:1]];
+        if (paymentType.accessoryType == UITableViewCellAccessoryCheckmark) {
+            if ([paymentType.textLabel.text isEqualToString: @"Credit Card"])
+            {
+                self.Appointment.payment_info.payment_method = @"card";
+            } else if([paymentType.textLabel.text isEqualToString: @"Check"])
+            {
+                self.Appointment.payment_info.payment_method = @"check";
+            }
+            else if([paymentType.textLabel.text isEqualToString: @"Cash"])
+            {
+                self.Appointment.payment_info.payment_method = @"cash";
+            }
+            // self.Appointment.invoice_payment_method = paymentType.textLabel.text;
+            break;
+        }
+    }
+    CustomTableCell *amount = (CustomTableCell*)[mainTable cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:2]];
+    self.Appointment.payment_info.amount = [amount.txt.text floatValue];
+    
+    CustomTableCell *price = (CustomTableCell*)[mainTable cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
+    self.Appointment.price = [price.txt.text floatValue];
+    self.Appointment.payment_info.create_from_mobile=YES;
+
+    //[[ActivityIndicator currentIndicator] displayActivity:@"Please Wait..."];
+    
+//    [self.Appointment saveInvoiceData:self];
+
+     //[self.Appointment savePaymentData:self];
+    
+//    
+    [self.navigationController popViewControllerAnimated:YES];
+    
+    
+    
+    
+   /*CustomTableCell *cell1 = (CustomTableCell*)[mainTable cellForRowAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:0]];
+    
+     CustomTableCell *cell2 = (CustomTableCell*)[mainTable cellForRowAtIndexPath:[NSIndexPath indexPathForRow:2 inSection:0]];
+    
+if (cell1.txt.text && cell2.txt.text) {
+         
+        int checked = [self checkedRow];
+        if (checked >= 0 ) {
+            self.Appointment.invoice_paid = YES;
+            if (checked == 1) {
+                CustomTableCell *checkNumber = (CustomTableCell*)[mainTable cellForRowAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:2]];
+                self.Appointment.invoice_check_number = checkNumber.txt.text;
+            }else{
+                self.Appointment.invoice_check_number = @"";
+            }
+        }else{
+            self.Appointment.invoice_paid = NO;
+        }
+        
+        for (int i = 0; i < 3; i++) {
+            UITableViewCell *paymentType = [mainTable cellForRowAtIndexPath:[NSIndexPath indexPathForRow:i inSection:1]];
+            if (paymentType.accessoryType == UITableViewCellAccessoryCheckmark) {
+                if ([paymentType.textLabel.text isEqualToString: @"Credit Card"])
+                {
+                    self.Appointment.invoice_payment_method = @"card";
+                } else if([paymentType.textLabel.text isEqualToString: @"Check"])
+                {
+                    self.Appointment.invoice_payment_method = @"check";
+                }
+                else if([paymentType.textLabel.text isEqualToString: @"Cash"])
+                {
+                    self.Appointment.invoice_payment_method = @"cash";
+                }
+                // self.Appointment.invoice_payment_method = paymentType.textLabel.text;
+                break;
+            }
+        }
+        CustomTableCell *amount = (CustomTableCell*)[mainTable cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:2]];
+        self.Appointment.price = [amount.txt.text floatValue];
+        //  CustomTableCell *cell = (CustomTableCell*)[mainTable cellForRowAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:0]];
+        self.Appointment.started_at_time = cell1.txt.text;
+       // cell = (CustomTableCell*)[mainTable cellForRowAtIndexPath:[NSIndexPath indexPathForRow:2 inSection:0]];
+        self.Appointment.finished_at_time = cell2.txt.text;
+        [[ActivityIndicator currentIndicator] displayActivity:@"Please Wait..."];
+        [self.Appointment saveInvoiceData:self];
+    }
+    
+    else if (!(cell1.txt.text))
+    {
+        UIAlertView * alrt = [[UIAlertView alloc]initWithTitle:@"FieldWork" message:@"Started at is required" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil, nil];
+        [alrt show];
+    }else if(!(cell2.txt.text))
+    {
+UIAlertView * alrts = [[UIAlertView alloc]initWithTitle:@"FieldWork" message:@"Finished at is required" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil, nil];
+        [alrts show];
+    }
+  */  
+   
+}
+
+
+- (void)clickOnStartedAt{
+    [self loadPickerWithView:timePickerView withTag:1];
+}
+
+- (void)clickOnFinishedAt {
+    [self loadPickerWithView:timePickerView withTag:2];
+}
+-(void)clickOnDateAndTime
+{
+    [self loadPickerWithView:DateAndTimeView withTag:0]; 
+}
+- (void)loadPickerWithView:(UIView *)v withTag:(int)tag {
+       
+    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) 
+    {    
+        UIViewController* popoverContent = [[UIViewController alloc]init];
+        
+        
+        popoverContent.view = [[UIView alloc]initWithFrame:CGRectMake(0.0, 0.0, 768.0, 309.0)];
+        [popoverContent.view addSubview:v];
+        
+        popoverContent.contentSizeForViewInPopover = CGSizeMake(768,309);//768,216
+        popoverviewController = [[UIPopoverController alloc]
+                                 initWithContentViewController:popoverContent];
+        
+        
+// Done Button  
+        
+        UIButton *Done = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+        [Done addTarget:self 
+                 action:@selector(done:)
+       forControlEvents:UIControlEventTouchUpInside];
+        Done.tag = tag;
+        [Done setTitle:@" Done " forState:UIControlStateNormal];
+        [Done setTitle:@" Done " forState:UIControlStateHighlighted];
+        Done.frame = CGRectMake(296.0, 8.0, 177.0, 30.0);
+        
+        [popoverContent.view addSubview:Done];
+        
+//Cancel Button
+        
+        UIButton *btnCencel = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+        [btnCencel addTarget:self 
+                      action:@selector(cancel:)
+            forControlEvents:UIControlEventTouchUpInside];
+        [btnCencel setTitle:@" Cancel" forState:UIControlStateNormal];
+        [btnCencel setTitle:@" Cancel" forState:UIControlStateHighlighted];
+        btnCencel.frame = CGRectMake(296.0, 46.0, 177.0, 30.0);
+        [popoverContent.view addSubview:btnCencel];
+        
+        
+        [popoverviewController  presentPopoverFromRect:CGRectMake(0,667,900, 216) 
+                                                inView:self.view permittedArrowDirections:0 animated:YES];
+        
+    }
+    else
+    {
+        asPickerContainer = [[UIActionSheet alloc] initWithTitle:@"" delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:@"Done",nil];
+    asPickerContainer.actionSheetStyle=UIActionSheetStyleBlackOpaque;
+//    for (id v in [asPickerContainer subviews]) {
+//        UIButton *btn=[U]
+//    }
+        CGRect viewFarme = CGRectMake(0,150, 320, 165);
+    [v setBackgroundColor:[UIColor redColor]];
+        [v setFrame:viewFarme];
+        asPickerContainer.tag = tag;
+        [asPickerContainer addSubview:v];
+        [asPickerContainer showInView:self.navigationController.view];        
+        [asPickerContainer setBounds:CGRectMake(0,0,320,550)];
+        [self.view endEditing:YES];
+          
+    }
+    
+ }
+//- (void)willPresentActionSheet:(UIActionSheet *)actionSheet {
+//    actionSheet.backgroundColor = [UIColor whiteColor];
+//    for (UIView *subview in actionSheet.subviews) {
+//        subview.backgroundColor = [UIColor whiteColor];
+//    }
+//}
+-(IBAction)done:(id)sender
+{ 
+    //[popoverviewController dismissPopoverAnimated:YES];
+    CustomTableCell *cell = (CustomTableCell*)[mainTable cellForRowAtIndexPath:[NSIndexPath indexPathForRow:[sender tag] inSection:0]];
+    if (cell) {
+        NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+        [formatter setDateFormat:@"hh:mm a"];
+        cell.txt.text =  [NSString stringWithFormat:@"%@",[formatter stringFromDate:IPadtimerPicker.date]];
+        if ([sender tag] == 1) {
+            self.Appointment.started_at_time = cell.txt.text;
+        }
+        if ([sender tag] == 2) {
+            self.Appointment.finished_at_time = cell.txt.text;
+        }
+        if ([sender tag] == 0) {
+            NSDateFormatter *df = [[NSDateFormatter alloc] init];
+            df.dateStyle = NSDateFormatterNoStyle;
+            
+            NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+            [formatter setDateFormat:@"MM-dd-yyyy"];
+            NSString *dateformat = [formatter stringFromDate:_IPaddatePicker.date];
+            
+            [formatter setDateFormat:@"HH:mm:ss"];
+            NSString *timeformat = [formatter stringFromDate: self.Appointment.starts_at];
+            
+            NSString* dateAndTimeFormat = [NSString stringWithFormat:@"%@ %@",dateformat,timeformat]; 
+            
+            [formatter setDateFormat:@"MM-dd-yyyy HH:mm:ss"];
+            self.Appointment.starts_at = [formatter dateFromString:dateAndTimeFormat];
+            [formatter setDateFormat:@"yyyy-MM-dd"];
+            cell.txt.text =  [NSString stringWithFormat:@"%@",[formatter stringFromDate:self.Appointment.starts_at]];
+        }
+    }
+  
+
+    [timePickerView removeFromSuperview];
+    [popoverviewController dismissPopoverAnimated:YES];
+}
+-(IBAction)cancel:(id)sender{
+    [popoverviewController dismissPopoverAnimated:YES];
+}
+
+
+- (void)pickerDoneClicked:(int)tag {
+    
+}
+
+- (void)actionSheet:(UIActionSheet *)actionSheet 
+clickedButtonAtIndex:(NSInteger)buttonIndex {
+    
+	switch (buttonIndex) 
+    {
+		case 0:
+		{
+            CustomTableCell *cell = (CustomTableCell*)[mainTable cellForRowAtIndexPath:[NSIndexPath indexPathForRow:actionSheet.tag inSection:0]];
+            
+            if (cell) {
+                NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+                [formatter setDateFormat:@"hh:mm a"];
+                cell.txt.text =  [NSString stringWithFormat:@"%@",[formatter stringFromDate:_timerPicker.date]];
+                if (actionSheet.tag == 1) {
+                    self.Appointment.started_at_time = cell.txt.text;
+                }
+                if (actionSheet.tag == 2) {
+                    self.Appointment.finished_at_time = cell.txt.text;
+                }
+                if (actionSheet.tag == 0) {
+                    NSDateFormatter *df = [[NSDateFormatter alloc] init];
+                    df.dateStyle = NSDateFormatterNoStyle;
+                    
+                    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+                    [formatter setDateFormat:@"MM-dd-yyyy"];
+                    NSString *dateformat = [formatter stringFromDate:_datePicker.date];
+                    
+                    [formatter setDateFormat:@"HH:mm:ss"];
+                    NSString *timeformat = [formatter stringFromDate: self.Appointment.starts_at];
+                    
+                    //NSString *dateAndTimeFormat = [dateformat stringByAppendingString:                                             timeformat];
+                    // NSString * dateAndTimeFormat=[dateAndTimeFormat stringByAppendingFormat:@"%@ %@",dateformat,timeformat];
+                    
+                    
+                    NSString* dateAndTimeFormat = [NSString stringWithFormat:@"%@ %@",dateformat,timeformat]; 
+                    
+                    [formatter setDateFormat:@"MM-dd-yyyy HH:mm:ss"];
+                    self.Appointment.starts_at = [formatter dateFromString:dateAndTimeFormat];
+                    [formatter setDateFormat:@"yyyy-MM-dd"];
+                    cell.txt.text =  [NSString stringWithFormat:@"%@",[formatter stringFromDate:self.Appointment.starts_at]];
+                }
+            }
+            
+        }
+	}
+}
+
+- (void)viewDidUnload
+{
+    [super viewDidUnload];
+}
+
+
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
+{
+    return 3;
+}
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+{
+    // Return the number of rows in the section.
+    if(section == 0)
+    {
+        return 1;
+    }
+    else if(section==1){
+        return 3;
+    }else
+    {
+         return _isChecked ? 2 : 1;
+    }
+    
+}
+
+- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
+{
+	if(section == 1)
+    {
+        return @"Payment Method";
+    }
+    else
+        
+    {
+		return nil;
+
+	}
+        
+}
+
+
+- (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section {
+    return 10;
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
+    if(section == 1)
+    {
+		return 20;
+	}
+    else
+        
+    {
+		return 10;
+	}
+
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
+    return 44;
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if (indexPath.section==0) {
+        static NSString *CellIdentifier = @"CellServicePrice";
+        CustomTableCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+        if (cell == nil)
+        {
+            NSArray *topLevelObject = [[NSBundle mainBundle] loadNibNamed:@"CustomLableTextCell" owner:self options:nil];
+            
+            for(id currentObject in topLevelObject)
+            {
+                if([currentObject isKindOfClass:[UITableViewCell class]])
+                {
+                    cell = (CustomTableCell*) currentObject;
+                }
+            }
+        }
+        if (indexPath.row == 0) {
+            cell.lbl.text = @"Service Price";
+            cell.txt.text = [NSString stringWithFormat:@"%.02f",self.Appointment.price];
+        }
+        cell.txt.keyboardType = UIKeyboardTypeNumbersAndPunctuation;
+        
+        return cell;
+    }else if(indexPath.section == 1){
+        
+        static NSString *CellIdentifier = @"PaidCell";
+        
+        UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+        if (cell == nil) 
+        {
+            cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
+            
+            cell.selectionStyle = UITableViewCellSelectionStyleNone;
+        }
+        
+        cell.accessoryType = UITableViewCellAccessoryNone;
+        if(indexPath.row == 0)
+        {
+            cell.textLabel.text = @"Cash";
+            if ([selectedMethod isEqualToString:@"cash"]) {
+                cell.accessoryType = UITableViewCellAccessoryCheckmark;
+            }
+            
+        }
+        else if(indexPath.row == 1)
+        {
+            cell.textLabel.text = @"Check";
+            if ([selectedMethod isEqualToString:@"check"]) {
+                cell.accessoryType = UITableViewCellAccessoryCheckmark;}
+        }
+        else if(indexPath.row == 2)
+        {
+            cell.textLabel.text = @"Credit Card";
+            if ([selectedMethod isEqualToString:@"card"]) {
+                cell.accessoryType = UITableViewCellAccessoryCheckmark;}
+        }
+        
+        
+        
+        
+        return cell;
+    }else {
+        // section == 2
+        static NSString *CellIdentifier = @"CellAmountCheck";
+        CustomTableCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+        if (cell == nil) 
+        {
+            NSArray *topLevelObject = [[NSBundle mainBundle] loadNibNamed:@"CustomLableTextCell" owner:self options:nil];
+            
+            for(id currentObject in topLevelObject)
+            {
+                if([currentObject isKindOfClass:[UITableViewCell class]])
+                {
+                    cell = (CustomTableCell*) currentObject;
+                }
+            }
+        }
+        if (indexPath.row == 0) {
+            cell.lbl.text = @"Amount";
+            cell.txt.text = [NSString stringWithFormat:@"%.02f",self.Appointment.payment_info.amount];
+        }else{
+            cell.lbl.text = @"Check #";
+            cell.txt.text = self.Appointment.payment_info.check_number;
+        }
+        cell.txt.keyboardType = UIKeyboardTypeNumbersAndPunctuation;
+        
+        return cell;
+    }
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
+    
+    if(indexPath.section == 1){
+        
+        if (indexPath.section == 1 ) {
+            for (int i = 0; i < 3; i++) {
+                NSIndexPath *idx = [NSIndexPath indexPathForRow:i inSection:1];
+                
+                UITableViewCell *cell = [tableView cellForRowAtIndexPath:idx];
+                cell.accessoryType = UITableViewCellAccessoryNone;
+            }
+            
+            UITableViewCell *cell1 = [tableView cellForRowAtIndexPath:indexPath];
+            
+            cell1.accessoryType = UITableViewCellAccessoryCheckmark;
+            //            selectedMethod = cell1.textLabel.text;
+            if ([cell1.textLabel.text isEqualToString: @"Credit Card"])
+            {
+                selectedMethod = @"card";
+                
+            } else if([cell1.textLabel.text isEqualToString: @"Check"])
+            {
+                selectedMethod = @"check";
+            }
+            else if([cell1.textLabel.text isEqualToString: @"Cash"])
+            {
+                selectedMethod = @"cash";
+            }
+            
+            if (indexPath.row == 1) {
+                _isChecked = YES;
+            }else{
+                _isChecked = NO;                
+            }
+            
+            [mainTable reloadData];
+            [self resizeControls];
+        } 
+    }
+}
+
+#pragma mark - AppointmentDelegate
+
+- (void)InvoiceDataSaved {
+    [[ActivityIndicator currentIndicator] displayCompleted];
+    [self.navigationController popViewControllerAnimated:YES];
+}
+
+- (void)InvoiceDataSaveFailedWithError:(NSString *)error {
+    [[ActivityIndicator currentIndicator] displayCompletedWithError:@""];
+    UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"FieldWork"
+                                                     message:error
+                                                    delegate:nil
+                                           cancelButtonTitle:@"Ok"
+                                           otherButtonTitles:nil];
+    [alert show];
+}
+- (NSInteger)pickerView:(UIPickerView *)pickerView numberOfRowsInComponent:(NSInteger)component{return 0;}
+- (NSInteger)numberOfComponentsInPickerView:(UIPickerView *)pickerView{return 0;}
+
+- (void) AppointmentSavedSuccessfully{}
+- (void) PrintFileDownloadFailWithError:(NSString*) error{}
+- (void) PrintFileDownloaded{}
+- (void) AppointmentSaveFailedWithError:(NSString*) error{}
+
+- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
+{
+    // Return YES for supported orientations
+    return (interfaceOrientation == UIInterfaceOrientationPortrait);
+}
+
+
+#pragma mark - UIPickerViewDelegate , UIPickerViewDataSource
+
+
+
+
+@end

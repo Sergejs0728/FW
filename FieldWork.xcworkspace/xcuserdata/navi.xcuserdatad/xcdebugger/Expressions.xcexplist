@@ -1,0 +1,328 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<VariablesViewState
+   version = "1.0">
+   <ContextStates>
+      <ContextState
+         contextName = "-[NewAppointMentsDetailViewController createcellWithtableView:andIndexPath:]:NewAppointMentsDetailViewController.m">
+         <PersistentStrings>
+            <PersistentString
+               value = "self.Appointment.balance_forward">
+            </PersistentString>
+            <PersistentString
+               value = "indexpath.row">
+            </PersistentString>
+            <PersistentString
+               value = "self.Appointment">
+            </PersistentString>
+            <PersistentString
+               value = "[self.Appointment.balance_forward floatValue]">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "__42-[MaterialListController loadMaterialList]_block_invoke:MaterialListController.m">
+         <PersistentStrings>
+            <PersistentString
+               value = "appointmentList">
+            </PersistentString>
+            <PersistentString
+               value = "mu.material_id">
+            </PersistentString>
+            <PersistentString
+               value = "[UnitInspection getFavoriteunitInspection:appointmentArray deleted:NO].count">
+            </PersistentString>
+            <PersistentString
+               value = "[UnitInspection getFavoriteunitInspection:appointmentArray deleted:NO][0];">
+            </PersistentString>
+            <PersistentString
+               value = "_inspectionRecord[0]">
+            </PersistentString>
+            <PersistentString
+               value = "materialArray">
+            </PersistentString>
+            <PersistentString
+               value = "_selectedMaterialUsage.count">
+            </PersistentString>
+            <PersistentString
+               value = "mu.material_id == materialArray">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "-[LineItemFooterCell updateData:]:LineItemFooterCell.m">
+         <PersistentStrings>
+            <PersistentString
+               value = "[Utils getCurrencyStringFromAmount:app.tax_amountValue]">
+            </PersistentString>
+            <PersistentString
+               value = "[app getFinalTotalDue]">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "-[NewAppointMentsDetailViewController appointmentValidationWithCompletion:]:NewAppointMentsDetailViewController.m">
+         <PersistentStrings>
+            <PersistentString
+               value = "self.Appointment">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "+[MagicalRecord(Actions) saveWithBlockAndWait:]:MagicalRecord+Actions.m">
+         <PersistentStrings>
+            <PersistentString
+               value = "currentMaterialUsage">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "-[NewAppointmentViewController showInfo]:NewAppointmentViewController.m">
+      </ContextState>
+      <ContextState
+         contextName = "-[FWRequest requestSuccess]:FWRequest.m">
+      </ContextState>
+      <ContextState
+         contextName = "-[NewAppointmentViewController forceRefresh]:NewAppointmentViewController.m">
+         <PersistentStrings>
+            <PersistentString
+               value = "(![[AppointmentManager Instance] isSync])">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "-[ServiceLocationDetailViewController viewDidLoad]:ServiceLocationDetailViewController.m">
+         <PersistentStrings>
+            <PersistentString
+               value = "_service_location.phone_kind">
+            </PersistentString>
+            <PersistentString
+               value = "_service_location.phone.length">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "-[LineItemFooterCell setDataWithAppointment:withPayNowBlock:isWorkPool:]:LineItemFooterCell.m">
+         <PersistentStrings>
+            <PersistentString
+               value = "block">
+            </PersistentString>
+            <PersistentString
+               value = "app.taxamountValue">
+            </PersistentString>
+            <PersistentString
+               value = "app.tax_amountValue">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "-[PestActivityCell setPestActivity:]:PestActivityCell.m">
+      </ContextState>
+      <ContextState
+         contextName = "__25-[FWRequest startRequest]_block_invoke.144:FWRequest.m">
+      </ContextState>
+      <ContextState
+         contextName = "-[Appointment getFinalTotalDue]:Appointment.m">
+         <PersistentStrings>
+            <PersistentString
+               value = "(80/100).floatValue">
+            </PersistentString>
+            <PersistentString
+               value = "total_due">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "-[Appointment saveAppointmentOnServerWithBlock:]:Appointment.m">
+         <PersistentStrings>
+            <PersistentString
+               value = "json[@&quot;line_items_attributes&quot;]">
+            </PersistentString>
+            <PersistentString
+               value = "json[&quot;line_items_attributes&quot;]">
+            </PersistentString>
+            <PersistentString
+               value = "main">
+            </PersistentString>
+            <PersistentString
+               value = "jsonString">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "-[PestActivityCell pickerView:titleForRow:forComponent:]:PestActivityCell.m">
+         <PersistentStrings>
+            <PersistentString
+               value = "_items[0]">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "-[AppLineItemCell setLineItem:forWorkOrder:]:AppLineItemCell.m">
+         <PersistentStrings>
+            <PersistentString
+               value = "line_item.priceValue">
+            </PersistentString>
+            <PersistentString
+               value = "line_item">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "-[Appointment(Helper) buildJson]:Appointment+Helper.m">
+         <PersistentStrings>
+            <PersistentString
+               value = "">
+            </PersistentString>
+            <PersistentString
+               value = "l_item.price">
+            </PersistentString>
+            <PersistentString
+               value = "l_item.total">
+            </PersistentString>
+            <PersistentString
+               value = "line_items">
+            </PersistentString>
+            <PersistentString
+               value = "price">
+            </PersistentString>
+            <PersistentString
+               value = "self.line_items">
+            </PersistentString>
+            <PersistentString
+               value = "[numberFormatter stringFromNumber:l_item.price]">
+            </PersistentString>
+            <PersistentString
+               value = "line_items_attributes_dic">
+            </PersistentString>
+            <PersistentString
+               value = "(int)(price*1000)%10">
+            </PersistentString>
+            <PersistentString
+               value = "work_order_json">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "-[Appointment getTotalServicePrice]:Appointment.m">
+         <PersistentStrings>
+            <PersistentString
+               value = "self.line_items">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "-[FWRequest startRequest]:FWRequest.m">
+      </ContextState>
+      <ContextState
+         contextName = "+[Appointment(Mapping) reverseMappingWorkOrder]:Appointment+Mapping.m">
+      </ContextState>
+      <ContextState
+         contextName = "-[FEMSerializer serializeObject:usingMapping:]:FEMSerializer.m">
+      </ContextState>
+      <ContextState
+         contextName = "-[Appointment calculateTax:]:Appointment.m">
+         <PersistentStrings>
+            <PersistentString
+               value = "self.line_items">
+            </PersistentString>
+            <PersistentString
+               value = "setTax_rate_id[1]">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "-[PestActivity getActivityLevel]:PestActivity.m">
+      </ContextState>
+      <ContextState
+         contextName = "-[MaterialUsageRecordController saveMaterialUsage:]:MaterialUsageRecordController.m">
+         <PersistentStrings>
+            <PersistentString
+               value = "self.Appointment">
+            </PersistentString>
+            <PersistentString
+               value = "self.currentMaterialUsage">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "__51-[MaterialUsageRecordController saveMaterialUsage:]_block_invoke:MaterialUsageRecordController.m">
+         <PersistentStrings>
+            <PersistentString
+               value = "new_record">
+            </PersistentString>
+            <PersistentString
+               value = "usage">
+            </PersistentString>
+            <PersistentString
+               value = "appointmentArray">
+            </PersistentString>
+            <PersistentString
+               value = "[appointmentArray insertObject:(self.Appointment.entity_id)];">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "-[UnitInspectionViewController initData]:UnitInspectionViewController.m">
+         <PersistentStrings>
+            <PersistentString
+               value = "_inspectionRecord">
+            </PersistentString>
+            <PersistentString
+               value = "[UnitInspection getFavoriteunitInspection:_appointment.entity_id deleted:NO][0]">
+            </PersistentString>
+            <PersistentString
+               value = "[UnitInspection getFavoriteunitInspection:_appointment.entity_id deleted:NO]">
+            </PersistentString>
+            <PersistentString
+               value = "_selectedMaterialUsage[0]">
+            </PersistentString>
+            <PersistentString
+               value = "_appointment.entity_id">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "+[PestActivity defaultMapping]:PestActivity.m">
+         <PersistentStrings>
+            <PersistentString
+               value = "addAttribute:[PestActivity intAttributeFor:@&quot;activity_level_id&quot; andKeyPath:@&quot;activity_level_id&quot;]">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "+[LineItem defaultMapping]:LineItem.m">
+         <PersistentStrings>
+            <PersistentString
+               value = "">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "main:main.m">
+         <PersistentStrings>
+            <PersistentString
+               value = "line_items">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "__25-[FWRequest startRequest]_block_invoke.138:FWRequest.m">
+         <PersistentStrings>
+            <PersistentString
+               value = "self.serverData">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "-[Appointment(Helper) newWordOrderJson]:Appointment+Helper.m">
+         <PersistentStrings>
+            <PersistentString
+               value = "line_items">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "+[NSManagedObject(Mapping) floatAttributeFor:andKeyPath:]:NSManagedObject+Mapping.m">
+      </ContextState>
+   </ContextStates>
+</VariablesViewState>

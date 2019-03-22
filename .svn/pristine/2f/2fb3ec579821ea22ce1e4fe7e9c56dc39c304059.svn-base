@@ -1,0 +1,29 @@
+//
+//  Pest.h
+//  FieldWork
+//
+//  Created by Samir Kha on 16/01/2013.
+//  Copyright (c) 2013 __MyCompanyName__. All rights reserved.
+//
+
+#import <Foundation/Foundation.h>
+#import "FieldworkRequest.h"
+#import "FieldworkURLSchema.h"
+#import "FieldworkRequestDelegate.h"
+#import "AccountManager.h"
+#import "Constants.h"
+
+@interface Pest : NSObject <FieldworkRequestDelegate>
+{
+    int _pestId;
+    NSString *_name;
+}
+@property (nonatomic,assign)int pestId;
+@property (nonatomic,retain,readwrite)NSString *name;
+
++ (Pest*) pestWithDictionary:(NSDictionary*) dict;
+
+- (void) sync;
+
+
+@end

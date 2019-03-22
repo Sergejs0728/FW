@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="12120" systemVersion="16F73" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12088"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="CapturedPestViewController">
+            <connections>
+                <outlet property="CapturedPestlabel" destination="5" id="18"/>
+                <outlet property="CapturedPesttable" destination="6" id="37"/>
+                <outlet property="_btnRemovePest" destination="4af-iA-cGb" id="bgx-hk-ZYG"/>
+                <outlet property="_buttonHolder" destination="6cu-v2-DJK" id="lXu-Pk-TSP"/>
+                <outlet property="view" destination="1" id="8"/>
+            </connections>
+        </placeholder>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view autoresizesSubviews="NO" contentMode="scaleToFill" id="1">
+            <rect key="frame" x="0.0" y="0.0" width="320" height="480"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="4">
+                    <rect key="frame" x="0.0" y="0.0" width="320" height="43"/>
+                    <subviews>
+                        <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" fixedFrame="YES" text="" lineBreakMode="tailTruncation" minimumFontSize="10" translatesAutoresizingMaskIntoConstraints="NO" id="5">
+                            <rect key="frame" x="12" y="11" width="296" height="21"/>
+                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                            <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                    </subviews>
+                    <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="43" id="tWK-lN-qSn"/>
+                    </constraints>
+                </view>
+                <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" style="grouped" separatorStyle="default" allowsSelectionDuringEditing="YES" rowHeight="44" sectionHeaderHeight="10" sectionFooterHeight="10" translatesAutoresizingMaskIntoConstraints="NO" id="6" customClass="TPKeyboardAvoidingTableView">
+                    <rect key="frame" x="0.0" y="43" width="320" height="437"/>
+                    <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.0" colorSpace="custom" customColorSpace="sRGB"/>
+                    <connections>
+                        <outlet property="dataSource" destination="-1" id="35"/>
+                        <outlet property="delegate" destination="-1" id="36"/>
+                    </connections>
+                </tableView>
+            </subviews>
+            <color key="backgroundColor" red="0.94999998807907104" green="0.94999998807907104" blue="0.94999998807907104" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <constraints>
+                <constraint firstItem="6" firstAttribute="top" secondItem="4" secondAttribute="bottom" id="1Oq-pz-eWh"/>
+                <constraint firstItem="4" firstAttribute="top" secondItem="1" secondAttribute="top" id="JDa-vE-d5g"/>
+                <constraint firstAttribute="trailing" secondItem="6" secondAttribute="trailing" id="Jvs-e3-CoA"/>
+                <constraint firstAttribute="trailing" secondItem="4" secondAttribute="trailing" id="TRu-YJ-aY9"/>
+                <constraint firstItem="6" firstAttribute="leading" secondItem="1" secondAttribute="leading" id="bHG-lr-ahB"/>
+                <constraint firstAttribute="bottom" secondItem="6" secondAttribute="bottom" id="kNP-Yh-qs9"/>
+                <constraint firstItem="4" firstAttribute="leading" secondItem="1" secondAttribute="leading" id="vN2-EF-Khi"/>
+            </constraints>
+            <simulatedStatusBarMetrics key="simulatedStatusBarMetrics"/>
+            <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+            <inset key="insetFor6xAndEarlier" minX="0.0" minY="20" maxX="0.0" maxY="-20"/>
+        </view>
+        <view contentMode="scaleToFill" id="6cu-v2-DJK">
+            <rect key="frame" x="0.0" y="0.0" width="375" height="65"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+            <subviews>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="hsn-4d-Cfy">
+                    <rect key="frame" x="0.0" y="0.0" width="375" height="35"/>
+                    <subviews>
+                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="4af-iA-cGb">
+                            <rect key="frame" x="341" y="6" width="22" height="22"/>
+                            <constraints>
+                                <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="22" id="Dgs-ds-g8E"/>
+                                <constraint firstAttribute="height" constant="22" id="NVQ-hW-765"/>
+                                <constraint firstAttribute="width" constant="22" id="YBN-g1-y0a"/>
+                                <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="22" id="k9U-wf-Qcy"/>
+                            </constraints>
+                            <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
+                            <state key="normal" image="delete.png">
+                                <color key="titleColor" red="0.19607843459999999" green="0.30980393290000002" blue="0.52156865600000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <color key="titleShadowColor" red="0.5" green="0.5" blue="0.5" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            </state>
+                            <state key="highlighted">
+                                <color key="titleColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            </state>
+                            <connections>
+                                <action selector="removePest:" destination="-1" eventType="touchUpInside" id="It2-vw-jbt"/>
+                            </connections>
+                        </button>
+                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="PQs-q5-Q4d">
+                            <rect key="frame" x="12" y="6" width="22" height="22"/>
+                            <constraints>
+                                <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="22" id="RKc-NQ-pMI"/>
+                                <constraint firstAttribute="width" constant="22" id="ZYb-YV-A3q"/>
+                                <constraint firstAttribute="height" constant="22" id="c9S-w2-z8I"/>
+                                <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="22" id="dqd-m7-nUE"/>
+                            </constraints>
+                            <state key="normal" image="ic_new_appointments.png">
+                                <color key="titleColor" red="0.0" green="0.50196081400000003" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <color key="titleShadowColor" red="0.5" green="0.5" blue="0.5" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            </state>
+                            <state key="highlighted">
+                                <color key="titleColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            </state>
+                            <connections>
+                                <action selector="celladdbtn:" destination="-1" eventType="touchUpInside" id="ybd-2B-zxc"/>
+                            </connections>
+                        </button>
+                    </subviews>
+                    <color key="backgroundColor" red="0.87833553549999999" green="0.87848657370000005" blue="0.8783260584" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                    <constraints>
+                        <constraint firstItem="4af-iA-cGb" firstAttribute="centerY" secondItem="hsn-4d-Cfy" secondAttribute="centerY" id="9ZO-T5-LkR"/>
+                        <constraint firstItem="PQs-q5-Q4d" firstAttribute="centerY" secondItem="hsn-4d-Cfy" secondAttribute="centerY" id="A8h-aZ-L4B"/>
+                        <constraint firstAttribute="height" constant="35" id="P3w-YH-PC8"/>
+                        <constraint firstAttribute="trailing" secondItem="4af-iA-cGb" secondAttribute="trailing" constant="12" id="QI8-CM-uAs"/>
+                        <constraint firstItem="PQs-q5-Q4d" firstAttribute="leading" secondItem="hsn-4d-Cfy" secondAttribute="leading" constant="12" id="wG5-hV-DWh"/>
+                    </constraints>
+                </view>
+            </subviews>
+            <color key="backgroundColor" red="0.94999998809999997" green="0.94999998809999997" blue="0.94999998809999997" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <constraints>
+                <constraint firstItem="hsn-4d-Cfy" firstAttribute="top" secondItem="6cu-v2-DJK" secondAttribute="top" id="Gow-aw-5ge"/>
+                <constraint firstAttribute="trailing" secondItem="hsn-4d-Cfy" secondAttribute="trailing" id="SRS-eU-jAA"/>
+                <constraint firstItem="hsn-4d-Cfy" firstAttribute="leading" secondItem="6cu-v2-DJK" secondAttribute="leading" id="z88-6j-q2C"/>
+            </constraints>
+            <nil key="simulatedStatusBarMetrics"/>
+            <nil key="simulatedTopBarMetrics"/>
+            <nil key="simulatedBottomBarMetrics"/>
+            <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+            <point key="canvasLocation" x="-565.5" y="-172.5"/>
+        </view>
+    </objects>
+    <resources>
+        <image name="delete.png" width="30" height="30"/>
+        <image name="ic_new_appointments.png" width="80" height="80"/>
+    </resources>
+    <simulatedMetricsContainer key="defaultSimulatedMetrics">
+        <simulatedStatusBarMetrics key="statusBar"/>
+        <simulatedOrientationMetrics key="orientation"/>
+        <simulatedScreenMetrics key="destination" type="retina4_7.fullscreen"/>
+    </simulatedMetricsContainer>
+</document>

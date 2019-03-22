@@ -1,0 +1,47 @@
+//
+//  Location.h
+//  TREKhunters
+//
+//  Created by Samir Kha on 11/05/2012.
+//  Copyright (c) 2012 __MyCompanyName__. All rights reserved.
+//
+
+#import <Foundation/Foundation.h>
+#import <MapKit/MapKit.h>
+#import <CoreLocation/CoreLocation.h>
+
+
+@protocol LocationUpdater <NSObject>
+
+- (void) updateCurrentLocation:(CLLocationCoordinate2D) currentLocation;
+
+@end
+
+@interface Location : NSObject<CLLocationManagerDelegate>{
+
+    
+        CLGeocoder *reverseGeocoder;
+        // CLGeocoder *reverseGeocoder;
+       
+
+    CLLocationManager *locationManager;
+    CLLocationCoordinate2D currentCoordinates;
+    NSString *CurLocation;
+}
+
+
+    //@property (nonatomic, retain)  MKReverseGeocoder *reverseGeocoder;
+@property (nonatomic, retain)  CLGeocoder *reverseGeocoder;
+@property (nonatomic, assign) CLLocationCoordinate2D currentCoordinates;
+
+@property (nonatomic, retain)  NSString *CurLocation;
+@property (nonatomic, retain, readwrite) id<LocationUpdater> locationUpdaterDelegate;
++ (id) Instance;
+- (void) startLocationManager;
+- (void) stopLocationManager;
+
+- (void) updateLocationInMainThread:(CLLocationCoordinate2D) curLocation;
+
+
+
+@end

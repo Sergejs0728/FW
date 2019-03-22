@@ -1,0 +1,32 @@
+//
+//  NoteController.h
+//  FieldWork
+//
+//  Created by Samir Khatri on 29/04/2013.
+//
+//
+
+#import <UIKit/UIKit.h>
+#import <QuartzCore/QuartzCore.h>
+#import "Appointment.h"
+#import "AppointmentInformation.h"
+#import "CommonAppointmentViewController.h"
+
+@interface NoteController : CommonAppointmentViewController<UITextViewDelegate, AppointmentDelegate>
+{
+   
+    IBOutlet UITextView * _noteTextView;
+    IBOutlet UILabel * _characterlbl;
+    IBOutlet UIView * noteview;
+}
+@property (nonatomic ,retain)IBOutlet UIView * noteRoundView;
+@property (nonatomic ,retain) UITextView * noteTextView;
+@property (nonatomic ,retain) UILabel * characterlbl;
+
+
++ (NoteController *)initWithAppointment:(Appointment *)app;
+
+- (IBAction)NoteSave:(id)sender;
+- (IBAction)keyboard:(id)sender;
+
+@end

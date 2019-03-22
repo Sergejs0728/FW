@@ -1,0 +1,106 @@
+//
+//  EvidenceListController.m
+//  FieldWork
+//
+//  Created by Samir Khatri on 2/20/13.
+//
+//
+
+#import "EvidenceListController.h"
+
+@interface EvidenceListController ()
+
+@end
+
+@implementation EvidenceListController
+
+@synthesize inspectionRecord = _inspectionRecord;
+
+
++ (EvidenceListController *)initWithAppointment:(Appointment *)appt andInspectionRecord:(InspectionRecord *)ir {
+   // EvidenceListController * evidence = [[EvidenceListController alloc] initWithNibName:@"EvidenceListController" bundle:nil];
+    EvidenceListController * evidence;
+    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
+        evidence = [[ EvidenceListController alloc] initWithNibName:@"EvidenceListController_IPad" bundle:nil];        
+    }else{
+        evidence = [[EvidenceListController alloc] initWithNibName:@"EvidenceListController" bundle:nil];
+        
+    }
+
+    
+    evidence.Appointment = appt;
+    evidence.inspectionRecord = ir;
+    evidence.title = @"Pest Evidence";
+    return evidence;
+}
+
+- (void)viewDidLoad
+{
+    [super viewDidLoad];
+    _evidenceArray = [[NSMutableArray alloc] init];
+    [_evidenceArray addObject:@"Droppings"];
+    [_evidenceArray addObject:@"Bait eaten"];
+    [_evidenceArray addObject:@"Tracks"];
+    [_evidenceArray addObject:@"Nesting Material"];
+    
+}
+- (void)didReceiveMemoryWarning
+{
+    [super didReceiveMemoryWarning];
+    // Dispose of any resources that can be recreated.
+}
+
+- (void)saveClicked:(id)sender {
+    NSMutableArray *irArr = [[NSMutableArray alloc] init];
+    for (int i = 0; i < _evidenceArray.count; i++) {
+        UITableViewCell *cell = [_mainTable cellForRowAtIndexPath:[NSIndexPath indexPathForRow:i inSection:0]];
+        if (cell) {
+            if (cell.accessoryType == UITableViewCellAccessoryCheckmark) {
+                NSString *str = [_evidenceArray objectAtIndex:i];
+                [irArr addObject:str];
+            }
+        }
+    }
+    
+    self.inspectionRecord.evidence = [irArr joinWithDelimeter:@","];
+    [self.navigationController popViewControllerAnimated:YES];
+}
+
+#pragma mark - TableView
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
+    return _evidenceArray.count;
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
+    static NSString *kCellID = @"cellID";
+	
+	UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kCellID];
+	if (cell == nil)
+    {
+		cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:kCellID];
+        cell.selectionStyle = UITableViewCellSelectionStyleNone;
+    }
+    NSString *str = [_evidenceArray objectAtIndex:indexPath.row];;
+    cell.textLabel.text = str;
+    if (self.inspectionRecord.evidence != nil && [self.inspectionRecord.evidence rangeOfString:str].location != NSNotFound) {
+        cell.accessoryType = UITableViewCellAccessoryCheckmark;
+    }else{
+        cell.accessoryType = UITableViewCellAccessoryNone;
+    }
+    
+    return cell;
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
+    
+    UITableViewCell *cell1 = [tableView cellForRowAtIndexPath:indexPath];
+    if (cell1.accessoryType == UITableViewCellAccessoryCheckmark) {
+        cell1.accessoryType = UITableViewCellAccessoryNone;
+    }else{
+        cell1.accessoryType = UITableViewCellAccessoryCheckmark;
+    }
+}
+
+@end

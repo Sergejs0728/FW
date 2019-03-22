@@ -1,0 +1,18 @@
+//
+//  BMSPrinterKit.h
+//  BMSPrinterKit
+//
+//  Created by BMS on 9/6/12.
+//  Copyright (c) 2012 Brother Mobile Solutions. All rights reserved.
+//
+
+#import "BRPtouchPrinterKit.h"
+#import "PrintSettings.h"
+#import "PJ673PrintSettings.h"
+#import "PrintSettingsViewController.h"
+#import "PJ673PrintSettingsViewController.h"
+#import "BMSPrinterDriver.h"
+
+@interface BMSPrinterKit : NSObject
+
+@end

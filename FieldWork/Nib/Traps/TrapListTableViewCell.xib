@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="12120" systemVersion="16F73" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12088"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" rowHeight="77" id="KGk-i7-Jjw" customClass="TrapListTableViewCell">
+            <rect key="frame" x="0.0" y="0.0" width="320" height="77"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+            <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="KGk-i7-Jjw" id="H2p-sc-9uM">
+                <rect key="frame" x="0.0" y="0.0" width="320" height="76.5"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="ID# 1212" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Wz5-8N-Ozy">
+                        <rect key="frame" x="25" y="6" width="70" height="21"/>
+                        <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
+                        <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                    <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" verticalHuggingPriority="251" text="Barcode" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="CP9-Y2-uC3">
+                        <rect key="frame" x="103" y="6" width="197" height="21"/>
+                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                        <color key="textColor" red="0.33333333333333331" green="0.33333333333333331" blue="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                    <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Location Name" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="wYb-8g-B2E">
+                        <rect key="frame" x="25" y="29" width="285" height="21"/>
+                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                        <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                    <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Frequency Value" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Een-ul-TSu">
+                        <rect key="frame" x="25" y="52" width="285" height="18"/>
+                        <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
+                        <color key="textColor" red="0.5490196078431373" green="0.5490196078431373" blue="0.5490196078431373" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                </subviews>
+                <constraints>
+                    <constraint firstItem="wYb-8g-B2E" firstAttribute="leading" secondItem="Wz5-8N-Ozy" secondAttribute="leading" id="16B-gg-t0B"/>
+                    <constraint firstAttribute="trailing" secondItem="wYb-8g-B2E" secondAttribute="trailing" constant="10" id="21b-qW-cnH"/>
+                    <constraint firstItem="CP9-Y2-uC3" firstAttribute="leading" secondItem="Wz5-8N-Ozy" secondAttribute="trailing" constant="8" id="JCS-we-rjO"/>
+                    <constraint firstItem="Een-ul-TSu" firstAttribute="leading" secondItem="Wz5-8N-Ozy" secondAttribute="leading" id="JdH-Iv-Mat"/>
+                    <constraint firstAttribute="trailing" secondItem="Een-ul-TSu" secondAttribute="trailing" constant="10" id="PXf-Nd-sqf"/>
+                    <constraint firstItem="CP9-Y2-uC3" firstAttribute="centerY" secondItem="Wz5-8N-Ozy" secondAttribute="centerY" id="R5p-f1-KB7"/>
+                    <constraint firstItem="wYb-8g-B2E" firstAttribute="top" secondItem="Wz5-8N-Ozy" secondAttribute="bottom" constant="2" id="WHv-YK-tiP"/>
+                    <constraint firstItem="Wz5-8N-Ozy" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="6" id="fxd-cz-WRM"/>
+                    <constraint firstItem="Wz5-8N-Ozy" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="25" id="gex-wm-hqL"/>
+                    <constraint firstItem="Een-ul-TSu" firstAttribute="top" secondItem="wYb-8g-B2E" secondAttribute="bottom" constant="2" id="id6-vo-WB7"/>
+                    <constraint firstAttribute="bottom" relation="greaterThanOrEqual" secondItem="Een-ul-TSu" secondAttribute="bottom" constant="6" id="mME-fp-oL6"/>
+                    <constraint firstAttribute="trailing" secondItem="CP9-Y2-uC3" secondAttribute="trailing" constant="20" id="pSt-py-hHl"/>
+                </constraints>
+            </tableViewCellContentView>
+            <connections>
+                <outlet property="_lblBarcode" destination="CP9-Y2-uC3" id="eH8-Lf-0EQ"/>
+                <outlet property="_lblFreqency" destination="Een-ul-TSu" id="E34-6k-wmD"/>
+                <outlet property="_lblId" destination="Wz5-8N-Ozy" id="tT6-0K-AXv"/>
+                <outlet property="_lblLocationDetails" destination="wYb-8g-B2E" id="fW3-F7-Vmr"/>
+            </connections>
+            <point key="canvasLocation" x="247" y="233.5"/>
+        </tableViewCell>
+    </objects>
+</document>

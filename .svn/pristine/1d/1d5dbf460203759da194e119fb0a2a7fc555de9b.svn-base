@@ -1,0 +1,15 @@
+//
+//  FieldworkURLSchema.h
+//  FieldWork
+//
+//  Created by Samir Kha on 05/01/2013.
+//  Copyright (c) 2013 __MyCompanyName__. All rights reserved.
+//
+
+#ifndef FieldWork_FieldworkURLSchema_h
+#define FieldWork_FieldworkURLSchema_h
+
+//#define FIELD_WORK_URL_BASE    @"http://api.fieldworkapp.com/"
+#define FIELD_WORK_URL_BASE    @"http://api.fieldworkhq.com/"
+
+#endif

@@ -1,0 +1,29 @@
+//
+//  ApplicationMethods.h
+//  FieldWork
+//
+//  Created by Samir Kha on 18/01/2013.
+//  Copyright (c) 2013 __MyCompanyName__. All rights reserved.
+//
+
+#import <Foundation/Foundation.h>
+#import <CoreData/CoreData.h>
+#import "CoreDataHelper.h"
+#import "FieldworkRequest.h"
+#import "FieldworkRequestDelegate.h"
+
+static NSString *APPLICATION_METHODS = @"ApplicationMethods";
+
+@interface ApplicationMethods : NSManagedObject <FieldworkRequestDelegate>
+{
+}
+
+@property (nonatomic, retain) NSString * methodName;
+
++ (void) parseWithArray:(NSArray*)arr;
+
+- (void) loadFromService;
+
++ (NSMutableArray*) getAppMethods;
+
+@end

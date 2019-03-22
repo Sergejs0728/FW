@@ -1,0 +1,29 @@
+//
+//  PestsUseListController.h
+//  FieldWork
+//
+//  Created by Samir Kha on 15/01/2013.
+//  Copyright (c) 2013 __MyCompanyName__. All rights reserved.
+//
+
+#import <UIKit/UIKit.h>
+#import "MaterialusetablelistCell.h"
+#import "PestsListController.h"
+#import "CommonAppointmentViewController.h"
+#import "Appointment.h"
+#import "TargetPestList.h"
+#import "TargetPestListDelegate.h"
+#import "AppDelegate.h"
+#import "ListItemDelegate.h"
+
+@interface PestsUseListController : CommonAppointmentViewController<TargetPestListDelegate, ListItemDelegate, UITableViewDataSource, UITableViewDelegate>
+{
+    NSMutableArray *_targetpestList;
+    IBOutlet UITableView *_table;
+}
+@property (nonatomic, retain, readwrite) NSMutableArray *targetpestList;
+@property (nonatomic, retain) UITableView *table;
++ (PestsUseListController*) viewControllerWithAppointment:(Appointment*) app;
+-(void)addNewTargetPests;
+
+@end

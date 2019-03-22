@@ -1,0 +1,669 @@
+//
+//  Appointment.m
+//  FieldWork
+//
+//  Created by Samir Kha on 06/01/2013.
+//  Copyright (c) 2013 __MyCompanyName__. All rights reserved.
+//
+
+#import "Appointment.h"
+#import "TargetPestList.h"
+#import "InspectionRecordList.h"
+
+@implementation Appointment
+@synthesize datapdf= _datapdf;
+@synthesize worker_lat=_worker_lat;
+@synthesize worker_lng=_worker_lng;
+#pragma mark - implementation
+
+- (id)init {
+    if (self = [super init]) {
+        _IsInvoiceChanged = NO;
+        _IsSignatureChanged = NO;
+    }
+    return self;
+}
+
++ (Appointment *)appointmentWithDictionary:(NSDictionary *)dict {
+    Appointment *app = [[Appointment alloc] init];
+    
+    app.Id = [[dict objectForKey:@"id"] intValue];
+    app.status = [dict objectForKey:@"status"];
+    
+    NSString *start_date = [dict objectForKey:@"starts_at"];
+    app.starts_at = [Appointment getDateFromString:start_date];
+    
+    
+    NSString *end_date = [dict objectForKey:@"ends_at"];
+    app.ends_at = [Appointment getDateFromString:end_date];
+    
+    app.customer_id = [[dict objectForKey:@"customer_id"] intValue];
+    app.service_id = [[dict objectForKey:@"service_id"] intValue];
+    
+    if ([dict objectForKey:@"price2"] != [NSNull null]) {
+        app.price = [[dict objectForKey:@"price2"] floatValue];
+    }
+    
+    if ([dict objectForKey:@"started_at_time"] != [NSNull null]) {
+            //        app.started_at_time = [dict objectForKey:@"started_at_time"];
+
+        app.started_at_time = [Utils getNonmilitaryTime:[dict objectForKey:@"started_at_time"]];
+    }
+    
+    if ([dict objectForKey:@"finished_at_time"] != [NSNull null]) {
+        app.finished_at_time = [Utils getNonmilitaryTime:[dict objectForKey:@"finished_at_time"]];
+    }
+    
+    if ([dict objectForKey:@"duration"] != [NSNull null]) {
+        app.duration = [[dict objectForKey:@"duration"] intValue];
+    }
+
+    if ([dict objectForKey:@"customer_signature"] != [NSNull null]) {
+        app.customer_signature = [SignaturePoint parseWithArray:[dict objectForKey:@"customer_signature"]];        
+    }
+    if ([dict objectForKey:@"technician_signature"] != [NSNull null]) {
+        app.technician_signature = [SignaturePoint parseWithArray:[dict objectForKey:@"technician_signature"]];
+    }
+    
+    if ([dict objectForKey:@"notes"] != [NSNull null]) {
+        app.notes = [dict objectForKey:@"notes"];
+    }
+    if ([dict objectForKey:@"instructions"] != [NSNull null]) {
+        app.instruction = [dict objectForKey:@"instructions"];
+    }
+    if ([dict objectForKey:@"technician_signature_name"] != [NSNull null]) {
+        app.technician_signature_name = [dict objectForKey:@"technician_signature_name"];
+    }
+    if ([dict objectForKey:@"square_feet"] != [NSNull null]) {
+        app.square_feet = [dict objectForKey:@"square_feet"];
+    }
+    if ([dict objectForKey:@"wind_direction"] != [NSNull null]) {
+        app.wind_direction = [dict objectForKey:@"wind_direction"];
+    }
+    if ([dict objectForKey:@"wind_speed"] != [NSNull null]) {
+        app.wind_speed = [dict objectForKey:@"wind_speed"];
+    }
+    if ([dict objectForKey:@"temperature"] != [NSNull null]) {
+        app.temperature = [dict objectForKey:@"temperature"];
+    }
+    if ([dict objectForKey:@"invoice"] != [NSNull null]) {
+        NSDictionary *invoice = [dict objectForKey:@"invoice"];
+        app.invoice_approved = [[invoice objectForKey:@"approved"] boolValue];
+        if ([invoice objectForKey:@"invoice_number"] != [NSNull null]) {
+            app.invoice_number = [[invoice objectForKey:@"invoice_number"] intValue];
+        }
+        app.invoice_paid = [[invoice objectForKey:@"paid"] boolValue];
+        if ([invoice objectForKey:@"payment_method"] != [NSNull null]) {
+            app.invoice_payment_method = [invoice objectForKey:@"payment_method"];
+        }
+        if ([invoice objectForKey:@"check_number"] != [NSNull null] && [invoice objectForKey:@"check_number"]) {
+            app.invoice_check_number = [invoice objectForKey:@"check_number"];
+        }
+        if ([dict objectForKey:@"amount"] != [NSNull null]) {
+            app.invoice_amount = [[dict objectForKey:@"amount"] floatValue];
+        }
+        NSArray *payments_arr=[invoice objectForKey:@"payments"];
+        app.payment_info = [[PaymentInfo alloc] init];
+        for (NSDictionary *p_dict in payments_arr) {
+            BOOL create_from_mobile=[[p_dict objectForKey:@"created_from_mobile"] boolValue];
+            if(create_from_mobile==YES){
+                app.payment_info=[PaymentInfo parsePaymentWithDict:p_dict];
+            }
+        }
+        
+    } else{
+        app.payment_info = [[PaymentInfo alloc] init];
+    }
+    
+    NSArray *targetpests = [dict objectForKey:@"pests_targets"];
+    app.targetPestList = [[TargetPestList alloc] init];
+    if (targetpests.count > 0) {
+        [app.targetPestList parseWithArray:targetpests];
+    }
+    app.targetPestList.appointmentId = [[dict objectForKey:@"id"] intValue];
+    
+    NSArray *materialUsage = [dict objectForKey:@"material_usages"];
+    app.materialUsageList = [[MaterialUsageList alloc] init];
+    if (materialUsage.copy > 0) {
+        [app.materialUsageList parseWithArray:materialUsage];
+    }
+    app.materialUsageList.appointmentId = [[dict objectForKey:@"id"] intValue];
+    
+    app.inspectionRecordList = [[InspectionRecordList alloc] init];
+    if ([dict objectForKey:@"inspection_records"] != [NSNull null]) {
+        NSArray *arr = [dict objectForKey:@"inspection_records"];
+        if (arr != nil && arr.count > 0) {
+            [app.inspectionRecordList parseWithArray:arr andAppointmentId:app.Id];
+        }
+    }
+    
+    if ([dict objectForKey:@"worker_lat"] != [NSNull null]) {
+        app.worker_lat = [dict objectForKey:@"worker_lat"];
+    }
+    if ([dict objectForKey:@"worker_lng"] != [NSNull null]) {
+        app.worker_lng = [dict objectForKey:@"worker_lng"];
+    }
+
+    
+    app.inspectionRecordList.appointmentId = app.Id;
+    
+    [app performSelectorInBackground:@selector(downloadPDFfile) withObject:nil];
+  
+    
+    
+    //[app downloadPDFfile];
+    return app;
+}
+
++ (NSDate *)getDateFromString:(NSString *)str {
+    
+//    NSString * zoneString = [str substringFromIndex:([str length] - 6)];
+//    NSTimeInterval timeInterval = [[zoneString substringToIndex:3] intValue] * 3600;
+//    timeInterval += [[zoneString substringFromIndex:3] intValue] * 60;
+    //timeInterval=0;
+    NSArray *arr = [str componentsSeparatedByString:@"T"];
+    NSString *time = @"";
+    if(arr!= nil){
+        time =  [[arr objectAtIndex:1] substringToIndex:8];
+        str = [NSString stringWithFormat:@"%@ %@", [arr objectAtIndex:0], time];
+        //NSLog(@"time :%@",str);
+    }
+    
+    
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    [dateFormatter setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];
+    [dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
+    NSDate *dt = [dateFormatter dateFromString:str];
+    //NSLog(@"Today : %@ --- Appt : %@", [NSDate date], dt);
+    return dt;
+}
+
++ (NSString *)ServiceReportPath {
+    NSString *resourceDocPath = [[NSString alloc] initWithString:[[[[NSBundle mainBundle]  resourcePath] stringByDeletingLastPathComponent]stringByAppendingPathComponent:@"Documents"]];
+    
+    NSString *filePath = [resourceDocPath stringByAppendingPathComponent:@"ServiceReport.pdf"];
+     
+    return filePath;
+}
+
+- (Customer *)getCustomer {
+    return [[CustomerList Instance] customerbyId:self.customer_id];
+}
+
+
+- (void)saveAppointmentWithDelegate:(id<AppointmentDelegate>)del {
+    CLLocationCoordinate2D currentlocation = [[Location Instance] currentCoordinates];
+    NSLog(@"%f, %f", currentlocation.latitude, currentlocation.longitude);
+    _apptDelegate = del;
+    if (![[AppDelegate appDelegate] isReachable]) {
+        if (del) {
+            [del AppointmentSavedSuccessfully];
+        }
+        return;
+        
+    }
+    //2013-02-14T11:00:00-06:00
+    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+    [formatter setDateFormat:@"MM/dd/yyyy"];//yyyy-MM-dd HH:mm:ss
+    NSString *start_at_date_time =  [NSString stringWithFormat:@"%@",[formatter stringFromDate:self.starts_at]];
+       
+     NSString *create_from_mobile = @"true";
+//     NSString *jsonData = @"{\"appointment_occurrence\":{\"starts_at_date\":\"%@\",\"started_at_time\":\"%@\",\"finished_at_time\":\"%@\",\"price2\":\"%@\",\"status\":\"%@\" %@}}";
+      NSString *jsonData = @"{\"appointment_occurrence\":{\"starts_at_date\":\"%@\",\"started_at_time\":\"%@\",\"finished_at_time\":\"%@\",\"price2\":\"%@\",\"status\":\"%@\",\"worker_lat\":\"%f\",\"worker_lng\":\"%f\"%@}}";
+    
+      NSString *innerJson = @",\"invoice_attributes\":{\"payments_attributes\":[{\"id\":\"%@\",\"amount\":%f,\"created_from_mobile\": \"%@\",\"payment_method\":\"%@\", \"check_number\":\"%@\"}]}";
+    
+    NSString *price_string = [NSString stringWithFormat:@"%f", self.price];
+    
+    if ([self.status isEqualToString:@"Complete"]) {
+        NSString *pid = self.payment_info.payment_id <= 0 ? @"" : [NSString stringWithFormat:@"%d", self.payment_info.payment_id];
+        innerJson = [NSString stringWithFormat:innerJson,pid,self.payment_info.amount,create_from_mobile, self.payment_info.payment_method, self.payment_info.check_number];
+        
+//        jsonData = [NSString stringWithFormat:jsonData, start_at_date_time, self.started_at_time, self.finished_at_time, price_string, self.status, innerJson];
+        jsonData = [NSString stringWithFormat:jsonData, start_at_date_time, self.started_at_time, self.finished_at_time, price_string, self.status,currentlocation.latitude,currentlocation.latitude, innerJson];
+
+    }else{
+        jsonData = [NSString stringWithFormat:jsonData, start_at_date_time, self.started_at_time, self.finished_at_time, price_string, self.status,currentlocation.latitude,currentlocation.longitude, @""];
+    }
+
+    NSString *url = [NSString stringWithFormat:@"%@appointment_occurrences/%d?api_key=%@", FIELD_WORK_URL_BASE, self.Id ,[AccountManager Instance].activeAccount.api_key];
+    FieldworkRequest *request = [[FieldworkRequest alloc] initWithUrl:url andDelegate:self andMethod:PUT];
+    request.Tag = SAVE_APPOINTMENT;
+    request.postData = jsonData;
+    NSLog(@"%@",jsonData);
+    [request startRequest];
+    
+    // Save PDF
+    [self uploadPDFfile];
+    //Save PDF
+    
+    
+}
+
+-(void)uploadPDFfile{
+    ///appointment_occurrences/[id]/attached_pdf_form.pdf?api_key=XXXXXXXXXXXXXXXX
+    
+    NSData * pdfData = [NSData dataWithContentsOfFile:[self appointmentPDFfile]];
+    
+     NSString *Url = [NSString stringWithFormat:@"%@appointment_occurrences/%d/attached_pdf_form.pdf?api_key=%@",FIELD_WORK_URL_BASE,self.Id ,[AccountManager Instance].activeAccount.api_key];
+    
+    NSMutableURLRequest *request = [NSMutableURLRequest  requestWithURL:[NSURL URLWithString:Url]
+                                                            cachePolicy:NSURLRequestUseProtocolCachePolicy
+                                                        timeoutInterval:50.0];
+    
+    NSMutableData *myRequestData = [[NSMutableData alloc] init];
+    //[myRequestData appendData:[NSData dataWithBytes:[postData UTF8String] length:[postData length]]];
+    
+    
+    NSString *boundary = @"--";
+    NSString *contentType = [NSString stringWithFormat:@"multipart/form-data; boundary=%@",boundary];
+    [request addValue:contentType forHTTPHeaderField: @"Content-Type"];
+    [myRequestData appendData:[[NSString stringWithFormat:@"\r\n--%@\r\n",boundary] dataUsingEncoding:NSUTF8StringEncoding]];
+    [myRequestData appendData:[[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"uploadfile\"; filename=\"%@\"\r\n",[NSString stringWithFormat:@"%d.pdf",self.Id]] dataUsingEncoding:NSUTF8StringEncoding]];
+    [myRequestData appendData:[[NSString stringWithFormat:@"Content-Type: application/pdf-stream\r\n\r\n"] dataUsingEncoding:NSUTF8StringEncoding]];
+    
+    [myRequestData appendData:[NSData dataWithData:pdfData]];
+    [myRequestData appendData:[[NSString stringWithFormat:@"\r\n--%@--\r\n",boundary] dataUsingEncoding:NSUTF8StringEncoding]];
+    
+    [ request setHTTPMethod: @"PUT"];
+    
+    [ request setHTTPBody: myRequestData ];
+    NSURLResponse *response;
+    NSError *error;
+    NSData *returnData = [NSURLConnection sendSynchronousRequest: request returningResponse:&response error:&error];
+    if (!error && returnData) {
+        NSString *content = [NSString stringWithUTF8String:[returnData bytes]];
+        
+       
+    }
+    else{
+     
+    }
+
+}
+
+- (void)saveNotesWithDelegate:(id<AppointmentDelegate>)del {
+    _apptDelegate = del;
+    
+     
+    if (![[AppDelegate appDelegate] isReachable]) {
+        if (del) {
+            [del AppointmentSavedSuccessfully];
+        }
+           return;
+    }
+    NSString *jsonData = @"{\"notes\":\"%@\"}";
+    
+    NSString *obj = [self.notes JSONStringWithOptions:JKSerializeOptionEscapeForwardSlashes includeQuotes:NO error:nil];
+    
+    NSLog(@"%@", obj);
+    
+    jsonData = [NSString stringWithFormat:jsonData, obj];
+    
+    
+    
+    NSString *url = [NSString stringWithFormat:@"%@appointment_occurrences/%d?api_key=%@", FIELD_WORK_URL_BASE, self.Id ,[AccountManager Instance].activeAccount.api_key];
+    FieldworkRequest *request = [[FieldworkRequest alloc] initWithUrl:url andDelegate:self andMethod:PUT];
+    request.Tag = SAVE_APPOINTMENT;
+    request.postData = jsonData;
+    [request startRequest];
+}
+
+-(NSString *)appointmentPDFfile{
+    NSArray *paths=NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *documentDirectory=[paths objectAtIndex:0];
+    
+    NSString *finalPath=[documentDirectory stringByAppendingPathComponent:[NSString stringWithFormat:@"%d.pdf",self.Id]]; 
+    return finalPath;
+}
+
+-(void)downloadPDFfile {
+    
+       
+    NSString *url = [NSString stringWithFormat:@"%@appointment_occurrences/%d/attached_pdf_form.pdf?api_key=%@",FIELD_WORK_URL_BASE,self.Id ,[AccountManager Instance].activeAccount.api_key];
+    NSLog(@"url--->%@",url);
+    
+   _datapdf = [NSData dataWithContentsOfURL:[NSURL URLWithString:url]];
+    // NSLog(@"data--%@",datapdf);
+    if(_datapdf)
+        [_datapdf writeToFile:[self appointmentPDFfile] atomically:YES];
+
+
+}
+
+- (void)printServiceReportWithDelegate:(id<AppointmentDelegate>)del {
+    
+    //http://api.fieldworkapp.com/appointment_occurrences/272/service_report.pdf?api_key=368c73060720e0f178095e897c959aa0952cdb7ac198db0b
+    @try {
+        NSString *urlstring = [NSString stringWithFormat:@"%@appointment_occurrences/%d/service_report.pdf?api_key=%@", FIELD_WORK_URL_BASE, self.Id ,[AccountManager Instance].activeAccount.api_key];
+        
+        NSURL *url=[NSURL URLWithString:urlstring];
+        
+        NSData *pdfFile = [[NSData alloc] initWithContentsOfURL:url];   
+        
+        NSString *filePath = [Appointment ServiceReportPath]; 
+        
+        [pdfFile writeToFile:filePath atomically:YES];
+        if (del != nil) {
+            
+            [del PrintFileDownloaded];
+        }
+    }
+    @catch (NSException *exception) {
+        if (del != nil) {
+            [del PrintFileDownloadFailWithError:@"Can not download the service report, please try again later."];
+        }
+    }
+    @finally {
+        
+    }
+}
+- (void)saveSignaturesWithMode:(CaptureMode)mode {
+    if (![[AppDelegate appDelegate] isReachable]) {
+        _IsSignatureChanged = YES;
+    }else{
+        NSMutableArray *arr = [[NSMutableArray alloc] init];
+       
+        NSMutableArray *sigArray = [[NSMutableArray alloc] init];
+        NSString *sigjson = @"";
+        NSMutableDictionary *dict;
+        NSData *jsonData =nil;
+        
+        if (mode == CustomerMode) {
+            sigArray = self.customer_signature;
+            for (SignaturePoint *sp in sigArray) {
+                dict = [[NSMutableDictionary alloc] init];
+        
+                [dict setObject:[NSString stringWithFormat:@"%f",sp.mx]forKey:@"mx"];
+                [dict setObject:[NSString stringWithFormat:@"%f",sp.my]forKey:@"my"];
+                [dict setObject:[NSString stringWithFormat:@"%f",sp.ly]forKey:@"ly"];
+                [dict setObject:[NSString stringWithFormat:@"%f",sp.lx]forKey:@"lx"];
+                
+                [arr addObject:dict];
+                
+            }
+            
+            NSDictionary *jsonDictionary = [NSDictionary dictionaryWithObjectsAndKeys:arr
+                                            , @"customer_signature",                                    nil];
+
+            
+            
+            jsonData = [NSJSONSerialization dataWithJSONObject:jsonDictionary options:NSJSONWritingPrettyPrinted error:nil];
+            sigjson = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
+            
+                // sigjson = [NSString stringWithFormat:@"{\"customer_signature\":\"[%@]\"}",sigjson];
+        }else{
+            sigArray = self.technician_signature;
+            for (SignaturePoint *sp in sigArray) {
+                dict = [[NSMutableDictionary alloc] init];
+                
+                [dict setObject:[NSString stringWithFormat:@"%f",sp.mx]forKey:@"mx"];
+                [dict setObject:[NSString stringWithFormat:@"%f",sp.my]forKey:@"my"];
+                [dict setObject:[NSString stringWithFormat:@"%f",sp.ly]forKey:@"ly"];
+                [dict setObject:[NSString stringWithFormat:@"%f",sp.lx]forKey:@"lx"];
+                
+                [arr addObject:dict];
+                
+            }
+            NSDictionary *jsonDictionary = [NSDictionary dictionaryWithObjectsAndKeys:arr
+                                            , @"technician_signature",                                    nil];
+            
+            
+            
+            jsonData = [NSJSONSerialization dataWithJSONObject:jsonDictionary options:NSJSONWritingPrettyPrinted error:nil];
+            sigjson = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
+                // sigjson = [NSString stringWithFormat:@"{\"technician_signature\":\"[%@]\"}", [arr joinWithDelimeter:@","]];
+        }
+        
+        
+        NSString *url = [NSString stringWithFormat:@"%@appointment_occurrences/%d?api_key=%@", FIELD_WORK_URL_BASE, self.Id ,[AccountManager Instance].activeAccount.api_key];
+        FieldworkRequest *request = [[FieldworkRequest alloc] initWithUrl:url andDelegate:self andMethod:PUT];
+        request.Tag = SAVE_SIGNATURE;
+        request.postData = sigjson;
+        [request startRequest];
+    }
+}
+/*
+ - (void)saveSignaturesWithMode:(CaptureMode)mode {
+ if (![[AppDelegate appDelegate] isReachable]) {
+ _IsSignatureChanged = YES;
+ }else{
+ NSMutableArray *arr = [[NSMutableArray alloc] init];
+ NSMutableArray *sigArray = [[NSMutableArray alloc] init];
+ NSString *sigjson = @"";
+ 
+ if (mode == CustomerMode) {
+ sigArray = self.customer_signature;
+ for (SignaturePoint *sp in sigArray) {
+ [arr addObject:[sp getJson]];
+ }
+ sigjson = [NSString stringWithFormat:@"{\"customer_signature\":\"[%@]\"}", [arr joinWithDelimeter:@","]];
+ }else{
+ sigArray = self.technician_signature;
+ for (SignaturePoint *sp in sigArray) {
+ [arr addObject:[sp getJson]];
+ }
+ sigjson = [NSString stringWithFormat:@"{\"technician_signature\":\"[%@]\"}", [arr joinWithDelimeter:@","]];
+ }
+ 
+ 
+ NSString *url = [NSString stringWithFormat:@"%@appointment_occurrences/%d?api_key=%@", FIELD_WORK_URL_BASE, self.Id ,[AccountManager Instance].activeAccount.api_key];
+ FieldworkRequest *request = [[FieldworkRequest alloc] initWithUrl:url andDelegate:self andMethod:PUT];
+ request.Tag = SAVE_SIGNATURE;
+ request.postData = sigjson;
+ [request startRequest];
+ }
+ }
+
+ */
+- (void)saveInvoiceData:(id<AppointmentDelegate>)del {
+    _apptDelegate = del;
+    if (![[AppDelegate appDelegate] isReachable]) {
+        _IsInvoiceChanged = YES;
+        if (_apptDelegate != nil) {
+            [_apptDelegate InvoiceDataSaved];
+        }
+    }else{
+        //NSString *jsonData = @"{\"appointment_occurrence\":{\"price\":%f,\"starts_at\":\"%@\",\"started_at_time\":\"%@\",\"finished_at_time\":\"%@\",\"invoice_attributes\":{\"paid\":%@,\"payment_method\":\"%@\",\"check_number\":\"%@\"}}}";
+        NSString *jsonData = @"{\"appointment_occurrence\":{\"price\":%f,\"invoice_attributes\":{\"paid\":%@,\"payments\":{\"amount\":%f,\"payment_method\":\"%@\",\"check_number\":\"%@\"}}}}";
+        NSString *paid = self.invoice_paid == YES ? @"true" : @"false";
+        jsonData = [NSString stringWithFormat:jsonData, _price,paid,self.invoice_amount, self.invoice_payment_method, self.invoice_check_number];
+        NSString *url = [NSString stringWithFormat:@"%@appointment_occurrences/%d?api_key=%@", FIELD_WORK_URL_BASE, self.Id ,[AccountManager Instance].activeAccount.api_key];
+        FieldworkRequest *request = [[FieldworkRequest alloc] initWithUrl:url andDelegate:self andMethod:PUT];
+        request.Tag = SAVE_INVOICE;
+        request.postData = jsonData;
+        [request startRequest];
+    }
+}
+-(void)savePrice{
+    NSString *jsonData = @"{\"appointment_occurrence\": {\"price2\":\"%f\"}}"; //@"{\"price2\":\"%f\"";
+    //        NSString *paid = self.invoice_paid == YES ? @"true" : @"false";
+   
+    jsonData = [NSString stringWithFormat:jsonData,self.price];
+    NSString *url = [NSString stringWithFormat:@"%@appointment_occurrences/%d?api_key=%@", FIELD_WORK_URL_BASE, self.Id ,[AccountManager Instance].activeAccount.api_key];
+    FieldworkRequest *request = [[FieldworkRequest alloc] initWithUrl:url andDelegate:self andMethod:PUT];
+    request.Tag = SAVE_PRICE;
+    request.postData = jsonData;
+    [request startRequest];
+}
+- (void)savePaymentData:(id<AppointmentDelegate>)del
+{
+    _apptDelegate = del;
+    if (![[AppDelegate appDelegate] isReachable] && [self.status isEqualToString:@"Completed"]) {
+        self.payment_info.isChanged = YES;
+        if (_apptDelegate != nil) {
+            [_apptDelegate InvoiceDataSaved];
+        }
+    }else{
+        [self savePrice];
+        //NSString *jsonData = @"{\"appointment_occurrence\":{\"price\":%f,\"starts_at\":\"%@\",\"started_at_time\":\"%@\",\"finished_at_time\":\"%@\",\"invoice_attributes\":{\"paid\":%@,\"payment_method\":\"%@\",\"check_number\":\"%@\"}}}";
+        NSString *jsonData = @"{\"appointment_occurrence\":{\"invoice_attributes\":{\"payments_attributes\":[{\"id\":\"%@\",\"amount\":%f, \"payment_method\":\"%@\", \"check_number\":\"%@\",\"created_from_mobile\": \"%@\"}]}}}";
+//        NSString *paid = self.invoice_paid == YES ? @"true" : @"false";
+         NSString *create_from_mobile = @"true" ;
+        NSString *pid = self.payment_info.payment_id <= 0 ? @"" : [NSString stringWithFormat:@"%d", self.payment_info.payment_id];
+        jsonData = [NSString stringWithFormat:jsonData,pid,self.payment_info.amount,self.payment_info.payment_method,self.payment_info.check_number,create_from_mobile];
+        NSString *url = [NSString stringWithFormat:@"%@appointment_occurrences/%d?api_key=%@", FIELD_WORK_URL_BASE, self.Id ,[AccountManager Instance].activeAccount.api_key];
+        FieldworkRequest *request = [[FieldworkRequest alloc] initWithUrl:url andDelegate:self andMethod:PUT];
+        request.Tag = SAVE_INVOICE;
+        request.postData = jsonData;
+        [request startRequest];
+    }
+}
+
+-(void)saveEnvironmentData:(id<AppointmentDelegate>)del{
+    _apptDelegate = del;
+    if (![[AppDelegate appDelegate] isReachable]) {
+        _IsEnviornmentChanged = YES;
+        if (_apptDelegate != nil) {
+            [_apptDelegate EnvironmentSaved];
+        }
+    }else{
+        
+        //NSString *jsonData = @"{\"appointment_occurrence\":{\"price\":%f,\"starts_at\":\"%@\",\"started_at_time\":\"%@\",\"finished_at_time\":\"%@\",\"invoice_attributes\":{\"paid\":%@,\"payment_method\":\"%@\",\"check_number\":\"%@\"}}}";
+        NSString *jsonData = @"{\"appointment_occurrence\":{\"square_feet\":\"%@\",\"wind_direction\":\"%@\",\"wind_speed\":\"%@\",\"temperature\":\"%@\"}}";
+        
+        jsonData = [NSString stringWithFormat:jsonData, self.square_feet,self.wind_direction,self.wind_speed,self.temperature];
+        NSString *url = [NSString stringWithFormat:@"%@appointment_occurrences/%d?api_key=%@", FIELD_WORK_URL_BASE, self.Id ,[AccountManager Instance].activeAccount.api_key];
+        FieldworkRequest *request = [[FieldworkRequest alloc] initWithUrl:url andDelegate:self andMethod:PUT];
+        request.Tag = SAVE_ENVIRONMENT;
+        request.postData = jsonData;
+        [request startRequest];
+    }
+
+}
+
+- (void)addMaterialUsage:(MaterialUsage *)materialUsage withDelegate:(id<ListItemDelegate>)del{
+    self.materialUsageList.appointmentId = self.Id;
+//    if (materialUsage.material_usage_id > 0) {
+//        if (![[AppDelegate appDelegate] isReachable]) {
+//            [self.materialUsageList.deletedMaterialUsages addObject:materialUsage];
+//        }else{
+//            NSString *jsonData = @"{\"appointment_occurrence\":{\"material_usages_attributes\":[{\"id\":%d,\"_destroy\":true}]}}";
+//            jsonData = [NSString stringWithFormat:jsonData, materialUsage.material_usage_id];
+//            NSString *url = [NSString stringWithFormat:@"%@appointment_occurrences/%d?api_key=%@", FIELD_WORK_URL_BASE, self.Id ,[AccountManager Instance].activeAccount.api_key];
+//            FieldworkRequest *request = [[FieldworkRequest alloc] initWithUrl:url andDelegate:self andMethod:PUT];
+//            request.Tag = DELETE_MATERIAL_USAGE;
+//            request.postData = jsonData;
+//            [request startRequest];
+//        }
+//        
+//    }
+    [self.materialUsageList addMaterialUsage:materialUsage withDelegate:del];
+}
+
+
+
+#pragma mark - FieldworkRequestDelegate
+
+- (void)FieldworkRequestDidSucceed:(FieldworkRequest *)request {
+    
+    
+    if ([request.Tag isEqualToString:SAVE_PDF]) {
+        if (request.IsSuccess) {
+            
+        }
+    }
+    
+    if ([request.Tag isEqualToString:DOWNLOAD_PDF]) {
+        if (request.IsSuccess) {
+            // download pdf
+        }
+    }
+    if ([request.Tag isEqualToString:SAVE_SIGNATURE]) {
+        if (request.IsSuccess) {
+            
+        }
+    }
+    if ([request.Tag isEqualToString:SAVE_APPOINTMENT]) {
+        if (request.IsSuccess) {
+            if (_apptDelegate != nil) {
+                [_apptDelegate AppointmentSavedSuccessfully];
+            }
+        }
+    }
+    if ([request.Tag isEqualToString:SAVE_INVOICE]) {
+        if (request.IsSuccess) {
+            if (_apptDelegate != nil) {
+                [_apptDelegate InvoiceDataSaved];
+            }
+        }
+    }
+    if ([request.Tag isEqualToString:DELETE_MATERIAL_USAGE]) {
+        if (request.IsSuccess) {
+            
+        }
+    }
+    if ([request.Tag isEqualToString:SAVE_ENVIRONMENT]) {
+        if (request.IsSuccess) {
+            if (_apptDelegate != nil) {
+                [_apptDelegate EnvironmentSaved];
+            }
+        }
+    }
+
+}
+
+- (void)FieldworkRequestDidFail:(FieldworkRequest *)request withError:(NSError *)error {
+    if ([request.Tag isEqualToString:SAVE_SIGNATURE]) {
+        if (_apptDelegate != nil) {
+            [_apptDelegate AppointmentSaveFailedWithError:[error.userInfo objectForKey:@"message"]];
+        }
+    }
+    if ([request.Tag isEqualToString:SAVE_APPOINTMENT]) {
+        if (_apptDelegate != nil) {
+            [_apptDelegate AppointmentSaveFailedWithError:[error.userInfo objectForKey:@"message"]];
+        }
+    }
+    if ([request.Tag isEqualToString:SAVE_INVOICE]) {
+        if (_apptDelegate != nil) {
+            [_apptDelegate InvoiceDataSaveFailedWithError:[error.userInfo objectForKey:@"message"]];
+        }
+    }
+    if ([request.Tag isEqualToString:SAVE_ENVIRONMENT]) {
+        if (_apptDelegate != nil) {
+            [_apptDelegate EnvironmentDataSaveFailedWithError:[error.userInfo objectForKey:@"message"]];
+        }
+    }
+
+}
+#pragma mark -
+#pragma mark Properties
+@synthesize instruction=_instruction;
+@synthesize Id = _Id;
+@synthesize starts_at = _starts_at;
+@synthesize ends_at =_ends_at;
+@synthesize status = _status;
+@synthesize customer_id = _customer_id;
+
+@synthesize service_id = _service_id;
+@synthesize started_at_time = _started_at_time;
+@synthesize finished_at_time = _finished_at_time;
+@synthesize duration = _duration;
+@synthesize customer_signature = _customer_signature;
+@synthesize technician_signature = _technician_signature;
+@synthesize notes = _notes;
+@synthesize technician_signature_name = _technician_signature_name;
+@synthesize invoice_approved = _invoice_approved;
+@synthesize invoice_number = _invoice_number;
+@synthesize invoice_paid = _invoice_paid;
+@synthesize invoice_payment_method = _invoice_payment_method;
+@synthesize invoice_check_number = _invoice_check_number;
+@synthesize targetPestList = _targetPestList;
+@synthesize materialUsageList = _materialUsageList;
+@synthesize price = _price;
+
+@synthesize IsInvoiceChanged = _IsInvoiceChanged;
+@synthesize IsSignatureChanged = _IsSignatureChanged;
+
+@synthesize inspectionRecordList = _inspectionRecordList;
+@synthesize invoice_amount=_invoice_amount;
+
+@synthesize square_feet = _square_feet;
+@synthesize wind_direction = _wind_direction;
+@synthesize wind_speed = _wind_speed;
+@synthesize temperature = _temperature;
+@synthesize payment_info = _payment_info;
+
+
+
+@end

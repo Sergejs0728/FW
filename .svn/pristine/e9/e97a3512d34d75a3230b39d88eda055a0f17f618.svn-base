@@ -1,0 +1,49 @@
+//
+//  Constants.h
+//  FieldWork
+//
+//  Created by Samir Kha on 16/01/2013.
+//  Copyright (c) 2013 __MyCompanyName__. All rights reserved.
+//
+
+#ifndef FieldWork_Constants_h
+#define FieldWork_Constants_h
+
+#define DOWNLOAD_PDF @"DOWNLOAD_PDF"
+#define ADD_ITEM_TAG @"ADD_ITEM_TAG"
+#define ADD_MATERIAL_ITEM_TAG @"ADD_MATERIAL_ITEM_TAG"
+#define ADD_PEST_ITEM_TAG @"ADD_PEST_ITEM_TAG"
+
+#define LOAD_LIST_TAG @"LOAD_LIST_TAG"
+
+#define DELETE_LIST_ITEM @"DELETE_LIST_ITEM"
+
+
+#define TARGET_PEST_LOAD_NOTIFICATION @"TARGET_PEST_LOAD_NOTIFICATION"
+
+#define REFRESH_PEST_LIST_NOTIFICATION @"REFRESH_PEST_LIST_NOTIFICATION"
+#define REFRESH_MATERIAL_LIST_NOTIFICATION @"REFRESH_MATERIAL_LIST_NOTIFICATION"
+
+
+//#define SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(v)  ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] != NSOrderedAscending)
+
+//#define IOS_5_OR_GRETER_VERSION [[UIDevice currentDevice] systemVersion] >= 5.0;
+
+#define IS_IOS_5_OR_GREATER SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"5.0");
+
+
+#ifndef kCFCoreFoundationVersionNumber_iPhoneOS_5_0
+#define kCFCoreFoundationVersionNumber_iPhoneOS_5_0 675.000000
+#endif
+
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_5_0
+#define IF_IOS5_OR_GREATER(...) \
+if (kCFCoreFoundationVersionNumber >= kCFCoreFoundationVersionNumber_iPhoneOS_5_0) \
+{ \
+__VA_ARGS__ \
+}
+#else
+#define IF_IOS5_OR_GREATER 0
+#endif
+
+#endif

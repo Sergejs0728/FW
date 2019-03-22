@@ -1,0 +1,47 @@
+//
+//  CustomerRetrival.m
+//  FieldWork
+//
+//  Created by Samir Khatri on 3/14/13.
+//
+//
+
+#import "CustomerRetrival.h"
+
+@implementation CustomerRetrival
+
+
+- (void)retriveCustomerWithId:(int)cust_id andDelegate:(id<CustomerRetrivalDelegate>)del {
+    _delegate = del;
+    if ([[AppDelegate appDelegate] isReachable]) {
+        NSString *url = [NSString stringWithFormat:@"%@customers/%d?api_key=%@", FIELD_WORK_URL_BASE, cust_id ,[AccountManager Instance].activeAccount.api_key];
+        FieldworkRequest *request = [[FieldworkRequest alloc] initWithUrl:url andDelegate:self];
+        [request startRequest];
+    }
+}
+
+
+#pragma mark - FieldworkRequestDelegate
+
+- (void)FieldworkRequestDidSucceed:(FieldworkRequest *)request {
+    if(request.IsSuccess){
+        NSDictionary *dict = request.responseData;
+        NSDictionary *customer = [dict objectForKey:@"customer"];
+        Customer *cust = [Customer customerWithDictionary:customer];
+        if (_delegate) {
+            [_delegate CustomerRetrived:cust];
+        }
+    }else{
+        if (_delegate) {
+            [_delegate CustomerRetrivalFailedWithError:@""];
+        }
+    }
+}
+
+- (void)FieldworkRequestDidFail:(FieldworkRequest *)request withError:(NSError *)error {
+    if (_delegate) {
+        [_delegate CustomerRetrivalFailedWithError:@""];
+    }    
+}
+
+@end

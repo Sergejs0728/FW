@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="11201" systemVersion="16B2657" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11161"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="PDFSelectCell"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="gTV-IL-0wX" customClass="PDFSelectCell">
+            <rect key="frame" x="0.0" y="0.0" width="309" height="200"/>
+            <autoresizingMask key="autoresizingMask"/>
+            <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
+                <rect key="frame" x="0.0" y="0.0" width="309" height="200"/>
+                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                <subviews>
+                    <tableView clipsSubviews="YES" contentMode="scaleToFill" bounces="NO" style="plain" separatorStyle="none" allowsSelection="NO" rowHeight="50" sectionHeaderHeight="1" sectionFooterHeight="1" translatesAutoresizingMaskIntoConstraints="NO" id="Rpv-zU-EfW">
+                        <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.0" colorSpace="custom" customColorSpace="sRGB"/>
+                    </tableView>
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="uka-NE-sVD">
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" minimumScaleFactor="0.69999999999999996" translatesAutoresizingMaskIntoConstraints="NO" id="FfT-E7-saL">
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                        <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.0" colorSpace="custom" customColorSpace="sRGB"/>
+                        <constraints>
+                            <constraint firstAttribute="bottom" secondItem="FfT-E7-saL" secondAttribute="bottom" constant="5" id="0yp-bb-Tg7"/>
+                            <constraint firstAttribute="trailing" secondItem="FfT-E7-saL" secondAttribute="trailing" constant="10" id="3bG-Ia-an0"/>
+                            <constraint firstItem="FfT-E7-saL" firstAttribute="leading" secondItem="uka-NE-sVD" secondAttribute="leading" constant="10" id="J27-hi-ic9"/>
+                            <constraint firstItem="FfT-E7-saL" firstAttribute="top" secondItem="uka-NE-sVD" secondAttribute="top" constant="7" id="abt-aE-hjR"/>
+                            <constraint firstAttribute="height" constant="50" id="xID-qY-nRT"/>
+                        </constraints>
+                    </view>
+                </subviews>
+            </view>
+            <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+            <constraints>
+                <constraint firstItem="Rpv-zU-EfW" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" id="4Qh-ga-24j"/>
+                <constraint firstAttribute="bottom" secondItem="Rpv-zU-EfW" secondAttribute="bottom" id="61R-gv-lVc"/>
+                <constraint firstItem="uka-NE-sVD" firstAttribute="top" secondItem="gTV-IL-0wX" secondAttribute="top" id="Jua-Wh-QCD"/>
+                <constraint firstAttribute="trailing" secondItem="Rpv-zU-EfW" secondAttribute="trailing" id="NJb-Pw-tTb"/>
+                <constraint firstItem="uka-NE-sVD" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" id="Whr-n9-e09"/>
+                <constraint firstAttribute="trailing" secondItem="uka-NE-sVD" secondAttribute="trailing" id="be7-lV-fp7"/>
+                <constraint firstItem="Rpv-zU-EfW" firstAttribute="top" secondItem="uka-NE-sVD" secondAttribute="bottom" id="rzz-FB-z3S"/>
+            </constraints>
+            <connections>
+                <outlet property="lablel" destination="FfT-E7-saL" id="HKj-Vl-6dF"/>
+                <outlet property="tableView" destination="Rpv-zU-EfW" id="uhl-hn-frm"/>
+            </connections>
+            <point key="canvasLocation" x="437.5" y="336"/>
+        </collectionViewCell>
+    </objects>
+</document>

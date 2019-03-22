@@ -1,0 +1,429 @@
+//
+//  MaterialUsageRecordController.m
+//  FieldWork
+//
+//  Created by Samir Kha on 11/01/2013.
+//  Copyright (c) 2013 __MyCompanyName__. All rights reserved.
+//
+
+#import "MaterialUsageRecordController.h"
+
+@implementation MaterialUsageRecordController
+- (void) ListItemDeletionFailedWithError:(NSString*) error{}
+- (void) ListItemDeletedSuccessfully{}
+@synthesize currentMaterialUsage = _currentMaterialUsage;
+@synthesize locationTableExpander = _locationTableExpander;
+@synthesize selectedLocations=_selectedLocations;
++ (MaterialUsageRecordController *)viewControllerWithAppointment:(Appointment *)app andMaterialUsage:(MaterialUsage *)musage{
+//    MaterialUsageRecordController *mu = [[MaterialUsageRecordController alloc] initWithNibName:@"MaterialUsageRecordController" bundle:nil];
+    MaterialUsageRecordController *mu;
+    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
+        mu = [[MaterialUsageRecordController alloc] initWithNibName:@"MaterialUsageRecordController_IPad" bundle:nil];        
+    }else{
+        mu = [[MaterialUsageRecordController alloc] initWithNibName:@"MaterialUsageRecordController" bundle:nil];
+        
+    }
+    mu.Appointment = app;
+    mu.currentMaterialUsage = musage;
+    mu.title = @"Material Usage";
+    return mu;
+}
+
+
+#pragma mark - View lifecycle
+
+- (void)viewDidLoad
+{
+    [super viewDidLoad];
+    
+    Material *mat = [self.currentMaterialUsage getMaterial];
+    _materialName.text = mat.name;
+    _mainScrollView.contentSize = CGSizeMake(self.view.frame.size.width, self.view.frame.size.height);
+    
+    _dataLable = [[NSMutableArray alloc] init];
+    [_dataLable addObject:@"Dilution Rate"];
+     [_dataLable addObject:@"Qty"];
+    [_dataLable addObject:@"Unit of Measure"];
+    [_dataLable addObject:@"Method"];//Application Method
+       _tblMainData.delegate = self;
+    _tblLocationAreas.delegate = self;
+    
+   
+    
+    [_tblMainData reloadData];
+
+    
+    commonData = [[MaterialUsageRecord alloc] init];
+    if (self.currentMaterialUsage.material_usage_records != nil && self.currentMaterialUsage.material_usage_records.count > 0) {
+        commonData = [self.currentMaterialUsage.material_usage_records objectAtIndex:0];
+    }
+    self.selectedLocations = [[NSMutableArray alloc] init];
+    NSMutableArray *tempUsage = self.currentMaterialUsage.material_usage_records;
+    for (MaterialUsageRecord *mr in tempUsage) {
+       if (mr && mr.location_area_id != 0) {
+            [self.selectedLocations addObject:[NSNumber numberWithInt:mr.location_area_id]];
+        }
+       
+        
+    }
+    
+    [_tblLocationAreas reloadData];
+    //[self.locationTableExpander expand];
+    [self expandLocationTable];
+    
+}
+
+- (void) expandLocationTable
+{   
+    float table_height = 70;
+    //float table_height = 120;
+    table_height = table_height + (44 * ( self.selectedLocations.count == 0 ? 1 :  self.selectedLocations.count + 1));
+    Customer *cust = [self.Appointment getCustomer];
+    if (cust.location_type_id <= 0) {
+        _tblLocationAreas.hidden = YES;
+        
+        _tblLocationAreas.frame = CGRectMake(_tblLocationAreas.frame.origin.x, _tblLocationAreas.frame.origin.y, 0, 0);
+    }else{
+        _tblLocationAreas.hidden = NO;
+        _tblLocationAreas.frame = CGRectMake(_tblLocationAreas.frame.origin.x, _tblLocationAreas.frame.origin.y, _tblLocationAreas.frame.size.width, table_height);
+        _tblLocationAreas.scrollEnabled = NO;
+    }
+   
+    float save_button_y = _tblLocationAreas.frame.origin.y + _tblLocationAreas.frame.size.height-20;//10
+     btnSave.frame = CGRectMake(btnSave.frame.origin.x, save_button_y, btnSave.frame.size.width, btnSave.frame.size.height);
+    
+    _mainScrollView.contentSize = CGSizeMake(self.view.frame.size.width, _tblLocationAreas.frame.origin.y + _tblLocationAreas.frame.size.height + 60);
+}
+
+- (void)viewDidUnload
+{
+    [super viewDidUnload];
+}
+
+- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
+{
+    return (interfaceOrientation == UIInterfaceOrientationPortrait);
+}
+
+- (void)saveMaterialUsage:(id)sender {
+    
+    MaterialUsageCell *cell = (MaterialUsageCell*)[ _tblMainData cellForRowAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:1]];
+    if (cell) {
+        commonData.amount = [cell.txtDataText.text floatValue];
+    }
+    if (commonData.application_method.length <= 0 || commonData.measurement.length <= 0 || commonData.dilution_rate_id <= 0 || commonData.amount <= 0) {
+        UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"FieldWork" message:@"Please enter data to save Material Usage" delegate:nil cancelButtonTitle:@"Ok"                                      otherButtonTitles:nil];
+        [alert show];
+        return;
+    }
+    //if (self.currentMaterialUsage.material_usage_records == nil) {
+        self.currentMaterialUsage.material_usage_records = [[NSMutableArray alloc] init];
+    self.currentMaterialUsage.material = [self.currentMaterialUsage getMaterial];
+    //}
+    if ( self.selectedLocations.count <= 0) {
+        MaterialUsageRecord *newMaterialUsageRecord = [[MaterialUsageRecord alloc] init];
+        newMaterialUsageRecord.dilution_rate_id = commonData.dilution_rate_id;
+        newMaterialUsageRecord.measurement = commonData.measurement;
+        MaterialUsageCell *cell =(MaterialUsageCell*)[_tblMainData cellForRowAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:0]];
+        if (cell) {
+            newMaterialUsageRecord.amount = [cell.txtDataText.text floatValue];            
+        }
+        
+        newMaterialUsageRecord.application_method = commonData.application_method;
+        newMaterialUsageRecord.location_area_id = 0;
+        newMaterialUsageRecord.material_usage = self.currentMaterialUsage;
+        [self.currentMaterialUsage.material_usage_records addObject:newMaterialUsageRecord];
+    }else
+    {
+        for (NSNumber *la in  self.selectedLocations) {
+            MaterialUsageRecord *newMaterialUsageRecord = [[MaterialUsageRecord alloc] init];
+            newMaterialUsageRecord.dilution_rate_id = commonData.dilution_rate_id;
+            newMaterialUsageRecord.measurement = commonData.measurement;
+            MaterialUsageCell *cell =(MaterialUsageCell*)[_tblMainData cellForRowAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:0]];
+            if (cell) {
+                newMaterialUsageRecord.amount = [cell.txtDataText.text floatValue];            
+            }
+            
+            newMaterialUsageRecord.application_method = commonData.application_method;
+            newMaterialUsageRecord.location_area_id = [la intValue];
+            newMaterialUsageRecord.material_usage = self.currentMaterialUsage;
+            [self.currentMaterialUsage.material_usage_records addObject:newMaterialUsageRecord];
+        }
+    }
+    [self.Appointment addMaterialUsage:self.currentMaterialUsage withDelegate:self];
+    for (UIViewController* viewController in self.navigationController.viewControllers) {
+        
+        if ([viewController isKindOfClass:[MaterialUseListController class]] ) {
+            
+            
+            
+            MaterialUseListController *materialUseListController = (MaterialUseListController*)viewController;
+            [self.navigationController popToViewController:materialUseListController animated:YES];
+        }
+    }
+}
+
+#pragma mark - UITableViewDelegate
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
+    if (tableView == _tblMainData) {
+        return 4;
+    }else{
+        return  self.selectedLocations.count + 1;
+    }
+}
+
+- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section{
+    if (tableView == _tblMainData) {
+        
+        
+        return @"Details";
+    }else{
+        return @"Locations Used";
+    }
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    
+    
+    if (tableView == _tblMainData) {
+        static NSString *CellIdentifier = @"CellData";
+        
+        MaterialUsageCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+        if (cell == nil) 
+        {
+            NSArray *topLevelObject = [[NSBundle mainBundle] loadNibNamed:@"MaterialUsageCell" owner:self options:nil];
+            
+            for(id currentObject in topLevelObject)
+            {
+                if([currentObject isKindOfClass:[UITableViewCell class]])
+                {
+                    cell = (MaterialUsageCell*) currentObject;
+                    
+                    [[KeyboardAccessoryHelper getInstance] createInputAccessoryFor:cell.txtDataText inView:self.view andDelegate:self];
+                }
+            }
+        }
+  
+        NSString *lbl = [_dataLable objectAtIndex:indexPath.row];
+        cell.lblMainLable.textColor= [UIColor colorWithRed:140.0/255.0 green:140.0/255.0 blue:140.0/255.0 alpha:1.0];
+
+        
+        
+        
+        cell.lblMainLable.text = lbl;
+        if (indexPath.row != 1) {
+            cell.txtDataText.enabled = NO;
+            cell.selectionStyle = UITableViewCellSelectionStyleBlue;
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 70000
+            if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0"))
+                {
+                cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+                }else{
+                    cell.accessoryType = UITableViewCellAccessoryDetailDisclosureButton;
+                }
+#endif
+                //cell.accessoryType = UITableViewCellAccessoryDetailDisclosureButton;
+        }else{
+            cell.txtDataText.enabled = YES;
+            cell.txtDataText.keyboardType = UIKeyboardTypeNumbersAndPunctuation;
+            cell.selectionStyle = UITableViewCellSelectionStyleNone;
+            cell.accessoryType = UITableViewCellAccessoryNone;
+        }
+        
+        cell.txtDataText.textColor= [UIColor colorWithRed:60.0/255.0 green:60.0/255.0 blue:60.0/255.0 alpha:1.0];
+        
+        if (indexPath.row == 0) {
+            if (commonData.dilution_rate_id != 0) {
+                DilutionRates *dd = [DilutionRates dilutionRateById:commonData.dilution_rate_id];
+                 
+                cell.txtDataText.text = dd.name;
+            }else{
+                Material *mat = [self.currentMaterialUsage getMaterial];
+                commonData.dilution_rate_id=mat.default_dilution_rate_id;
+                DilutionRates *default_d = [DilutionRates dilutionRateById:commonData.dilution_rate_id];
+                if(default_d){
+                    cell.txtDataText.text = default_d.name;
+                }
+            }
+        }else if(indexPath.row == 1){
+            if (commonData.amount <= 0) {
+                cell.txtDataText.placeholder = @"0.00";
+            }else{
+                
+                    cell.txtDataText.text = [NSString stringWithFormat:@"%.02f", commonData.amount];
+            }
+            cell.txtDataText.delegate = self;
+        } else if(indexPath.row == 2){
+            
+            cell.txtDataText.text = commonData.measurement;
+        }else if (indexPath.row == 3){
+            
+            cell.txtDataText.text = commonData.application_method;
+        }
+        
+        return cell;
+    }else{
+        static NSString *CellIdentifier = @"CellLocation";
+        
+        UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+        if (cell == nil)
+        {
+            cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
+        }
+        if (indexPath.row ==  self.selectedLocations.count) {
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 70000
+            if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0"))
+                {
+                cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+                }else{
+                    cell.accessoryType = UITableViewCellAccessoryDetailDisclosureButton;
+                }
+#endif
+                // cell.accessoryType = UITableViewCellAccessoryDetailDisclosureButton;
+            cell.textLabel.text = @"Add a Location";
+        }else{
+            int l_id = [[self.selectedLocations objectAtIndex:indexPath.row] intValue];
+           
+            LocationArea *locationArea = [LocationType locationAreaById:l_id];
+            
+            cell.textLabel.text = locationArea.location_area_name;
+            NSLog(@"Location id %@      %@",locationArea.location_area_id,locationArea.location_area_name);
+           // cell.textLabel.text = locationArea
+
+            cell.accessoryType = UITableViewCellAccessoryNone;
+        }
+        
+        return cell;
+    }
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
+    if (tableView == _tblMainData && indexPath.row != 1) {
+        DataType dType = DilutionRate;
+        if (indexPath.row == 0) {
+            dType = DilutionRate;
+        } else if(indexPath.row == 2){
+            dType = Unit;
+            
+        }else if(indexPath.row == 3){
+            dType = AppMethod;
+        }
+        DataTableViewController *dt = [DataTableViewController tableWithDataType:dType andDelegate:self];
+        dt.materialUsage = self.currentMaterialUsage;
+        
+        [self.navigationController pushViewController:dt animated:YES];
+    }else if (tableView == _tblLocationAreas) {
+        if (indexPath.row ==  self.selectedLocations.count) {
+            DataTableViewController *dt = [DataTableViewController tableWithDataType:LocationEnum andDelegate:self];
+            dt.materialUsage = self.currentMaterialUsage;
+            Customer *cust = [self.Appointment getCustomer];
+            dt.location_type_id = cust.location_type_id;
+            dt.Appointment = self.Appointment;
+            [self.navigationController pushViewController:dt animated:YES];
+        }
+    }
+}
+
+- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if (tableView == _tblLocationAreas && indexPath.row !=  self.selectedLocations.count) {
+        if (editingStyle == UITableViewCellEditingStyleDelete) {
+            [ self.selectedLocations removeObjectAtIndex:indexPath.row];
+            [_tblLocationAreas reloadData];
+            [self expandLocationTable];
+        }
+    }
+}
+
+- (UITableViewCellEditingStyle) tableView:(UITableView *)tableView editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if (tableView == _tblLocationAreas && indexPath.row !=  self.selectedLocations.count)
+    {
+        return UITableViewCellEditingStyleDelete;
+    }
+    return UITableViewCellEditingStyleNone;
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
+    Customer *cust = [self.Appointment getCustomer];
+    if (tableView == _tblLocationAreas && cust.location_type_id <= 0) {
+        return 0;
+    }
+    return 44;
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
+    Customer *cust = [self.Appointment getCustomer];
+    if (tableView == _tblLocationAreas && cust.location_type_id <= 0) {
+        return 0;
+    }
+    return 20;
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section {
+    Customer *cust = [self.Appointment getCustomer];
+    if (tableView == _tblLocationAreas && cust.location_type_id <= 0) {
+        return 0;
+    }
+    return 10;
+}
+
+#pragma mark - DataSelectionDelegate
+
+- (void)DataSelectedForData:(id)data andType:(DataType)type {
+    if (type == DilutionRate) {
+        commonData.dilution_rate_id = [data intValue];
+        [_tblMainData reloadData];
+    } else if(type == AppMethod){
+        commonData.application_method = [NSString stringWithFormat:@"%@", data];
+        [_tblMainData reloadData];
+    }else if(type == Unit){
+        commonData.measurement = [NSString stringWithFormat:@"%@", data];
+        [_tblMainData reloadData];
+    }else if (type == LocationEnum){
+        if (data) {
+            if([ self.selectedLocations containsObject:[NSNumber numberWithInt:[data intValue]]]){
+                return;
+            }
+            [ self.selectedLocations addObject:[NSNumber numberWithInt:[data intValue]]];
+        }
+   
+        [_tblLocationAreas reloadData];
+        [self expandLocationTable];
+    }
+}
+
+
+#pragma mark - KeyBoardHelper
+
+- (void)hideKeyboard {
+    [self.view endEditing:TRUE];
+}
+
+
+#pragma mark - ListItemDelegate
+
+- (void)ListItemAddedSuccessfully {
+    
+}
+
+- (void)ListItemAdditionFailedWithError:(NSString *)error {
+    
+}
+
+#pragma mark - UITextFieldDelegate
+
+
+
+- (void)textFieldDidEndEditing:(UITextField *)textField{
+    
+    if (textField) {
+        commonData.amount = [textField.text floatValue];
+    }
+}
+
+
+@end

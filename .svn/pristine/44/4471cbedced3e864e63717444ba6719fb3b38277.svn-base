@@ -1,0 +1,53 @@
+//
+//  SignaturePoint.m
+//  SignatureDemo
+//
+//  Created by Samir Kha on 17/01/2013.
+//  Copyright (c) 2013 __MyCompanyName__. All rights reserved.
+//
+
+#import "SignaturePoint.h"
+
+@implementation SignaturePoint
+
+@synthesize ly = _ly;
+@synthesize lx = _lx;
+@synthesize mx = _mx;
+@synthesize my = _my;
+
+
+
++ (SignaturePoint *)newPointWithlx:(float)llx ly:(float)lly mx:(float)mmx my:(float)mmy {
+    SignaturePoint *sp = [[SignaturePoint alloc] init];
+    sp.lx = llx;
+    sp.ly = lly;
+    sp.mx = mmx;
+    sp.my = mmy;
+    return sp;
+}
+
++ (NSMutableArray *)parseWithArray:(NSString *)sigString {
+    SBJSON *jsonParser = [[SBJSON alloc] init];
+    NSError *error;
+    NSMutableArray *arr = [jsonParser objectWithString:sigString error:&error];
+    if (error) {
+        NSLog(@"Error Occured in parsing signature : %@", error.userInfo);
+    }
+    NSMutableArray *sigArr = [[NSMutableArray alloc] init];
+    for (NSDictionary *dict in arr) {
+        float lly = [[dict objectForKey:@"ly"] floatValue];
+        float llx = [[dict objectForKey:@"lx"] floatValue];
+        float mmy = [[dict objectForKey:@"my"] floatValue];
+        float mmx = [[dict objectForKey:@"mx"] floatValue];
+            //NSLog(@"ff");
+        SignaturePoint *sp = [SignaturePoint newPointWithlx:llx ly:lly mx:mmx my:mmy];
+        [sigArr addObject:sp];
+    }
+    return sigArr;
+}
+
+- (NSString *)getJson {
+    return [NSString stringWithFormat:@"{\\\"my\\\":%.02f,\\\"ly\\\":%.02f,\\\"mx\\\":%.02f,\\\"lx\\\":%.02f}", self.my, self.ly, self.mx, self.lx];
+}
+
+@end

@@ -1,0 +1,42 @@
+{
+  "DVTSourceControlWorkspaceBlueprintPrimaryRemoteRepositoryKey" : "D1C718164296924721B0EC7C261A790289F0E46D+++03C7514",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyRepositoryLocationsKey" : {
+    "D1C718164296924721B0EC7C261A790289F0E46D+++AD651F8" : {
+
+    },
+    "D1C718164296924721B0EC7C261A790289F0E46D+++622494E" : {
+
+    }
+  },
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
+    "D1C718164296924721B0EC7C261A790289F0E46D+++03C7514" : 0,
+    "D1C718164296924721B0EC7C261A790289F0E46D+++622494E" : 0,
+    "D1C718164296924721B0EC7C261A790289F0E46D+++AD651F8" : 0
+  },
+  "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "535E12F2-D9D9-461F-8C1F-547FBCF731FB",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
+    "D1C718164296924721B0EC7C261A790289F0E46D+++03C7514" : "fieldwork\/",
+    "D1C718164296924721B0EC7C261A790289F0E46D+++622494E" : "fieldwork_ios\/",
+    "D1C718164296924721B0EC7C261A790289F0E46D+++AD651F8" : "fieldwork_ios\/"
+  },
+  "DVTSourceControlWorkspaceBlueprintNameKey" : "FieldWork",
+  "DVTSourceControlWorkspaceBlueprintVersion" : 204,
+  "DVTSourceControlWorkspaceBlueprintRelativePathToProjectKey" : "FieldWork.xcworkspace",
+  "DVTSourceControlWorkspaceBlueprintRemoteRepositoriesKey" : [
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/beauohara\/fieldwork_ios.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "D1C718164296924721B0EC7C261A790289F0E46D+++03C7514"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/beauohara\/fieldwork_ios.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "D1C718164296924721B0EC7C261A790289F0E46D+++622494E"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/beauohara\/fieldwork_ios.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Subversion",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "D1C718164296924721B0EC7C261A790289F0E46D+++AD651F8"
+    }
+  ]
+}

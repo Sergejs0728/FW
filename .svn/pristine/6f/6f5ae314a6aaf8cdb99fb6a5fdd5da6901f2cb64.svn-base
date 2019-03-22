@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model name="" userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="872" systemVersion="10K549" minimumToolsVersion="Automatic" macOSVersion="Automatic" iOSVersion="Automatic">
+    <entity name="ApplicationMethods" representedClassName="ApplicationMethods" syncable="YES">
+        <attribute name="methodName" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
+    <entity name="DilutionRates" representedClassName="DilutionRates" syncable="YES">
+        <attribute name="dilution_id" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
+    <entity name="LocationArea" representedClassName="LocationArea" syncable="YES">
+        <attribute name="location_area_id" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <attribute name="location_area_name" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
+    <entity name="LocationType" representedClassName="LocationType" syncable="YES">
+        <attribute name="location_type_color" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="location_type_id" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <attribute name="location_type_name" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="location_areas" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="LocationArea" syncable="YES"/>
+    </entity>
+    <entity name="Measurements" representedClassName="Measurements" syncable="YES">
+        <attribute name="measurement" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
+    <entity name="Statuses" representedClassName="Statuses" syncable="YES">
+        <attribute name="statusName" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="statusValue" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
+    <elements>
+        <element name="ApplicationMethods" positionX="160" positionY="192" width="128" height="60"/>
+        <element name="DilutionRates" positionX="160" positionY="192" width="128" height="75"/>
+        <element name="LocationArea" positionX="142" positionY="-54" width="128" height="75"/>
+        <element name="LocationType" positionX="-18" positionY="234" width="128" height="105"/>
+        <element name="Measurements" positionX="160" positionY="192" width="128" height="60"/>
+        <element name="Statuses" positionX="162" positionY="195" width="128" height="75"/>
+    </elements>
+</model>

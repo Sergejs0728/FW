@@ -1,0 +1,164 @@
+//
+//  MaterialList.m
+//  FieldWork
+//
+//  Created by Samir Kha on 15/01/2013.
+//  Copyright (c) 2013 __MyCompanyName__. All rights reserved.
+//
+
+#import "MaterialList.h"
+#import "AppDelegate.h"
+
+static MaterialList *Singleton = nil;
+
+@implementation MaterialList
+
+@synthesize delegate=_delegate;
+@synthesize Materials=_Materials;
+
+- (id)init {
+    self = [super init];
+    if (self) {
+        _Materials = [[NSMutableArray alloc] init];
+        _delegate = nil;
+    }
+    return self;
+}
+
++ (MaterialList*) Instance
+{
+    if(Singleton == nil){
+        Singleton=[[MaterialList alloc] init];
+         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshList) name:REFRESH_MATERIAL_LIST_NOTIFICATION object:nil];
+    }
+    
+    return Singleton;
+}
+
+- (void)refreshList {
+    _Materials = [[NSMutableArray alloc] init];
+    _delegate = nil;
+    NSString *url = [NSString stringWithFormat:@"%@materials?api_key=%@", FIELD_WORK_URL_BASE, [AccountManager Instance].activeAccount.api_key];
+    FieldworkRequest *request = [[FieldworkRequest alloc] initWithUrl:url andDelegate:self];
+    request.Tag = LOAD_LIST_TAG;
+    [request startRequest];
+}
+
+- (int)loadedCount 
+{
+    return _Materials.count;
+}
+
+- (NSMutableArray *)getMaterialArray {
+    return self.Materials;
+}
+
+- (void) addmaterialType:(Material*) material andDelegate:(id<ListItemDelegate>)del
+{
+    _itemListDelegate = del;
+   if (![[AppDelegate appDelegate] isReachable])
+        {
+        NSLog(@"Bool has %hhd",[[AppDelegate appDelegate] isReachable]);
+        material.materialId = [Utils RandomId];
+        [self.Materials addObject:material];
+        if (_itemListDelegate != nil) {
+            [_itemListDelegate ListItemAddedSuccessfully];
+        }
+    }else{
+        
+        NSString *url = [NSString stringWithFormat:@"%@materials?api_key=%@", FIELD_WORK_URL_BASE, [AccountManager Instance].activeAccount.api_key];
+        
+         NSString *name = [material.name JSONStringWithOptions:JKSerializeOptionEscapeForwardSlashes includeQuotes:NO error:nil];
+        NSString *epaName = [material.epaName JSONStringWithOptions:JKSerializeOptionEscapeForwardSlashes includeQuotes:NO error:nil];
+        
+        NSString *data = [NSString stringWithFormat:@"{\"name\":\"%@\",\"epa_number\":\"%@\"}", name, epaName];
+        FieldworkRequest *request = [[FieldworkRequest alloc] initWithUrl:url andDelegate:self andMethod:POST];
+        request.postData = data;
+        request.Tag = ADD_ITEM_TAG;
+        [request startRequest];
+    }
+    
+}
+
+- (void)loadWithDelegate:(id<MaterialListDelegate>)del 
+{
+    _delegate=del;
+    
+    if([self loadedCount]<=0)
+    {
+        NSString *url = [NSString stringWithFormat:@"%@materials?api_key=%@", FIELD_WORK_URL_BASE, [AccountManager Instance].activeAccount.api_key];
+        FieldworkRequest *request = [[FieldworkRequest alloc] initWithUrl:url andDelegate:self];
+        request.Tag = LOAD_LIST_TAG;
+        [request startRequest];
+    }
+    else
+    {
+        if (_delegate != nil) {
+            [_delegate MaterialListLoaded];
+        }
+    }
+}
+
+- (Material *)materialbyId:(int)mid {
+    for (Material *mate in _Materials) {
+        if (mate.materialId == mid) {
+            return mate;
+        }
+    }
+    return nil;
+}
+
+-(void)FieldworkRequestDidSucceed:(FieldworkRequest *)request
+{
+    if([request.Tag isEqualToString:LOAD_LIST_TAG])
+    {
+        if(request.IsSuccess)
+        {
+            self.Materials = [[NSMutableArray alloc] init]; 
+            NSArray *arr = request.responseData;
+            
+            for (NSDictionary *data in arr) 
+            {
+                Material *mate = [Material materialWithDictionary:data];
+                [self.Materials addObject:mate];
+                
+            }
+            if (_delegate != nil) 
+            {
+                [_delegate MaterialListLoaded];
+            }
+            
+            
+        }
+    }
+    if ([request.Tag isEqualToString:ADD_ITEM_TAG]) {
+        if (request.IsSuccess) {
+            NSDictionary *dict = request.responseData;
+            NSDictionary *material = [dict objectForKey:@"material"];
+            Material *mate = [Material materialWithDictionary:material];
+            if (mate && self.Materials) {
+                [self.Materials addObject:mate];
+            }
+            [_itemListDelegate ListItemAddedSuccessfully];
+        }else{
+            [_itemListDelegate ListItemAdditionFailedWithError:request.message];
+        }
+    }
+}
+
+- (void)FieldworkRequestDidFail:(FieldworkRequest *)request withError:(NSError *)error{
+    if ([request.Tag isEqualToString:LOAD_LIST_TAG]) {
+        if (_delegate != nil) {
+            [_delegate MaterialListLoadFailed:[error.userInfo objectForKey:@"message"]];
+        }
+    }
+    if ([request.Tag isEqualToString:ADD_ITEM_TAG]) {
+        if (_itemListDelegate) {
+            [_itemListDelegate ListItemAdditionFailedWithError:[error.userInfo objectForKey:@"message"]];
+        }
+    }
+    
+}
+
+
+@end

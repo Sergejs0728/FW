@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<VariablesViewState
+   version = "1.0">
+   <ContextStates>
+      <ContextState
+         contextName = "-[AppDetailCell buildLabelsAndButtonsForType:withTitle:]:AppDetailCell.m">
+      </ContextState>
+      <ContextState
+         contextName = "-[NewAppointMentsDetailViewController calculateAppDetailCellHeight]:NewAppointMentsDetailViewController.m">
+      </ContextState>
+      <ContextState
+         contextName = "-[NewAppointMentsDetailViewController tableView:cellForRowAtIndexPath:]:NewAppointMentsDetailViewController.m">
+      </ContextState>
+      <ContextState
+         contextName = "__25-[FWRequest startRequest]_block_invoke:FWRequest.m">
+         <PersistentStrings>
+            <PersistentString
+               value = "_urlPart">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "-[NewAppointMentsDetailViewController tableView:estimatedHeightForRowAtIndexPath:]:NewAppointMentsDetailViewController.m">
+      </ContextState>
+      <ContextState
+         contextName = "-[NewAppointMentsDetailViewController showMapsSelectorActionSheet]:NewAppointMentsDetailViewController.m">
+         <PersistentStrings>
+            <PersistentString
+               value = "[NSURL URLWithString:googleMapsUrlStr]">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "-[UIExpandableTableView headerViewOpen:]:UIExpandableTableView.m">
+      </ContextState>
+      <ContextState
+         contextName = "__25-[FWRequest startRequest]_block_invoke.120:FWRequest.m">
+         <PersistentStrings>
+            <PersistentString
+               value = "_urlPart">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "__25-[FWRequest startRequest]_block_invoke.109:FWRequest.m">
+         <PersistentStrings>
+            <PersistentString
+               value = "_urlPart">
+            </PersistentString>
+            <PersistentString
+               value = "error.localizedDescription">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "-[AppDetailCell setDataWithAppointment:]:AppDetailCell.m">
+         <PersistentStrings>
+            <PersistentString
+               value = "_hieght">
+            </PersistentString>
+            <PersistentString
+               value = "_lblAddress">
+            </PersistentString>
+            <PersistentString
+               value = "_lblCustomerName">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "-[FWRequest startRequest]:FWRequest.m">
+         <PersistentStrings>
+            <PersistentString
+               value = "_urlPart">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+   </ContextStates>
+</VariablesViewState>

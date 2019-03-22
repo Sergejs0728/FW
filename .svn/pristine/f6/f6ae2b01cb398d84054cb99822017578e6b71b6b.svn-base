@@ -1,0 +1,337 @@
+//
+//  AppDelegate.m
+//  FieldWork
+//
+//  Created by Samir Kha on 05/01/2013.
+//  Copyright (c) 2013 __MyCompanyName__. All rights reserved.
+//
+
+#import "AppDelegate.h"
+#import "TrapDetailView.h"
+
+
+@implementation AppDelegate
+@synthesize window = _window;
+@synthesize navigationController = _navigationController;
+@synthesize barcode_object=_barcode_object;
+
+
++(AppDelegate*)appDelegate
+{
+    return (AppDelegate*)[[UIApplication sharedApplication] delegate];
+}
+- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
+{
+
+    //[self.navigationController.navigationBar setTintColor:[UIColor colorWithRed:53.0/255 green:152.0/255.0 blue:219.0/255.0 alpha:1.0]];
+    if (!SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0"))
+        {
+        [self.navigationController.navigationBar setTintColor:[UIColor colorWithRed:34.0/255 green:34.0/255.0 blue:34.0/255.0 alpha:1.0]];
+        [self.navigationController.navigationBar setBarStyle:UIBarStyleBlackTranslucent];
+        }else{
+            
+            
+            
+         /*   [[UINavigationBar appearance] setTitleTextAttributes:
+             [NSDictionary dictionaryWithObjectsAndKeys:
+              [UIColor whiteColor], UITextAttributeTextColor,
+              [UIFont fontWithName:@"ArialMT" size:17.0], UITextAttributeFont,nil]];*/
+            
+          /*  [[UIBarButtonItem appearance] setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:[UIColor whiteColor],
+                                                                  UITextAttributeTextColor,[UIColor whiteColor],
+                                                                  UITextAttributeTextColor,
+                                                                  [NSValue valueWithUIOffset:UIOffsetMake(0, 1)],
+                                                                  UITextAttributeTextColor,
+                                                                  [UIFont fontWithName:@"ArialMT" size:18.0],
+                                                                  UITextAttributeFont,
+                                                                  nil]
+                                                        forState:UIControlStateNormal];*/
+            
+        }
+   
+   
+    [self.window makeKeyAndVisible];
+    
+    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
+                    self.window.backgroundColor = [UIColor ipadColor];
+    }else{
+             //  self.window.backgroundColor = [UIColor groupTableViewBackgroundColor];
+    }
+    //[self.window setBackgroundColor:[UIColor colorWithRed:236.0/255.0 green:240.0/255.0 blue:241.0/255.0 alpha:1.0]];
+    
+    [self.window setBackgroundColor:[UIColor colorWithRed:238.0/255.0 green:238.0/255.0 blue:238.0/255.0 alpha:1.0]];
+    
+    if ([AccountManager Instance].activeAccount == nil) {
+        [self showLogin:NO];
+    }else{
+        [self loadAllLists];
+    }
+    
+    Reachability* reach = [Reachability reachabilityWithHostname:@"www.google.com"];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(reachabilityChanged:)
+                                                 name:kReachabilityChangedNotification
+                                               object:nil];
+    [reach startNotifier];
+    return YES;
+    
+    
+    
+    
+}
+
+- (void)applicationWillResignActive:(UIApplication *)application
+{
+    /*
+     Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
+     Use this method to pause ongoing tasks, disable timers, and throttle down OpenGL ES frame rates. Games should use this method to pause the game.
+     */
+}
+
+- (void)applicationDidEnterBackground:(UIApplication *)application
+{
+    /*
+     Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later. 
+     If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
+     */
+    NSLog(@"applicationDidEnterBackground");
+//    DataSaver *saver = [[DataSaver alloc] init];
+//    [saver saveAppointmentJson];
+}
+
+- (void)applicationWillEnterForeground:(UIApplication *)application
+{
+    /*
+     Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
+     */
+        NSLog(@"applicationWillEnterForeground");
+    
+}
+
+- (void)applicationDidBecomeActive:(UIApplication *)application
+{
+    /*
+     Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
+     */
+    NSLog(@"applicationDidBecomeActive");
+//    if ([AppointmentList Instance].Appointments.count <= 0) {
+//        DataSaver *saver = [[DataSaver alloc] init];
+//        [saver reloadAppointmentFromSaved];
+//    }
+}
+
+- (void)applicationWillTerminate:(UIApplication *)application
+{
+    /*
+     Called when the application is about to terminate.
+     Save data if appropriate.
+     See also applicationDidEnterBackground:.
+     */
+    NSLog(@"Application will terminate");
+   
+    
+}
+
+- (BOOL)isReachable {
+    Reachability *reach =[Reachability reachabilityWithHostname:@"www.google.com"];
+    return [reach isReachable];
+}
+
+- (void)loadAllLists {
+        //[[CustomerList Instance] loadWithDelegate:nil];
+    [[PestList Instance] refreshList];
+    [[MaterialList Instance] refreshList];
+    [[DilutionRatesList Instance] load];
+
+    StaticModelLoader *modelLoader = [[StaticModelLoader alloc] init];
+    [modelLoader loadStaticLists];
+}
+
+#pragma Custom Methods
+
+- (void)showLogin:(BOOL)animated {
+     NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+    if ([userDefaults objectForKey:@"UserName"]) {
+        _username = [userDefaults objectForKey:@"UserName"];
+    }
+    LoginController *login = [LoginController loginViewControllerWithUsername:_username];
+    login.delegate = self;
+    
+    
+    UINavigationController *navControl = [[UINavigationController alloc] initWithRootViewController:login];
+    [navControl.navigationBar setTintColor:[UIColor colorWithRed:53.0/255 green:152.0/255.0 blue:219.0/255.0 alpha:1.0]];
+    [navControl.navigationBar setBarStyle:UIBarStyleBlackTranslucent];
+    navControl.modalTransitionStyle = UIModalTransitionStyleFlipHorizontal;
+
+    [self.navigationController presentModalViewController:navControl animated:animated];
+}
+
+- (void) logout{
+   
+    [AccountManager Instance].activeAccount = nil;
+    [AppointmentList Instance].Appointments = [[NSMutableArray alloc] init];
+    [CustomerList Instance].Customers = [[NSMutableArray alloc] init];
+    [self showLogin:TRUE];
+}
+
+#pragma LoginControllerDelegate
+
+- (void)userDidLogin:(LoginController *)viewController {
+  
+
+    [self.navigationController dismissModalViewControllerAnimated:YES];
+    [[UserInfo Instance] loadUser];
+    [self loadAllLists];
+}
+
+#pragma mark Core Data stack
+
+/**
+ Returns the managed object context for the application.
+ If the context doesn't already exist, it is created and bound to the persistent store coordinator for the application.
+ */
+- (NSManagedObjectContext *) managedObjectContext {
+	
+    if (managedObjectContext != nil) {
+        return managedObjectContext;
+    }
+	
+    NSPersistentStoreCoordinator *coordinator = [self persistentStoreCoordinator];
+    if (coordinator != nil) {
+        managedObjectContext = [[NSManagedObjectContext alloc] init];
+        [managedObjectContext setPersistentStoreCoordinator: coordinator];
+    }
+    return managedObjectContext;
+}
+
+
+/**
+ Returns the managed object model for the application.
+ If the model doesn't already exist, it is created by merging all of the models found in the application bundle.
+ */
+- (NSManagedObjectModel *)managedObjectModel {
+	
+    if (managedObjectModel != nil) {
+        return managedObjectModel;
+    }
+    managedObjectModel = [NSManagedObjectModel mergedModelFromBundles:nil];    
+    return managedObjectModel;
+}
+
+
+/**
+ Returns the persistent store coordinator for the application.
+ If the coordinator doesn't already exist, it is created and the application's store added to it.
+ */
+- (NSPersistentStoreCoordinator *)persistentStoreCoordinator {
+	
+    if (persistentStoreCoordinator != nil) {
+        return persistentStoreCoordinator;
+    }
+	
+    NSURL *storeUrl = [NSURL fileURLWithPath: [[self applicationDocumentsDirectory] stringByAppendingPathComponent: @"FieldworkDataModel.sqlite"]];
+	
+	NSError *error = nil;
+    persistentStoreCoordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:[self managedObjectModel]];
+    if (![persistentStoreCoordinator addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:storeUrl options:nil error:&error]) {
+		/*
+		 Replace this implementation with code to handle the error appropriately.
+		 
+		 abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development. If it is not possible to recover from the error, display an alert panel that instructs the user to quit the application by pressing the Home button.
+		 
+		 Typical reasons for an error here include:
+		 * The persistent store is not accessible
+		 * The schema for the persistent store is incompatible with current managed object model
+		 Check the error message to determine what the actual problem was.
+		 */
+		NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+		abort();
+    }    
+	
+    return persistentStoreCoordinator;
+}
+
+- (BOOL)saveManageObjectContext {
+    NSError *error;
+	if (![managedObjectContext save:&error]) {
+		return NO;
+	}
+    return YES;
+}
+
+
+#pragma mark -
+#pragma mark Application's Documents directory
+
+/**
+ Returns the path to the application's Documents directory.
+ */
+- (NSString *)applicationDocumentsDirectory {
+	return [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject];
+}
+
+
+#pragma mark - Reachability
+
+-(void)reachabilityChanged:(NSNotification*)note
+{
+    Reachability * reach = [note object];
+    
+    if([reach isReachable])
+    {   
+        NSLog(@"INTERNET CONNECTION AVAILABLE");
+        [[SyncHelper Instance] startSync];
+    }
+    else
+    {
+        NSLog(@"INTERNET CONNECTION IS NOT AVAILABLE");
+    }
+}
+
+- (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation {
+    
+    NSArray *paths=NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *documentDirectory=[paths objectAtIndex:0];
+    
+    NSMutableArray *appts = [AppointmentList Instance].Appointments;
+    int appt_id = 0;
+    for (Appointment *app in appts) {
+        NSString *temp = [NSString stringWithFormat:@"%d",app.Id];
+        NSString *strurl = [NSString stringWithFormat:@"%@", url];
+        if ([strurl rangeOfString:temp options:NSCaseInsensitiveSearch].location != NSNotFound) {
+            appt_id = app.Id;
+            break;
+        }
+    }
+    if (appt_id > 0) {
+        NSString *finalPath=[documentDirectory stringByAppendingPathComponent:[NSString stringWithFormat:@"%d.pdf",appt_id]]; //check your path correctly and provide your name dynamically
+        NSLog(@"finalpath--%@",finalPath);
+        NSData *datapdf = [NSData dataWithContentsOfURL:url];
+        
+        if ([[NSFileManager defaultManager] isDeletableFileAtPath:finalPath]) {
+            NSError *error = [[NSError alloc] init];
+            BOOL success = [[NSFileManager defaultManager] removeItemAtPath:finalPath error:&error];
+            if (!success) {
+                NSLog(@"Error removing file at path: %@", error.localizedDescription);
+            }
+        }
+        // NSLog(@"data--%@",datapdf);
+        if(datapdf)
+            [datapdf writeToFile:finalPath atomically:YES];
+
+    }else{
+        UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"FieldWork"
+                                                         message:@"This is a wrong file."
+                                                        delegate:nil
+                                               cancelButtonTitle:@"Ok"
+                                               otherButtonTitles: nil];
+        [alert show];
+    }
+    
+
+    
+    return YES;
+}
+
+
+@end

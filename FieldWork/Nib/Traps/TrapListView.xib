@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="11762" systemVersion="16D32" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11757"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="TrapListController">
+            <connections>
+                <outlet property="Traplisttable" destination="3" id="FDB-kT-k6T"/>
+                <outlet property="searchDisplayController" destination="28" id="30"/>
+                <outlet property="segment" destination="4" id="12"/>
+                <outlet property="view" destination="1" id="7"/>
+            </connections>
+        </placeholder>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view contentMode="scaleToFill" id="1">
+            <rect key="frame" x="0.0" y="0.0" width="320" height="460"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" style="plain" separatorStyle="default" sectionIndexMinimumDisplayRowCount="1" rowHeight="48" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="3">
+                    <rect key="frame" x="0.0" y="44" width="320" height="372"/>
+                    <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                    <searchBar key="tableHeaderView" contentMode="redraw" id="27">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
+                        <textInputTraits key="textInputTraits"/>
+                        <connections>
+                            <outlet property="delegate" destination="-1" id="35"/>
+                        </connections>
+                    </searchBar>
+                    <connections>
+                        <outlet property="dataSource" destination="-1" id="5"/>
+                        <outlet property="delegate" destination="-1" id="6"/>
+                    </connections>
+                </tableView>
+                <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="bar" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="4">
+                    <rect key="frame" x="10" y="8" width="300" height="29"/>
+                    <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                    <segments>
+                        <segment title="Un-Checked"/>
+                        <segment title="Checked"/>
+                    </segments>
+                    <color key="tintColor" red="0.90980392160000001" green="0.29803921570000003" blue="0.23529411759999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                    <connections>
+                        <action selector="segmentedControlIndexChanged" destination="-1" eventType="valueChanged" id="26"/>
+                    </connections>
+                </segmentedControl>
+                <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="19">
+                    <rect key="frame" x="0.0" y="416" width="320" height="44"/>
+                    <items>
+                        <barButtonItem style="plain" systemItem="flexibleSpace" id="21"/>
+                        <barButtonItem title="Scan" id="22">
+                            <connections>
+                                <action selector="scanButtonTapped" destination="-1" id="24"/>
+                            </connections>
+                        </barButtonItem>
+                        <barButtonItem style="plain" systemItem="flexibleSpace" id="23"/>
+                    </items>
+                </toolbar>
+            </subviews>
+            <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.0" colorSpace="custom" customColorSpace="sRGB"/>
+            <constraints>
+                <constraint firstItem="19" firstAttribute="leading" secondItem="1" secondAttribute="leading" id="Cab-LR-io9"/>
+                <constraint firstItem="4" firstAttribute="leading" secondItem="1" secondAttribute="leading" constant="10" id="TId-rO-mWi"/>
+                <constraint firstAttribute="trailing" secondItem="3" secondAttribute="trailing" id="Y4u-Sv-s6o"/>
+                <constraint firstAttribute="trailing" secondItem="19" secondAttribute="trailing" id="ieG-wY-CLn"/>
+                <constraint firstAttribute="trailing" secondItem="4" secondAttribute="trailing" constant="10" id="lPW-fM-MJc"/>
+                <constraint firstItem="3" firstAttribute="top" secondItem="4" secondAttribute="bottom" constant="8" id="oZx-ps-b9g"/>
+                <constraint firstAttribute="bottom" secondItem="19" secondAttribute="bottom" id="pBK-Yl-kU8"/>
+                <constraint firstItem="3" firstAttribute="leading" secondItem="1" secondAttribute="leading" id="qVE-Ce-Xjz"/>
+                <constraint firstItem="4" firstAttribute="top" secondItem="1" secondAttribute="top" constant="8" id="wpO-Di-JSB"/>
+                <constraint firstItem="19" firstAttribute="top" secondItem="3" secondAttribute="bottom" id="xU9-O9-Z6U"/>
+            </constraints>
+            <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+            <point key="canvasLocation" x="34" y="54"/>
+        </view>
+        <searchDisplayController id="28">
+            <connections>
+                <outlet property="delegate" destination="-1" id="34"/>
+                <outlet property="searchBar" destination="27" id="29"/>
+                <outlet property="searchContentsController" destination="-1" id="31"/>
+                <outlet property="searchResultsDataSource" destination="-1" id="32"/>
+                <outlet property="searchResultsDelegate" destination="-1" id="33"/>
+            </connections>
+        </searchDisplayController>
+    </objects>
+</document>

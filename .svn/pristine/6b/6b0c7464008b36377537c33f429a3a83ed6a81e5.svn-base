@@ -1,0 +1,33 @@
+//
+//  Material.h
+//  FieldWork
+//
+//  Created by Samir Kha on 15/01/2013.
+//  Copyright (c) 2013 __MyCompanyName__. All rights reserved.
+//
+
+#import <Foundation/Foundation.h>
+#import "FieldworkRequest.h"
+#import "FieldworkRequestDelegate.h"
+#import "FieldworkURLSchema.h"
+#import "Constants.h"
+#import "AccountManager.h"
+@interface Material : NSObject <FieldworkRequestDelegate, NSCopying>
+{
+    int _id;
+    NSString *_name;
+    NSString *_epaName;
+    double _price;
+    int _default_dilution_rate_id;
+}
+@property(nonatomic,assign)int materialId;
+@property(nonatomic,assign)int default_dilution_rate_id;
+@property(nonatomic,retain,readwrite)NSString *name;
+@property(nonatomic,retain, readwrite)NSString *epaName;
+@property(nonatomic,assign)double price;
+
++ (Material*) materialWithDictionary:(NSDictionary*) dict;
+
+
+- (void) sync;
+@end

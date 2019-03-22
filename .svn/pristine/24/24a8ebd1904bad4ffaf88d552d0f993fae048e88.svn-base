@@ -1,0 +1,56 @@
+//
+//  Pest.m
+//  FieldWork
+//
+//  Created by Samir Kha on 16/01/2013.
+//  Copyright (c) 2013 __MyCompanyName__. All rights reserved.
+//
+
+#import "Pest.h"
+
+@implementation Pest
+
+@synthesize pestId=_pestId;
+@synthesize name=_name;
+
++ (Pest*) pestWithDictionary:(NSDictionary*) dict;
+{
+    Pest *pt = [[Pest alloc] init];
+    
+    if([dict objectForKey:@"id"] != [NSNull null])
+    {
+         pt.pestId = [[dict objectForKey:@"id"] intValue];
+    }
+    
+    pt.name = [dict objectForKey:@"name"];
+    
+    NSLog(@"pest %@",pt.name);
+    
+    return pt;
+}
+
+- (void)sync {
+    NSString *url = [NSString stringWithFormat:@"%@pest_types?api_key=%@", FIELD_WORK_URL_BASE, [AccountManager Instance].activeAccount.api_key];
+    NSString *data = [NSString stringWithFormat:@"{\"name\":\"%@\"}", self.name];
+    FieldworkRequest *request = [[FieldworkRequest alloc] initWithUrl:url andDelegate:self andMethod:POST];
+    request.postData = data;
+    request.Tag = ADD_ITEM_TAG;
+    [request startRequest];
+}
+
+#pragma mark - FieldworkRequestDelegate
+
+-(void)FieldworkRequestDidSucceed:(FieldworkRequest *)request
+{
+    if (request.IsSuccess) {
+        NSDictionary *dict = request.responseData;
+        NSDictionary *pest_type = [dict objectForKey:@"pest_type"];
+        self.pestId = [[pest_type objectForKey:@"id"] intValue];
+    }
+}
+
+- (void)FieldworkRequestDidFail:(FieldworkRequest *)request withError:(NSError *)error {
+    
+}
+
+@end

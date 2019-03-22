@@ -1,0 +1,54 @@
+//
+//  MaterialUsageList.h
+//  FieldWork
+//
+//  Created by Samir Kha on 28/01/2013.
+//  Copyright (c) 2013 __MyCompanyName__. All rights reserved.
+//
+
+#import <Foundation/Foundation.h>
+#import "ListItemDelegate.h"
+#import "MaterialUsageListDelegate.h"
+#import "MaterialUsage.h"
+#import "FieldworkRequest.h"
+#import "FieldworkRequestDelegate.h"
+#import "FieldworkURLSchema.h"
+#import "AccountManager.h"
+#import "Constants.h"
+#import "MaterialUsageRecord.h"
+#import "NSMutableArray+Join.h"
+
+@interface MaterialUsageList : NSObject <FieldworkRequestDelegate>
+{
+    NSMutableArray *_MaterialUsages;
+    NSMutableArray *_deletedMaterialUsages;
+    
+    id<ListItemDelegate> _listItemDelegate;
+    
+    int _appointmentId;
+    
+    id<MaterialUsageListDelegate> _delegate;
+}
+
+@property(nonatomic,retain,readwrite)NSMutableArray *MaterialUsages;
+@property(nonatomic,retain,readwrite)NSMutableArray *deletedMaterialUsages;
+@property (nonatomic, assign) int appointmentId;
+
+
+- (void)refreshWithDelegate:(id<MaterialUsageListDelegate>) del;
+
+- (NSMutableArray*) getMaterialUsageArray;
+
+- (NSMutableArray *) getMaterialUsageRecordArray;
+
+- (MaterialUsage*) getMaterialUsageById:(int) mid;
+
+- (void) addMaterialUsage:(MaterialUsage*) mu withDelegate:(id<ListItemDelegate>)del;
+
+- (void) deleteMaterialUsage:(MaterialUsage*) mu withDelegate:(id<ListItemDelegate>)del;
+
+- (void) parseWithArray:(NSArray*) arr;
+
+-(void) syncMaterialUsage;
+
+@end

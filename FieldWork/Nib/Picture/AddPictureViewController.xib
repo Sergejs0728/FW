@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="11762" systemVersion="16D32" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11757"/>
+        <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="AddPictureViewController">
+            <connections>
+                <outlet property="_characterlbl" destination="PQd-TO-WO1" id="147-oH-JSR"/>
+                <outlet property="_imgView" destination="TJI-Sc-2MV" id="J2K-5n-IIq"/>
+                <outlet property="_txtNoteView" destination="Epi-Hf-w3d" id="22J-nE-bmb"/>
+                <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
+            </connections>
+        </placeholder>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="i5M-Pr-FkT">
+            <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="akI-wE-Mp8" customClass="TPKeyboardAvoidingScrollView">
+                    <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                    <subviews>
+                        <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="TJI-Sc-2MV">
+                            <rect key="frame" x="8" y="8" width="359" height="278.5"/>
+                            <constraints>
+                                <constraint firstAttribute="width" secondItem="TJI-Sc-2MV" secondAttribute="height" multiplier="76:59" id="xLk-Ax-JvW"/>
+                            </constraints>
+                        </imageView>
+                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="eeH-Fv-t2u">
+                            <rect key="frame" x="0.0" y="296.5" width="375" height="122"/>
+                            <subviews>
+                                <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Epi-Hf-w3d">
+                                    <rect key="frame" x="8" y="8" width="359" height="106"/>
+                                    <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                    <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                                    <connections>
+                                        <outlet property="delegate" destination="-1" id="gM9-b4-ZY5"/>
+                                    </connections>
+                                </textView>
+                            </subviews>
+                            <color key="backgroundColor" red="0.87450980392156863" green="0.87450980392156863" blue="0.87450980392156863" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            <constraints>
+                                <constraint firstAttribute="bottom" secondItem="Epi-Hf-w3d" secondAttribute="bottom" constant="8" id="BV2-xb-6HR"/>
+                                <constraint firstAttribute="trailing" secondItem="Epi-Hf-w3d" secondAttribute="trailing" constant="8" id="bE5-To-2TW"/>
+                                <constraint firstAttribute="height" constant="122" id="blg-Vk-YSa"/>
+                                <constraint firstItem="Epi-Hf-w3d" firstAttribute="leading" secondItem="eeH-Fv-t2u" secondAttribute="leading" constant="8" id="oYV-8R-sYh"/>
+                                <constraint firstItem="Epi-Hf-w3d" firstAttribute="top" secondItem="eeH-Fv-t2u" secondAttribute="top" constant="8" id="uMz-4i-sWo"/>
+                            </constraints>
+                        </view>
+                        <button opaque="NO" alpha="0.0" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" showsTouchWhenHighlighted="YES" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="P6m-Ni-qq7" customClass="FieldWorkButton">
+                            <rect key="frame" x="10" y="451.5" width="355" height="37"/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="37" id="5Ys-XW-3bc"/>
+                            </constraints>
+                            <state key="normal" title="Save Photo">
+                                <color key="titleShadowColor" red="0.49803921568627452" green="0.49803921568627452" blue="0.49803921568627452" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            </state>
+                        </button>
+                        <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="300" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="PQd-TO-WO1">
+                            <rect key="frame" x="334" y="421.5" width="31" height="21"/>
+                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                            <color key="textColor" red="0.61168456077575684" green="0.61168456077575684" blue="0.61168456077575684" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="hof-3g-kHC">
+                            <rect key="frame" x="8" y="8" width="359" height="278.5"/>
+                            <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.0" colorSpace="custom" customColorSpace="sRGB"/>
+                            <state key="normal">
+                                <color key="titleShadowColor" red="0.5" green="0.5" blue="0.5" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            </state>
+                            <connections>
+                                <action selector="addPhotoClicked:" destination="-1" eventType="touchUpInside" id="Rko-em-Rk5"/>
+                            </connections>
+                        </button>
+                    </subviews>
+                    <constraints>
+                        <constraint firstAttribute="trailing" secondItem="PQd-TO-WO1" secondAttribute="trailing" constant="10" id="2ci-32-p6o"/>
+                        <constraint firstItem="eeH-Fv-t2u" firstAttribute="top" secondItem="hof-3g-kHC" secondAttribute="bottom" constant="10" id="7Hd-v5-G09"/>
+                        <constraint firstItem="hof-3g-kHC" firstAttribute="width" secondItem="TJI-Sc-2MV" secondAttribute="width" id="9pu-6d-smy"/>
+                        <constraint firstAttribute="trailing" secondItem="P6m-Ni-qq7" secondAttribute="trailing" constant="10" id="E16-xs-uq2"/>
+                        <constraint firstItem="hof-3g-kHC" firstAttribute="centerX" secondItem="TJI-Sc-2MV" secondAttribute="centerX" id="Ifl-83-YwY"/>
+                        <constraint firstItem="hof-3g-kHC" firstAttribute="centerY" secondItem="TJI-Sc-2MV" secondAttribute="centerY" id="JTQ-FV-fQu"/>
+                        <constraint firstItem="P6m-Ni-qq7" firstAttribute="top" secondItem="PQd-TO-WO1" secondAttribute="bottom" constant="9" id="K7Y-zK-L9d"/>
+                        <constraint firstItem="TJI-Sc-2MV" firstAttribute="top" secondItem="akI-wE-Mp8" secondAttribute="top" constant="8" id="Kvp-I2-uEG"/>
+                        <constraint firstItem="TJI-Sc-2MV" firstAttribute="leading" secondItem="akI-wE-Mp8" secondAttribute="leading" constant="8" id="O4U-CX-VbP"/>
+                        <constraint firstAttribute="trailing" secondItem="eeH-Fv-t2u" secondAttribute="trailing" id="YY9-Ev-ctW"/>
+                        <constraint firstAttribute="bottom" secondItem="P6m-Ni-qq7" secondAttribute="bottom" constant="10" id="b0g-4f-Ir4"/>
+                        <constraint firstAttribute="trailing" secondItem="TJI-Sc-2MV" secondAttribute="trailing" constant="8" id="d43-Ly-uWG"/>
+                        <constraint firstItem="P6m-Ni-qq7" firstAttribute="leading" secondItem="akI-wE-Mp8" secondAttribute="leading" constant="10" id="j6K-Qf-uii"/>
+                        <constraint firstItem="eeH-Fv-t2u" firstAttribute="leading" secondItem="akI-wE-Mp8" secondAttribute="leading" id="m2g-u6-aUS"/>
+                        <constraint firstItem="PQd-TO-WO1" firstAttribute="top" secondItem="eeH-Fv-t2u" secondAttribute="bottom" constant="3" id="pf2-Od-NGC"/>
+                        <constraint firstItem="hof-3g-kHC" firstAttribute="height" secondItem="TJI-Sc-2MV" secondAttribute="height" id="rSj-H5-f97"/>
+                    </constraints>
+                </scrollView>
+            </subviews>
+            <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <constraints>
+                <constraint firstItem="akI-wE-Mp8" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" id="AK5-8i-ILQ"/>
+                <constraint firstItem="akI-wE-Mp8" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="ELh-xN-7ys"/>
+                <constraint firstAttribute="bottom" secondItem="akI-wE-Mp8" secondAttribute="bottom" id="aCp-6v-cP7"/>
+                <constraint firstItem="eeH-Fv-t2u" firstAttribute="width" secondItem="i5M-Pr-FkT" secondAttribute="width" id="av9-kx-dTQ"/>
+                <constraint firstAttribute="trailing" secondItem="akI-wE-Mp8" secondAttribute="trailing" id="dnn-ZW-Stw"/>
+            </constraints>
+            <simulatedStatusBarMetrics key="simulatedStatusBarMetrics"/>
+            <point key="canvasLocation" x="319" y="291"/>
+        </view>
+    </objects>
+</document>

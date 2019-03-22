@@ -1,0 +1,204 @@
+//
+//  MaterialListController.m
+//  FieldWork
+//
+//  Created by Samir Kha on 11/01/2013.
+//  Copyright (c) 2013 __MyCompanyName__. All rights reserved.
+//
+
+#import "MaterialListController.h"
+#import "MaterialList.h"
+
+@implementation MaterialListController
+
+@synthesize materialList = _materialList;
+@synthesize filteredListContent;
+@synthesize table;
+
+
++ (MaterialListController *)viewControllerWithAppointment:(Appointment *)app {
+    MaterialListController *mc = [[MaterialListController alloc] initWithNibName:@"MaterialListController" bundle:nil];
+    mc.Appointment = app;
+    return mc;
+}
+
+
+#pragma mark - View lifecycle
+ 
+- (void)viewDidLoad
+{
+        
+    [super viewDidLoad];
+    
+    UIBarButtonItem *addBtn = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(addNewMaterial)];
+    
+    self.navigationItem.rightBarButtonItem = addBtn;
+    self.navigationItem.title = @"Material List";
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loadMaterialList) name:@"Notification_MaterialAdded" object:nil];
+    self.filteredListContent = [[NSMutableArray alloc] init];
+    [[MaterialList Instance] loadWithDelegate:self];
+}
+
+- (void) viewWillAppear:(BOOL)animated
+{   [super viewWillAppear:animated];
+   
+    NSSortDescriptor * sortDesc = [[NSSortDescriptor alloc] initWithKey:@"name" ascending:YES];
+    [_materialList sortUsingDescriptors:[NSMutableArray arrayWithObject:sortDesc]];
+    [table reloadData];
+}
+
+- (void)viewDidUnload
+{
+    [super viewDidUnload];
+}
+
+- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
+{
+    // Return YES for supported orientations
+    return (interfaceOrientation == UIInterfaceOrientationPortrait);
+}
+
+- (void) addNewMaterial{
+    MaterialAddController *ma = [MaterialAddController viewControllerWithAppointment:self.Appointment];
+    [self.navigationController pushViewController:ma animated:YES];
+}
+
+- (void) loadMaterialList
+{
+    self.materialList = [[NSMutableArray alloc] init];
+    
+    [self.materialList addObjectsFromArray:[[MaterialList Instance] getMaterialArray]];
+    
+    [table reloadData];
+
+}
+
+#pragma MaterialListDelegate
+
+- (void)MaterialListLoaded 
+{
+    self.materialList = [[NSMutableArray alloc] init];
+    
+    [self.materialList addObjectsFromArray:[[MaterialList Instance] getMaterialArray]];
+    //self.materialList = [[MaterialList Instance] getMaterialArray];
+    
+       [table reloadData];
+       
+    
+    
+
+    NSLog(@"material list %@",self.materialList);
+    
+}
+
+- (void)MaterialListLoadFailed:(NSString *)error 
+{
+    
+}
+
+
+#pragma table method
+
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
+{
+    return 1;
+}
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+{
+    if (tableView == self.searchDisplayController.searchResultsTableView)
+	{
+        return [self.filteredListContent count];
+    }
+	else
+	{
+        return [self.materialList count];
+    }
+}
+
+// Customize the appearance of table view cells.
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    static NSString *CellIdentifier = @"Cell";
+    
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+    if (cell == nil)
+    {
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
+        cell.accessoryType = UITableViewCellAccessoryNone;
+    }
+    
+    Material *mat = [self.materialList objectAtIndex:indexPath.row];
+    if (tableView == self.searchDisplayController.searchResultsTableView)
+    {
+        mat = [self.filteredListContent objectAtIndex:indexPath.row];
+    }
+       
+    cell.textLabel.text = mat.name;
+    return cell;
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
+    MaterialUsage *mu = [[MaterialUsage alloc] init];
+    Material *mat = [self.materialList objectAtIndex:indexPath.row];
+    if (tableView == self.searchDisplayController.searchResultsTableView)
+    {
+        mat = [self.filteredListContent objectAtIndex:indexPath.row];
+    }
+    mu.material_id = mat.materialId;
+    mu.material = mat;
+    MaterialUsageRecordController *mur = [MaterialUsageRecordController viewControllerWithAppointment:self.Appointment andMaterialUsage:mu];
+    
+    [self.navigationController pushViewController:mur animated:YES];
+}
+
+#pragma mark Content Filtering
+
+- (void)filterContentForSearchText:(NSString*)searchText scope:(NSString*)scope
+{
+	/*
+	 Update the filtered array based on the search text and scope.
+	 */
+	
+	[self.filteredListContent removeAllObjects]; // First clear the filtered array.
+	
+	/*
+	 Search the main list for products whose type matches the scope (if selected) and whose name matches searchText; add items that match to the filtered array.
+	 */
+    
+    for (Material *mat in self.materialList) {
+        NSComparisonResult result = [mat.name compare:searchText options:(NSCaseInsensitiveSearch|NSDiacriticInsensitiveSearch) range:NSMakeRange(0, [searchText length])];
+        if (result == NSOrderedSame)
+        {
+            [self.filteredListContent addObject:mat];
+        }
+    }
+}
+
+#pragma mark -
+#pragma mark UISearchDisplayController Delegate Methods
+
+- (BOOL)searchDisplayController:(UISearchDisplayController *)controller shouldReloadTableForSearchString:(NSString *)searchString
+{
+    [self filterContentForSearchText:searchString scope:
+     [[self.searchDisplayController.searchBar scopeButtonTitles] objectAtIndex:[self.searchDisplayController.searchBar selectedScopeButtonIndex]]];
+    
+    // Return YES to cause the search result table view to be reloaded.
+    return YES;
+}
+
+
+- (BOOL)searchDisplayController:(UISearchDisplayController *)controller shouldReloadTableForSearchScope:(NSInteger)searchOption
+{
+    [self filterContentForSearchText:[self.searchDisplayController.searchBar text] scope:
+     [[self.searchDisplayController.searchBar scopeButtonTitles] objectAtIndex:searchOption]];
+    
+    // Return YES to cause the search result table view to be reloaded.
+    return YES;
+}
+
+
+
+@end

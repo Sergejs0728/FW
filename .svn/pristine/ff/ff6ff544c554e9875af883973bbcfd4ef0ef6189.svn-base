@@ -1,0 +1,29 @@
+//
+//  EnvironmentViewController.h
+//  FieldWork
+//
+//  Created by Samir Khatri on 29/07/2013.
+//
+//
+
+#import <UIKit/UIKit.h>
+#import "Appointment.h"
+#import "AppointmentInformation.h"
+#import "CommonAppointmentViewController.h"
+
+
+@interface EnvironmentViewController : CommonAppointmentViewController<AppointmentDelegate,UITableViewDataSource, UITableViewDelegate>
+{
+    
+    IBOutlet UITableView *mainTable;
+    IBOutlet TableExpanderView *tableExpander;
+    IBOutlet UIScrollView *scrollView;
+    
+    
+}
++(EnvironmentViewController *)initWithAppointment:(Appointment *)app;
+
+
+-(IBAction)SaveEnvironment:(id)sender;
+
+@end

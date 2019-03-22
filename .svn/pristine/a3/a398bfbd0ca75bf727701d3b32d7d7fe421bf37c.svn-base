@@ -1,0 +1,139 @@
+//
+//  BMSPrinterDriver.h
+//  BMSPrinterKit
+//
+//  Created by BMS on 10/2/12.
+//  Copyright (c) 2012 Brother Mobile Solutions, Inc. All rights reserved.
+//
+
+#import "PrintSettings.h"
+
+// Currently supported printer models
+typedef enum
+{
+    kPrinterModelPJ673 = 1,
+} PRINTERMODEL;
+
+
+//*******************************************
+//*** API Function Possible Return Codes ***
+// NOTE: Some API functions will return values defined in BRPtouchPrinter.h, 
+// such as RET_TRUE, RET_FALSE, ERROR_TIMEOUT, etc.
+// For clarity, the return codes defined in this module will begin at -1000.
+
+#define RET_PARAMETER_ERROR         -1000
+#define RET_FILEPATHURL_ERROR       -1001
+#define RET_PDFPAGE_ERROR           -1002
+#define RET_WIFICHANNEL_NOTOPEN     -1003
+#define RET_WIFICHANNEL_WRITEERROR  -1004
+#define RET_WIFICHANNEL_CREATEERROR -1005
+#define RET_PRINTSETTINGS_ERROR     -1006
+#define RET_PARENTVIEW_ERROR        -1007
+#define RET_DATABUFFER_ERROR        -1008
+//*******************************************
+
+@interface BMSPrinterDriver : NSObject
+{
+
+}
+
+//******** Class Properties ********
+@property (nonatomic, assign) PRINTERMODEL printerModel;
+@property (nonatomic, retain) id printSettings;
+
+// Caller MUST set these as appropriate when printing multiple pages.
+@property (nonatomic, assign) BOOL isFirstPage;
+@property (nonatomic, assign) BOOL isLastPage;
+
+
+//******** Class Initializers ********
+- (id) initWithModel:(PRINTERMODEL)theModel printSettings:(id)printSettings;
+
+
+//******** MAIN API FUNCTIONS ********
+
+// *** BRPtouchPrinter function WRAPPERS ***
+// These wrappers are provided for convenience only. In some cases, you may wish to use
+// BRPtouchPrinter functions after using the BMSPrinterDriver class to generate the print
+// data. These wrappers allow you to do this without instantiating a BRPtouchPrinter object.
+
+// wrappers for sendFile and sendFileEx
+- (int) sendFileBlocking: (NSString *)filePath toIPAddress:(NSString *)IPAddress timeout:(int)nTimeout;
+- (int) sendFileNonBlocking: (NSString *)filePath toIPAddress:(NSString *)IPAddress timeout:(int)nTimeout;
+
+// wrappers for sendData and sendDataEx
+- (int) sendPrintDataBlocking: (NSData *)printData toIPAddress:(NSString *)IPAddress timeout:(int)nTimeout;
+- (int) sendPrintDataNonBlocking: (NSData *)printData toIPAddress:(NSString *)IPAddress timeout:(int)nTimeout;
+
+// note: a wrapper for printImage is NOT provided
+
+
+//******* BMS new functionality functions **********
+
+//***** Misc Utilities
+- (CGRect) getPrintableRectFromCurrentSettings;
+
+//***** FILE Printing Functions
+- (int) sendFileWithProgressView:(NSURL *)filePathURL
+                      toIPAddress:(NSString *)IPAddress
+                  usingParentView:(id)parentViewController;
+
+//***** PDF Printing Functions
+// retrieve the print data to send in any way that you prefer
+- (int) generatePrintData: (NSMutableData *)printData fromPDFPageRef: (CGPDFPageRef) pdfPageRef;
+
+// send PDF file without a ProgresView
+// This is a BLOCKING function only
+- (int) printPDFFilePathURL:(NSURL *)filePathURL
+                  firstPage:(int)firstPage 
+                   lastPage:(int)lastPage
+                    timeout:(int)timeout;
+
+// send PDF file with a MODAL ProgressView
+- (int) printPDFFileWithProgressView:(NSURL *)filePathURL
+                            firstPage:(int)firstPage 
+                             lastPage:(int)lastPage
+                      usingParentView:(id)parentViewController;
+
+
+//***** Image Printing Functions
+// print Image with a MODAL ProgressView
+- (int) printCGImageRefWithProgressView:(CGImageRef)imageRef
+                        usingParentView:(id)parentViewController;
+
+// retrieve the print data to send in any way that you prefer
+- (int) generatePrintData: (NSMutableData *)printData fromCGImageRef: (CGImageRef)imageRef;
+
+// print Image blocking or non-blocking, without a ProgresView
+- (int) printCGImageRef:(CGImageRef)imageRef
+            blocking:(BOOL)blocking
+             timeout:(int)timeout;
+
+
+//***** Manual Control of WIFI Channel. These 3 all work together.
+// Sending data this way allows you to send data in bands and display your own progress indicator.
+- (int) openWIFIChannel: (NSString *)IPAddress timeout:(CFTimeInterval)nTimeout;
+- (int) sendDataToWIFIChannel: (const uint8_t *)data length:(int)length timeout:(CFTimeInterval)nTimeout errorCode:(int *)pErrorCode;
+- (void) closeWIFIChannel;
+
+@end
+
+/////////////////////////////////////////////////////////////////////////////
+// This defines the DataControllerProtocol that MUST be used for developing 
+// new printer drivers for a printer model. The DataControllers are used to 
+// generate model-specific print data based on the current printSettings.
+@protocol DataControllerProtocol <NSObject>
+// everything is required!
+@required
+
+// Properties
+@property (nonatomic, assign) BOOL isFirstPage;
+@property (nonatomic, assign) BOOL isLastPage;
+@property (nonatomic, retain) PrintSettings *printSettings;
+
+// Methods
+- (CGRect) getPaperRectFromCurrentSettings;
+- (CGRect) getPrintableRectFromCurrentSettings;
+- (BOOL) generatePrintData: (NSMutableData *)printData fromCGContextRef: (CGContextRef) context;
+@end
+/////////////////////////////////////////////////////////////////////////////

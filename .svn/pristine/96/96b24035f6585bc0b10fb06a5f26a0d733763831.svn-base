@@ -1,0 +1,29 @@
+//
+//  PaymentInfo.h
+//  FieldWork
+//
+//  Created by Samir Khatri on 19/08/2013.
+//
+//
+
+#import <Foundation/Foundation.h>
+
+@interface PaymentInfo : NSObject
+{
+    int _payment_id;
+    float _amount;
+    NSString *_payment_method;
+    NSString *_check_number;
+    BOOL _create_from_mobile;
+    BOOL _isChanged;
+    
+}
+@property(nonatomic,assign)int payment_id;
+@property(nonatomic,assign)float amount;
+@property(nonatomic,retain,readwrite)NSString *payment_method;
+@property(nonatomic,retain, readwrite)NSString *check_number;
+@property(nonatomic,assign)BOOL create_from_mobile;
+@property(nonatomic,assign)BOOL isChanged;
+
++ (PaymentInfo*) parsePaymentWithDict:(NSDictionary*) dict;
+@end

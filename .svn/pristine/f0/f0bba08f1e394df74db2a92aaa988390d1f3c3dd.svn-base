@@ -1,0 +1,70 @@
+//
+//  FieldworkRequest.h
+//  FieldWork
+//
+//  Created by Samir Kha on 05/01/2013.
+//  Copyright (c) 2013 __MyCompanyName__. All rights reserved.
+//
+
+#import <Foundation/Foundation.h>
+#import "FieldworkRequestDelegate.h"
+#import "JSON.h"
+
+typedef enum {
+    GET = 1,
+    POST = 2,
+    PUT = 3,
+    DELETE = 4,
+}RequestMethod;
+
+@interface FieldworkRequest : NSObject <NSURLConnectionDelegate>
+{
+    
+        id<FieldworkRequestDelegate> _delegate;
+        
+        NSURLConnection *_connection;
+        NSMutableURLRequest *_request;
+        NSMutableDictionary *_postParameters;
+        
+        NSMutableData *_data;
+        id _responseData;
+        
+        RequestMethod _methodType;
+        
+        BOOL _IsSuccess;
+        
+        NSString *_message;
+        
+        NSString *_Tag;
+        
+        int _StatusCode;
+    
+    NSString *_postData;
+}
+
+@property (nonatomic, readwrite, retain) id<FieldworkRequestDelegate> delegate;
+
+@property (nonatomic, readwrite, retain) NSString *message;
+
+@property (nonatomic, readonly) RequestMethod methodType;
+
+@property (nonatomic, assign) BOOL IsSuccess;
+
+@property (nonatomic, readonly) id responseData;
+
+@property (nonatomic, readwrite, retain) NSString *Tag;
+
+@property (nonatomic, assign) int StatusCode;
+
+@property (nonatomic, retain, readwrite) NSString *postData;
+
+
+- (id) initWithUrl:(NSString*) urlString andDelegate:(id<FieldworkRequestDelegate>) del;
+
+- (id) initWithUrl:(NSString*) urlString andDelegate:(id<FieldworkRequestDelegate>) del andMethod:(RequestMethod) method;
+
+- (void)setParameter:(id)parameter forKey:(NSString *)key;
+
+- (void) startRequest;
+
+@end

@@ -1,0 +1,248 @@
+//
+//  CapturedPestView.m
+//  FieldWork
+//
+//  Created by Samir Kha on 12/02/2013.
+//  Copyright (c) 2013 __MyCompanyName__. All rights reserved.
+//
+
+#import "CapturedPestView.h"
+
+@implementation CapturedPestView
+@synthesize CapturedPesttable=_CapturedPesttable;
+
+@synthesize CapturedPestlabel;
+@synthesize barcode;
+@synthesize customerTrap = _customerTrap;
+@synthesize inspectionRecord = _inspectionRecord;
+@synthesize btnRemovePest = _btnRemovePest;
+ 
++ (CapturedPestView*) initWithAppointment:(Appointment *)appt andCustomerTrap:(CustomerTrap *)ctrap andInspectionRecord:(InspectionRecord *)insp
+{
+  //  CapturedPestView * capturedView=[[CapturedPestView alloc]initWithNibName:@"CapturedPestView" bundle:nil];
+    CapturedPestView * capturedView;
+    
+    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
+        capturedView = [[CapturedPestView alloc] initWithNibName:@"CapturedPestView_IPad" bundle:nil];        
+    }else{
+        capturedView = [[CapturedPestView alloc] initWithNibName:@"CapturedPestView" bundle:nil];
+    }
+
+    
+    capturedView.title=@"Captured Pest";
+    capturedView.customerTrap = ctrap;
+    capturedView.barcode = ctrap.barcode;
+    capturedView.Appointment = appt;
+    capturedView.inspectionRecord = insp;
+    return capturedView ;
+}
+
+#pragma mark - View lifecycle
+
+- (void)viewDidLoad  
+{  
+        //_scrollView.frame = CGRectMake(0, 47, self.view.frame.size.width, self.view.frame.size.height - 47);
+    _inspectionPestRecords = [[NSMutableArray alloc] init];
+    if (self.inspectionRecord.inspectionPestRecords.count <= 0) {
+            [self addInspectionPestRecord];
+            _sections = 1;
+    }else{
+        [_inspectionPestRecords addObjectsFromArray:self.inspectionRecord.inspectionPestRecords];
+        _sections = [_inspectionPestRecords count];
+    }
+    
+
+    
+    CapturedPestlabel.text  = self.barcode;
+    
+    [_CapturedPesttable reloadData];
+    [self setButtonFrameProper];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reloadTable) name:@"ReloadTable" object:nil];
+}
+- (void)viewDidUnload
+{
+    [super viewDidUnload];
+}
+
+- (void) reloadTable
+{
+    [_CapturedPesttable reloadData];
+}
+
+- (void) addInspectionPestRecord
+{
+    InspectionPestRecord *record = [[InspectionPestRecord alloc] init];
+    [_inspectionPestRecords addObject:record];
+}
+
+- (void) removeInspectionPestRecord{
+    if (_inspectionPestRecords.count <= 1) {
+        return;
+    }
+    [_inspectionPestRecords removeLastObject];
+}
+
+-(IBAction)celladdbtn:(id)sender
+{
+    _sections = _sections + 1;
+    [self addInspectionPestRecord];
+    [self.CapturedPesttable reloadData];
+    [self setButtonFrameProper];
+}
+
+- (void)removePest:(id)sender {
+    if (_sections == 1) {
+        return;
+    }
+    _sections = _sections - 1;
+    [self removeInspectionPestRecord];
+    [self.CapturedPesttable reloadData];
+    [self setButtonFrameProper];
+}
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+{ 
+    return 2;
+}
+- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
+{
+    if (section == 0) {
+        return @"Details";
+    }
+    return @"";
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section{
+    return 10;//10
+}
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
+    if (section == 0) {
+        return 30;
+    }else{
+        return 10;
+    }
+}
+
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
+    return _sections;
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    static NSString *CellIdentifier = @"Cell";
+    CustomTableCell *cell = [_CapturedPesttable dequeueReusableCellWithIdentifier:CellIdentifier];
+    if (cell == nil) 
+    {
+        NSArray *topLevelObject = [[NSBundle mainBundle] loadNibNamed:@"CustomLableTextCell" owner:self options:nil];
+        
+        for(id currentObject in topLevelObject)
+        {
+            if([currentObject isKindOfClass:[UITableViewCell class]])
+            {
+                cell = (CustomTableCell*) currentObject;
+            }
+        }
+    }
+    InspectionPestRecord *ipr = [_inspectionPestRecords objectAtIndex:indexPath.section];
+    if (indexPath.row % 2 == 0)
+    {
+        cell.lbl.text = @"Pest";
+        cell.txt.text = ipr.pest.name;
+        cell.lbl.font = [UIFont fontWithName:@"Arial Black" size:50.0];
+        cell.txt.font = [UIFont fontWithName:@"Arial Black" size:50.0];
+        cell.txt.enabled=NO;
+        cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+      
+    }
+    if (indexPath.row % 2 != 0)
+    {
+        
+        cell.lbl.text = @"Qty";
+        cell.lbl.font = [UIFont fontWithName:@"Arial Black" size:50.0];
+        cell.txt.selected= FALSE;
+        cell.txt.delegate = self;
+        cell.txt.tag = indexPath.section;
+        cell.txt.font = [UIFont fontWithName:@"Arial Black" size:50.0];
+       
+        
+        if (ipr.count <= 0) {
+            
+            cell.txt.placeholder=@"0.00";
+            if (ipr.count == 0) {
+                cell.txt.text = @"";
+            }
+            
+        }else {
+             cell.txt.text = [NSString stringWithFormat:@"%d",ipr.count];
+        }
+        
+        
+        //cell.txt.placeholder=@"0.00";
+        cell.txt.keyboardType = UIKeyboardTypeNumbersAndPunctuation;
+        [cell.lbl endEditing:TRUE];
+        
+        
+    }
+    return cell;
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return 44;
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
+    
+    if (indexPath.row % 2 == 0) {
+        InspectionPestRecord *rec = [_inspectionPestRecords objectAtIndex:indexPath.section];
+        PestsListController *pestListController = [PestsListController viewControllerWithAppointment:self.Appointment andInspection:rec];
+        pestListController.inspectionPestRecords = _inspectionPestRecords;
+        [self.navigationController pushViewController:pestListController animated:YES];
+    }
+}
+
+- (void) setButtonFrameProper
+{    
+        [_tableContainer expand];
+      NSLog(@"%f",_tableContainer.frame.size.height);
+        float buttons_y = _tableContainer.frame.origin.y + _tableContainer.frame.size.height;
+        _buttonHolder.frame = CGRectMake(0,(buttons_y),     
+                                         _buttonHolder.frame.size.width, _buttonHolder.frame.size.height);
+        
+        _scrollView.contentSize = CGSizeMake(self.view.frame.size.width, buttons_y + _buttonHolder.frame.size.height+20);
+        
+
+}
+-(IBAction)CapturedPestsavebutn:(id)sender
+{
+        // save
+    if(self.inspectionRecord.inspectionPestRecords == nil){
+        self.inspectionRecord.inspectionPestRecords = [[NSMutableArray alloc] init];
+    }
+    [self.inspectionRecord.inspectionPestRecords addObjectsFromArray:_inspectionPestRecords];
+    [self.navigationController popViewControllerAnimated:YES];
+}
+- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
+{
+    return (interfaceOrientation == UIInterfaceOrientationPortrait);
+}
+
+#pragma mark - KeyBoardHelper
+
+- (void)hideKeyboard {
+    
+}
+
+
+#pragma mark - UITextFieldDelegate
+
+- (void)textFieldDidEndEditing:(UITextField *)textField{
+    if (textField) {
+        InspectionPestRecord *rec = [_inspectionPestRecords objectAtIndex:textField.tag];
+        if (rec) {
+            rec.count = [textField.text intValue];
+        }
+    }
+}
+
+@end

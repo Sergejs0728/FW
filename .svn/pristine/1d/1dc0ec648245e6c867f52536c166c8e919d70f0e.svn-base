@@ -1,0 +1,134 @@
+//
+//  AppointmentDetailController.h
+//  FieldWork
+//
+//  Created by Samir Kha on 07/01/2013.
+//  Copyright (c) 2013 __MyCompanyName__. All rights reserved.
+//
+
+#import <UIKit/UIKit.h>
+#import "Appointment.h"
+#import "MaterialAddController.h"
+#import "MaterialUseListController.h"
+#import "MaterialListController.h"
+#import <MessageUI/MessageUI.h>
+#import <MessageUI/MFMailComposeViewController.h>
+#import "DrivingDirectionMap.h"
+#import "PestsUseListController.h"
+#import "SignatureController.h"
+#import "AppointmentInformation.h"
+#import "AppotmentDetailCell.h"
+#import "TrapListController.h"
+#import "PrinterHelper.h"
+#import "DataPersistance.h"
+#import "UserSettings.h"
+#import "NoteController.h"
+#import "CustomTableCell.h"
+#import "InstructionController.h"
+#import "EnvironmentViewController.h"
+#import "OpenPdfCell.h"
+#import "Location.h"
+#import "BaseViewController.h"
+
+//#import <MapKit/MKMapItem.h>
+
+
+@interface AppointmentDetailController :BaseViewController<MFMailComposeViewControllerDelegate,UIActionSheetDelegate,UIPickerViewDelegate, UIPickerViewDataSource, AppointmentDelegate, UIAlertViewDelegate, UITableViewDelegate>
+{
+    Appointment *_appointment;
+    IBOutlet UILabel *lblTitleLable1;
+    IBOutlet UILabel *lblTitleLable2;
+    IBOutlet UILabel *timeLbl;
+    IBOutlet UIView *titleView;
+    
+    IBOutlet UIScrollView *_scrollView;
+    
+    IBOutlet UILabel *lblCustomerName;
+    IBOutlet UILabel *lblAddress;
+    IBOutlet UILabel *lblContactName;
+   // IBOutlet UIButton *btnOfficeNo;
+   // IBOutlet UIButton *btnMobileNo;
+//    IBOutlet UIButton *btnEmail;
+    
+    IBOutlet UILabel *lblTime;
+    IBOutlet UILabel *lblServiceType; 
+    
+    IBOutlet UIButton *drivingDirectionBtn;
+    IBOutlet UIButton *targetPestsBtn;
+    IBOutlet UIButton *appointmentInfoBtn;
+    
+    Customer *_cust;
+    
+    UIActionSheet *asPickerContainer;
+    IBOutlet UIView *_statusPickerContainer;
+    IBOutlet UIPickerView *_statusPicker;
+    
+    UIPopoverController *popoverController;
+    
+    UserSettings * onoffsetting;
+
+     
+    
+    NSMutableArray *_statuses;
+    IBOutlet UIButton *_btnStatus;
+    IBOutlet UIButton *_SavebtnStatus;
+    IBOutlet UIView *_buttonHolder;
+    IBOutlet UITableView *_mainTable;
+    IBOutlet TableExpanderView * _tableContainer;
+    
+    
+    //
+    
+    IBOutlet UIView * DateAndTimeView;
+    IBOutlet UIView *scheduledDateView;
+    IBOutlet UIView *timePickerView;
+    UIActionSheet *PickerContainer;
+    IBOutlet UIDatePicker *_timerPicker;
+    IBOutlet UIDatePicker *IPadtimerPicker;
+    UIPopoverController * popoverviewController;
+    IBOutlet UIDatePicker * _datePicker;
+    IBOutlet UIDatePicker * _IPaddatePicker;
+    
+    IBOutlet UIButton * addressViewRoundCornerbtn;
+    IBOutlet UIButton * BillingAddressViewRoundCornerbtn;
+    
+    //
+   
+}
+
+@property (nonatomic, retain, readwrite) Appointment *appointment;
+@property (nonatomic, retain, readwrite) Customer *cust;
+@property (nonatomic , retain) UIView *statusPickerContainer;
+@property (nonatomic, retain) UIPopoverController *popoverController;
+@property (nonatomic ,retain)  UIDatePicker *timerPicker;
+@property (nonatomic ,retain) UITableView * maintable;
+- (IBAction)pdfOpenInReaderForEdit:(id)sender;
+- (IBAction)ipadActionsheetDoneClicked:(id)sender;
+- (void) startPrinting;
+- (void) printFile;
+- (void) printFilePrintbtnClicked;
+- (void) loadMapForIos6:(SVPlacemark*) place;
+- (void) setButtonFrameProper;
+- (void)showPicker:(id)sender;
+- (void)displayComposerSheet;
+- (void)launchMailAppOnDevice;
+- (IBAction)displayDrivingDirectionMap;
+
+-(IBAction)done:(id)sender;
+-(IBAction)cancel:(id)sender;
+
+- (IBAction)saveApoointment:(id)sender;
+- (IBAction)setStatusClicked:(id)sender;
+- (void)loadPickerWithView:(UIView *)v withTag:(int)tag ;
++ (AppointmentDetailController*) initWithAppointment:(Appointment*) app;
+
+- (void)DateAndTimePickerView;
+- (void)clickOnStartedAt;
+- (void)clickOnFinishedAt;
+- (void)scheduleDateClicked;
+- (void) loadPickerViewForDateTime:(UIView*) v :(int) tag;
+- (void) DateAndTimeCustomPicker;
+-(IBAction)cancelDate:(id)sender;
+
+
+@end

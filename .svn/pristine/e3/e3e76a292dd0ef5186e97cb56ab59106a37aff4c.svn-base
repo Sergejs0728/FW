@@ -1,0 +1,38 @@
+//
+//  PestsListController.h
+//  FieldWork
+//
+//  Created by Samir Kha on 15/01/2013.
+//  Copyright (c) 2013 __MyCompanyName__. All rights reserved.
+//
+
+#import <UIKit/UIKit.h>
+#import "PestsAddController.h"
+#import "CommonAppointmentViewController.h"
+#import "Appointment.h"
+#import "PestList.h"
+#import "TargetPestList.h"
+#import "TargetPest.h"
+#import "ListItemDelegate.h"
+#import "InspectionPestRecord.h"
+
+
+@interface PestsListController : CommonAppointmentViewController<PestListDelegate, ListItemDelegate,UISearchDisplayDelegate, UISearchBarDelegate>
+{
+    NSMutableArray *_pestList;
+    IBOutlet UITableView *table;
+    InspectionPestRecord *_inspectionPestRecord;
+    
+    BOOL _IsFromInspection;
+}
+
+@property (nonatomic, retain, readwrite) NSMutableArray *pestList;
+@property (nonatomic, retain) NSMutableArray *filteredListContent;
+@property (nonatomic, readwrite, retain)     InspectionPestRecord *inspectionPestRecord;
+@property (nonatomic, assign) BOOL isFromInspection;
+@property (nonatomic, readwrite, retain) NSMutableArray *inspectionPestRecords;
++ (PestsListController*) viewControllerWithAppointment:(Appointment*) app;
+
++ (PestsListController*) viewControllerWithAppointment:(Appointment *)app andInspection:(InspectionPestRecord*) ins;
+
+@end

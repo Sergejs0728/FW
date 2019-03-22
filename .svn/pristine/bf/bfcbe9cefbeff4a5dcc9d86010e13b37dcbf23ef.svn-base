@@ -1,0 +1,15 @@
+//
+//  TargetPestListDelegate.h
+//  FieldWork
+//
+//  Created by Samir Kha on 16/01/2013.
+//  Copyright (c) 2013 __MyCompanyName__. All rights reserved.
+//
+
+#import <Foundation/Foundation.h>
+
+@protocol TargetPestListDelegate <NSObject>
+-(void) TargetPestListLoaded;
+
+-(void) TargetPestListLoadFailed:(NSString*) error;
+@end

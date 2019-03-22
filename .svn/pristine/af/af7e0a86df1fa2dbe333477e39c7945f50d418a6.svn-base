@@ -1,0 +1,147 @@
+    //
+    //  DashBoardViewController.m
+    //  FieldWork
+    //
+    //  Created by Samir Kha on 06/01/2013.
+    //  Copyright (c) 2013 __MyCompanyName__. All rights reserved.
+    //
+
+#import "DashBoardViewController.h"
+
+@implementation DashBoardViewController
+
+
+- (void)didReceiveMemoryWarning
+{
+        // Releases the view if it doesn't have a superview.
+    [super didReceiveMemoryWarning];
+    
+        // Release any cached data, images, etc that aren't in use.
+}
+
+#pragma mark - View lifecycle
+
+- (void)viewDidLoad
+{
+    [super viewDidLoad];
+    
+    
+    
+    
+    self.title = @"Dashboard";
+    
+    UIBarButtonItem *leftItem = [[UIBarButtonItem alloc] initWithTitle:@"Logout" style:UIBarButtonItemStyleBordered target:[AppDelegate appDelegate] action:@selector(logout)];
+        //[self.navigationController.navigationBar setTintColor:[UIColor colorWithRed:128 green:0 blue:0 alpha:1]];
+    
+    self.navigationItem.leftBarButtonItem = leftItem;
+    
+    /*   UIBarButtonItem *settingsBtn = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"settingicon.png"] style:UIBarButtonItemStylePlain target:self action:@selector(settingClicked:)];*/
+    
+    
+    UIBarButtonItem *settingsBtn = [[UIBarButtonItem alloc] initWithTitle:@"Settings" style:UIBarButtonItemStyleBordered target:self action:@selector(settingClicked:)];
+    self.navigationItem.rightBarButtonItem = settingsBtn;
+        // self.navigationItem.rightBarButtonItem = nil;
+    [[UserInfo Instance] loadUser];
+}
+
+- (void)viewDidUnload
+{
+    [super viewDidUnload];
+}
+
+- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
+{
+    
+    return (interfaceOrientation == UIInterfaceOrientationPortrait);
+    
+    
+}
+
+- (void)appointmentClicked:(id)sender {
+    ScheduleViewController *sc = [ScheduleViewController init];
+    [self.navigationController pushViewController:sc animated:YES];
+}
+
+- (void)customerClicked:(id)sender {
+    
+    NSDate *last_customer_loaded = [UserSettings getLastCustomerLoaded];
+        //2 * 60 * 60 * 1000
+    NSLog(@"%f    %d",[[NSDate date] timeIntervalSince1970] - [last_customer_loaded timeIntervalSince1970],2 * 60 * 60 * 1000);
+    if([[NSDate date] timeIntervalSince1970] - [last_customer_loaded timeIntervalSince1970] > 2 * 60 * 60 * 1000)
+        {
+        
+        CustomerListViewController *customer = [CustomerListViewController init];
+        customer.LoadAll = YES;
+        [self.navigationController pushViewController:customer animated:YES];
+        
+            //        [self performSelectorOnMainThread:@selector(loadAllCustomers) withObject:nil waitUntilDone:NO];
+        
+//        
+//        UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"FieldWork" message:@"This will download your entire customer database.  We strongly suggest that you perform this over a WIFI connection to save on time and cellular usage.  Depending on the size of your database this will take several minutes." delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Ok", nil];
+//        alert.tag = 1010;
+//        [alert show];
+        }else{
+            CustomerListViewController *customer = [CustomerListViewController init];
+            [self.navigationController pushViewController:customer animated:YES];
+        }
+    
+}
+- (IBAction)settingClicked:(id)sender
+{
+    SettingController *settings = [SettingController init];
+    [self.navigationController pushViewController:settings animated:YES];
+    
+}
+
+
+- (void)refreshClicked:(id)sender {
+    UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"FieldWork" message:@"This will download your entire customer database.  We strongly suggest that you perform this over a WIFI connection to save on time and cellular usage.  Depending on the size of your database this will take several minutes." delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Ok", nil];
+    alert.tag = 2020;
+    [alert show];
+    
+}
+
+
+
+
+- (void)gloabalDataLoaded{
+    [[ActivityIndicator currentIndicator] displayCompleted];
+}
+
+#pragma mark - UIAlertViewDelegate
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
+    
+}
+
+- (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex {
+    if (alertView.tag == 1010) {
+        
+        
+        if(buttonIndex > 0){
+            CustomerListViewController *customer = [CustomerListViewController init];
+            customer.LoadAll = YES;
+            [self.navigationController pushViewController:customer animated:YES];
+            
+                //        [self performSelectorOnMainThread:@selector(loadAllCustomers) withObject:nil waitUntilDone:NO];
+        }else{
+            CustomerListViewController *customer = [CustomerListViewController init];
+            [self.navigationController pushViewController:customer animated:YES];
+        }
+    }
+    if (alertView.tag == 2020) {
+        if(buttonIndex > 0){
+            [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(gloabalDataLoaded) name:@"CUSTOMER_LIST_LOADED" object:nil];
+            [[AppDelegate appDelegate] loadAllLists];
+            [[CustomerList Instance] reloadAllCustomers:nil];
+                //[[ActivityIndicator currentIndicator] performSelectorOnMainThread:@selector(displayActivity:) withObject:@"Please Wait..." waitUntilDone:YES];
+            
+            [[ActivityIndicator currentIndicator] displayActivity:@"Please Wait..."];
+        }
+    }
+    
+}
+
+
+
+@end

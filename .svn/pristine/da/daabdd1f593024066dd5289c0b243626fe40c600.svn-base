@@ -1,0 +1,84 @@
+//
+//  Material.m
+//  FieldWork
+//
+//  Created by Samir Kha on 15/01/2013.
+//  Copyright (c) 2013 __MyCompanyName__. All rights reserved.
+//
+
+#import "Material.h"
+
+@implementation Material
+
+@synthesize materialId=_id;
+@synthesize name=_name;
+@synthesize epaName=_epaName;
+@synthesize price=_price;
+@synthesize default_dilution_rate_id=_default_dilution_rate_id;
+
++ (Material *)materialWithDictionary:(NSDictionary *)dict 
+{
+    Material *mate = [[Material alloc] init];
+    
+    if([dict objectForKey:@"id"] != [NSNull null])
+    {
+        mate.materialId = [[dict objectForKey:@"id"] intValue];
+    }
+    if([dict objectForKey:@"name"] != [NSNull null])
+    {
+        mate.name = [dict objectForKey:@"name"];
+    }
+    NSLog(@"material %@",mate.name);
+    
+    if([dict objectForKey:@"price"] != [NSNull null])
+    {
+        mate.price = [[dict objectForKey:@"price"] doubleValue];
+    }
+    
+    if([dict objectForKey:@"epa_number"] != [NSNull null])
+    {
+        mate.epaName = [dict objectForKey:@"epa_number"];
+    }
+    if([dict objectForKey:@"default_dilution_rate_id"] != [NSNull null])
+    {
+        mate.default_dilution_rate_id = [[dict objectForKey:@"default_dilution_rate_id"] intValue];
+    }
+   
+    
+    return mate;
+}
+
+- (id)copyWithZone:(NSZone *)zone {
+    Material *mat = [[Material allocWithZone:zone] init];
+    mat.materialId = self.materialId;
+    mat.name = self.name;
+    mat.epaName = self.epaName;
+    mat.price = self.price;
+    return mat;
+}
+
+- (void)sync {
+    NSString *url = [NSString stringWithFormat:@"%@materials?api_key=%@", FIELD_WORK_URL_BASE, [AccountManager Instance].activeAccount.api_key];
+    NSString *data = [NSString stringWithFormat:@"{\"name\":\"%@\",\"epa_number\":\"%@\"}", self.name, self.epaName];
+    FieldworkRequest *request = [[FieldworkRequest alloc] initWithUrl:url andDelegate:self andMethod:POST];
+    request.postData = data;
+    request.Tag = ADD_ITEM_TAG;
+    [request startRequest];
+}
+
+#pragma mark - FieldworkRequestDelegate
+
+-(void)FieldworkRequestDidSucceed:(FieldworkRequest *)request
+{
+    if (request.IsSuccess) {
+        NSDictionary *dict = request.responseData;
+        NSDictionary *material = [dict objectForKey:@"material"];
+        self.materialId = [[material objectForKey:@"id"] intValue];
+    }
+}
+
+- (void)FieldworkRequestDidFail:(FieldworkRequest *)request withError:(NSError *)error {
+    
+}
+
+@end

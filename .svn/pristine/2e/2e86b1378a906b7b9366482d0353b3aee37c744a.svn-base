@@ -1,0 +1,33 @@
+//
+//  Statuses.h
+//  FieldWork
+//
+//  Created by Samir Kha on 18/01/2013.
+//  Copyright (c) 2013 __MyCompanyName__. All rights reserved.
+//
+
+#import <Foundation/Foundation.h>
+#import <CoreData/CoreData.h>
+#import "CoreDataHelper.h"
+#import "FieldworkRequest.h"
+#import "FieldworkRequestDelegate.h"
+
+static NSString *STATUSES = @"Statuses";
+
+
+@interface Statuses : NSManagedObject <FieldworkRequestDelegate>
+{
+    
+}
+
+@property (nonatomic, retain) NSString * statusName;
+@property (nonatomic, retain) NSString * statusValue;
+
+
++ (void) parseWithArray:(NSArray*) arr;
+
+- (void) loadFromService;
+
++ (NSMutableArray*) getStatues;
+
+@end

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="10117" systemVersion="15D21" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES">
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" id="GdN-EP-8A1" customClass="PhoneTypeCell">
+            <rect key="frame" x="0.0" y="0.0" width="768" height="44"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+            <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="GdN-EP-8A1" id="431-vE-fpm">
+                <rect key="frame" x="0.0" y="0.0" width="768" height="43"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="line" placeholder="Phone" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="32q-m1-A6k" customClass="FWBottomLineTextField">
+                        <rect key="frame" x="6" y="7" width="275" height="30"/>
+                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                        <textInputTraits key="textInputTraits"/>
+                    </textField>
+                    <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="line" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="LrT-w8-f3q" customClass="FWBottomLineTextField">
+                        <rect key="frame" x="500" y="7" width="200" height="30"/>
+                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                        <textInputTraits key="textInputTraits"/>
+                    </textField>
+                    <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="NT9-tx-7JE" userLabel="Add">
+                        <rect key="frame" x="720" y="11" width="22" height="22"/>
+                        <state key="normal" image="btn_add.png"/>
+                    </button>
+                    <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="iP5-Dk-mGm" userLabel="Remove">
+                        <rect key="frame" x="720" y="11" width="22" height="22"/>
+                        <state key="normal" image="btn_remove3.png"/>
+                    </button>
+                    <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="LWf-dS-HJ2">
+                        <rect key="frame" x="500" y="7" width="200" height="30"/>
+                        <state key="normal">
+                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                        </state>
+                        <connections>
+                            <action selector="btnTypeClicked:" destination="GdN-EP-8A1" eventType="touchUpInside" id="cVF-Ns-9BO"/>
+                        </connections>
+                    </button>
+                    <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="line" placeholder="Ext" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="4CH-PO-0lp" customClass="FWBottomLineTextField">
+                        <rect key="frame" x="300" y="7" width="180" height="30"/>
+                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                        <textInputTraits key="textInputTraits"/>
+                    </textField>
+                </subviews>
+            </tableViewCellContentView>
+            <connections>
+                <outlet property="_btnAdd" destination="NT9-tx-7JE" id="NDN-pL-owK"/>
+                <outlet property="_btnRemove" destination="iP5-Dk-mGm" id="ABb-kK-Cyh"/>
+                <outlet property="_btnSelectType" destination="LWf-dS-HJ2" id="FF8-dw-gRM"/>
+                <outlet property="_txtExt" destination="4CH-PO-0lp" id="GDX-Iu-tkE"/>
+                <outlet property="_txtPhone" destination="32q-m1-A6k" id="5O8-se-LFW"/>
+                <outlet property="_txtType" destination="LrT-w8-f3q" id="qi1-TX-Jwj"/>
+            </connections>
+        </tableViewCell>
+    </objects>
+    <resources>
+        <image name="btn_add.png" width="22" height="22"/>
+        <image name="btn_remove3.png" width="22" height="22"/>
+    </resources>
+</document>

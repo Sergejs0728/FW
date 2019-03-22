@@ -1,0 +1,186 @@
+//
+//  TrapDetailView.m
+//  FieldWork
+//
+//  Created by Samir Kha on 12/02/2013.
+//  Copyright (c) 2013 __MyCompanyName__. All rights reserved.
+//
+
+#import "TrapDetailView.h"
+
+@implementation TrapDetailView
+
+
+@synthesize TrapDetailtable=_TrapDetailtable;
+@synthesize barcode=_barcode;
+@synthesize customerTrap = _customerTrap;
+@synthesize inspectionRecord;
+@synthesize TrapView=_TrapView;
+@synthesize check;
+@synthesize labelView;
+
++ (TrapDetailView*) initWithAppointment:(Appointment*) app withCustomerTrap:(CustomerTrap*) ctrap WithBoolean:(BOOL)CHEK
+{
+    //TrapDetailView * trap_detail=[[TrapDetailView alloc]initWithNibName:@"TrapDetailsView" bundle:nil];
+    
+    
+    
+    TrapDetailView * trap_detail;
+    
+    
+    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
+        trap_detail = [[TrapDetailView alloc] initWithNibName:@"TrapDetailsView_IPad" bundle:nil];        
+    }else{
+        trap_detail = [[TrapDetailView alloc] initWithNibName:@"TrapDetailsView" bundle:nil];
+        
+    }
+
+    trap_detail.title=@"Traps Scan Detail";
+    trap_detail.Appointment=app;
+    trap_detail.customerTrap = ctrap;
+    trap_detail.barcode = ctrap.barcode;
+    trap_detail.Appointment = app;
+    trap_detail.check=CHEK;
+    return trap_detail;
+}
+
++ (TrapDetailView *)initWithAppointment:(Appointment *)app withInspectionRecord:(InspectionRecord *)insp {
+    
+    TrapDetailView * trap_detail1;
+     trap_detail1.self.TrapView.hidden=NO;
+    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
+        trap_detail1 = [[TrapDetailView alloc] initWithNibName:@"TrapDetailsView_IPad" bundle:nil];
+    }else{
+        trap_detail1 = [[TrapDetailView alloc] initWithNibName:@"TrapDetailsView" bundle:nil];
+        
+    }
+     trap_detail1.title=@"Traps Scan Detail";
+    trap_detail1.Appointment=app;
+    trap_detail1.barcode = insp.barcode;
+    Customer *cust = [app getCustomer];
+    trap_detail1.customerTrap = [cust.customerTrapList customerTrapByBarcode:insp.barcode];
+    if (trap_detail1.customerTrap == nil) {
+        trap_detail1.customerTrap = [[CustomerTrap alloc] init];
+        trap_detail1.customerTrap.barcode = insp.barcode;
+    }
+  
+    trap_detail1.inspectionRecord = insp;
+    return trap_detail1 ;
+}
+
+#pragma mark - View lifecycle
+
+- (void)viewDidLoad
+{
+    if (check) {
+        _TrapView.hidden=YES;
+        labelView.hidden=NO;
+    }else
+    {
+        _TrapView.hidden =NO;
+         labelView.hidden=YES;
+    }
+    
+    
+    [super viewDidLoad];
+    barcodelabel.text  =self.barcode;
+    TrapDetaillist=[[NSMutableArray alloc]initWithObjects:@"Captured",@"Evidence", nil];
+    if (inspectionRecord == nil) {
+        inspectionRecord = [[InspectionRecord alloc] init];
+        inspectionRecord.barcode = self.barcode;
+    }
+    floorlabel.text = self.customerTrap.floor;
+    buildinglabel.text = self.customerTrap.building;
+    typelabel.text = self.customerTrap.location_details;
+    if (self.inspectionRecord.isClean) {
+        _imgRightIcon.hidden = NO;
+    }else{
+        _imgRightIcon.hidden = YES;
+    }
+}
+-(IBAction)TrapDetailViewclearbtn:(id)sender
+{      
+    _imgRightIcon.hidden = !_imgRightIcon.hidden;
+    self.inspectionRecord.isClean = !_imgRightIcon.hidden;
+}
+
+-(IBAction)TrapDetailViewsavebtn:(id)sender
+{   
+    [[ActivityIndicator currentIndicator] displayActivity:@"Please Wait..."];
+    [self.Appointment.inspectionRecordList addInspectionRecord:inspectionRecord withDelegate:self];
+}
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+{
+    return 2;
+}
+- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
+{
+    return @"Trap data";
+}
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    static NSString *CellIdentifier = @"Cell";
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+    if (cell == nil) 
+    {
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
+        cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+    }
+    cell.textLabel.text=[TrapDetaillist objectAtIndex:indexPath.row];
+    return cell;
+}
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
+    
+    if(indexPath.row == 0)
+    {   
+        CapturedPestView * trap = [CapturedPestView initWithAppointment:self.Appointment andCustomerTrap:self.customerTrap andInspectionRecord:inspectionRecord];
+        [self.navigationController pushViewController:trap animated:YES]; 
+    }
+    else if(indexPath.row == 1)
+    { 
+        EvidenceListController *evidence = [EvidenceListController initWithAppointment:self.Appointment andInspectionRecord:inspectionRecord];
+        [self.navigationController pushViewController:evidence animated:YES];
+    }
+}
+- (void)viewDidUnload
+{
+    [super viewDidUnload];
+}
+- (void)didReceiveMemoryWarning
+{
+    // Releases the view if it doesn't have a superview.
+    [super didReceiveMemoryWarning];
+    
+    // Release any cached data, images, etc that aren't in use.
+}
+- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
+{
+    // Return YES for supported orientations
+    return (interfaceOrientation == UIInterfaceOrientationPortrait);
+}
+
+#pragma mark - ListItemDelegate
+
+- (void)ListItemAddedSuccessfully {
+    [[ActivityIndicator currentIndicator] displayCompleted];
+    for (UIViewController* viewController in self.navigationController.viewControllers) {
+        
+        if ([viewController isKindOfClass:[TrapListController class]] ) {
+            
+            TrapListController *trapListController = (TrapListController*)viewController;
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"ReloadTrapListTable" object:nil];
+            [self.navigationController popToViewController:trapListController animated:YES];
+        }
+    }
+        //[self.navigationController popViewControllerAnimated:YES];
+}
+
+- (void)ListItemAdditionFailedWithError:(NSString *)error {
+    [[ActivityIndicator currentIndicator] displayCompletedWithError:@"Fail"];
+}
+- (void) ListItemDeletedSuccessfully{}
+- (void) ListItemDeletionFailedWithError:(NSString*) error{}
+
+@end

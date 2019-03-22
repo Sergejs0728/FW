@@ -1,0 +1,29 @@
+1. Work pool is incomplete. From what I can tell it does not work at all.  As discussed we also need to have a list view with filters and the demo mode needs to be removed.
+
+DONE - 2. Setting do not work at all.  I cannot print?
+
+DONE - 3. There are no start and end time fields.  They should be above the invoice and the should be profiled when hitting start, and when you save the end time should be filled.
+
+DONE - 4. On the start screen, if there are no service instructions or location note we need placeholder text. “None provided”
+
+DONE - 5. Close button should be red not purple (This was just an artifact from design)
+
+DONE - 6. When adding a chemical target pest and location selection should allow multiple choose at one time, like how we do route select
+
+7. Invoice section, I need to be able to add discount. and the pay button does not work.  Need credit card working!
+
+DONE - 8. Technician signature is not working
+
+DONE - 9. When canceling out of a material use  it takes me back to the old blank material list, should take me back to work order
+
+DONE 10. Photos and devices sections have white lines through the bottom section of the panel.
+
+DONE - 11. If a section is empty it should say so. otherwise it seems broken. For example, if there are no PDF forms.  It should say “No pdf forms attached”
+
+DONE - 12. When I hit preview, it should load in a PDF preview window in the app.  Not force use to choose an app.
+
+DONE - 13. Calendar…. If you look at the demo repo, I was able to slide down calendar and navigate the full month.  Sliding side to side is ok, but if we do that the month name should be where the page title “Calendar” is. Also there is a weird slide up, slide down animation on the calendar every time I switch days or return to the calendar.  Please remove it.
+
+DONE 14. Sidebar… Needs to look a lot nicer.  Remove the word fieldwork.  Make the “F" about 50% that size.  remove the lines and make some more spacing between the items.  Give everything a bit more room.
+
+DONE 15. Customers has a grey header, and the screen title is red. Same with new customer.  make it white bg with black page title.

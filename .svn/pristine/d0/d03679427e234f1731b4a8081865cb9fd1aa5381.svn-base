@@ -1,0 +1,121 @@
+//
+//  PestsAddController.m
+//  FieldWork
+//
+//  Created by Samir Kha on 15/01/2013.
+//  Copyright (c) 2013 __MyCompanyName__. All rights reserved.
+//
+
+#import "PestsAddController.h"
+#import "CustomTableCell.h"
+
+@implementation PestsAddController
+- (void) ListItemDeletedSuccessfully{}
++ (PestsAddController *)viewControllerWithAppointment:(Appointment *)app {
+    PestsAddController *mc;
+    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
+        mc = [[PestsAddController alloc] initWithNibName:@"PestsAddController_IPad" bundle:nil];
+    }else{
+        mc = [[PestsAddController alloc] initWithNibName:@"PestsAddController" bundle:nil];
+        
+    }
+    mc.Appointment = app;
+    return mc;
+    
+    
+}
+
+
+
+#pragma mark - View lifecycle
+
+- (void)viewDidLoad
+{
+    [super viewDidLoad];
+    
+    self.navigationItem.title = @"Pest Type";
+    
+}
+
+- (void)viewDidUnload
+{
+    [super viewDidUnload];
+    
+}
+
+- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
+{
+    // Return YES for supported orientations
+    return (interfaceOrientation == UIInterfaceOrientationPortrait);
+}
+
+- (void)addPestType:(id)sender {
+    CustomTableCell *cell = (CustomTableCell*)[table cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
+    if (cell) {
+        NSString *pestType = cell.txt.text;
+        if (pestType.length <= 0) {
+            UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"FieldWork" message:@"Please enter pest type to add in the list." delegate:nil cancelButtonTitle:@"Ok"                                      otherButtonTitles:nil];
+            [alert show];
+            return;
+        }
+        Pest *pt = [[Pest alloc] init];
+        pt.name = pestType;
+        [[PestList Instance] addPestType:pt andDelegate:self];
+        [[ActivityIndicator currentIndicator] displayActivity:@"Please wait..."];
+    }
+}
+
+# pragma mark - table method
+
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
+{
+    return 1;
+}
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+{
+    return 1;
+}
+
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    static NSString *CellIdentifier = @"Cell";
+    
+    CustomTableCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+    if (cell == nil) 
+    {
+        NSArray *topLevelObject = [[NSBundle mainBundle] loadNibNamed:@"CustomLableTextCell" owner:self options:nil];
+        
+        for(id currentObject in topLevelObject)
+        {
+            if([currentObject isKindOfClass:[UITableViewCell class]])
+            {
+                cell = (CustomTableCell*) currentObject;
+            }
+        }
+    }
+    
+    cell.lbl.text = @"Pest Name";
+
+    return cell;
+}
+
+#pragma ListItemDelegate
+
+- (void) ListItemAddedSuccessfully{
+    [[ActivityIndicator currentIndicator] displayCompleted];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"Notification_PestAdded" object:nil];
+    [self.navigationController popViewControllerAnimated:YES];
+}
+
+- (void) ListItemAdditionFailedWithError:(NSString*) error{
+    [[ActivityIndicator currentIndicator] displayCompletedWithError:@"Fail"];
+    
+}
+
+- (void) ListItemDeletionFailedWithError:(NSString*) error{}
+
+
+
+@end

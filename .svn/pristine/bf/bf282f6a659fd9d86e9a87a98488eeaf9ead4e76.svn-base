@@ -1,0 +1,168 @@
+//
+//  CustomerList.m
+//  FieldWork
+//
+//  Created by Samir Kha on 07/01/2013.
+//  Copyright (c) 2013 __MyCompanyName__. All rights reserved.
+//
+
+#import "CustomerList.h"
+#import "Customer.h"
+
+static CustomerList* singleton = nil;
+
+@implementation CustomerList
+
+@synthesize delegate = _delegate;
+@synthesize Customers = _Customers;
+@synthesize isLoadedAll = _isLoadedAll;
+
+- (id)init {
+    self = [super init];
+    if (self) {
+        _Customers = [[NSMutableArray alloc] init];
+        _delegate = nil;
+    }
+    return self;
+}
+
++ (CustomerList *)Instance {
+    if (singleton == nil)
+        singleton = [[CustomerList alloc] init];
+    
+    return singleton;
+}
+
+- (int)loadedCount {
+    return _Customers.count;
+}
+
+- (void)loadWithDelegate:(id<CustomerListDelegate>)del 
+{
+    NSLog(@"---Customer load Start......");
+    
+    _delegate = del;
+    if ([self loadedCount] <= 0)
+    {
+        NSString *url = [NSString stringWithFormat:@"%@customers?api_key=%@", FIELD_WORK_URL_BASE, [AccountManager Instance].activeAccount.api_key];
+        FieldworkRequest *request = [[FieldworkRequest alloc] initWithUrl:url andDelegate:self];
+        [request startRequest];
+    }else
+    {
+        if (_delegate != nil) 
+        {
+            [_delegate CustomerListLoaded];
+        }
+    }
+}
+
+- (void)reloadAllCustomers:(id<CustomerListDelegate>)del {
+    _delegate = del;
+    if (_isLoadedAll) {
+        if (_delegate != nil)
+        {
+            [_delegate CustomerListLoaded];
+            return;
+        }
+    }
+    if ([[AppDelegate appDelegate] isReachable]) {
+        NSLog(@"---Customer load Start from reload......");
+        NSString *url = [NSString stringWithFormat:@"%@customers?api_key=%@", FIELD_WORK_URL_BASE, [AccountManager Instance].activeAccount.api_key];
+        FieldworkRequest *request = [[FieldworkRequest alloc] initWithUrl:url andDelegate:self];
+        [request startRequest];
+    }
+}
+
+- (void)retriveCustomer:(int)cust_id {
+    CustomerRetrival *retrival = [[CustomerRetrival alloc] init];
+    NSLog(@"Customer Retriving for id : %d" , cust_id);
+    [retrival retriveCustomerWithId:cust_id andDelegate:self];
+}
+
+- (Customer *)customerbyId:(int)cid {
+    for (Customer *cust in _Customers) {
+        if (cust.Id == cid) {
+            return cust;
+        }
+    }
+    return nil;
+}
+
+- (void)addCustomer:(Customer *)cust {
+    int index = -1;
+    if ([_Customers containsObject:cust]) {
+        index = [_Customers indexOfObject:cust];
+    }
+    
+//    if(_Customers != nil){
+//        for (int i = 0; i < _Customers.count; i++) {
+//          
+//            if (i == 516) {
+//                NSLog(@"--------------------------------");
+//            }
+//            
+//            Customer *cu = [_Customers objectAtIndex:i];
+//            NSLog(@"index :%d     object : %d ",i,cu.Id);
+//            if (cu.Id == cust.Id) {
+//                index = i;
+//            }
+//        }
+//    }
+    if (index != -1) {
+        [_Customers removeObjectAtIndex:index];
+    }
+    [_Customers addObject:cust];
+}
+
+#pragma FieldworkRequestDelegate
+
+- (void)FieldworkRequestDidSucceed:(FieldworkRequest *)request {
+    if (request.IsSuccess) 
+    {
+        self.Customers = [[NSMutableArray alloc] init];
+        NSArray *arr = request.responseData;
+        for (NSDictionary *data in arr)
+        {
+            Customer *cust = [Customer customerWithDictionary:data];
+            [self addCustomer:cust];
+        }
+        NSLog(@"---Customer loaded End......");
+        [UserSettings SaveLastCustomerLoaded:[NSDate date]];
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"CUSTOMER_LIST_LOADED" object:nil];
+        _isLoadedAll = YES;
+        if (_delegate != nil)
+        {
+            [_delegate CustomerListLoaded];
+        }
+    }
+}
+
+- (void)FieldworkRequestDidFail:(FieldworkRequest *)request withError:(NSError *)error{
+    if (_delegate != nil) {
+        [_delegate CustomerListLoadFailed:[error.userInfo objectForKey:@"message"]];
+    }
+}
+
+- (Customer*) objectAtIndex:(int) index
+{
+    return [self.Customers objectAtIndex:index];
+}
+
+
+#pragma mark - CustomerRetrivalDelegate
+
+- (void)CustomerRetrived:(Customer *)cust {
+    if (cust) {
+        if (_Customers == nil) {
+            _Customers = [[NSMutableArray alloc] init];
+        }
+        [self addCustomer:cust];
+    }
+}
+
+- (void)CustomerRetrivalFailedWithError:(NSString *)error {
+    
+}
+
+
+@end

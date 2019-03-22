@@ -1,0 +1,54 @@
+//
+//  TargetPestList.h
+//  FieldWork
+//
+//  Created by Samir Kha on 16/01/2013.
+//  Copyright (c) 2013 __MyCompanyName__. All rights reserved.
+//
+
+#import <Foundation/Foundation.h>
+#import "TargetPestListDelegate.h"
+#import "TargetPest.h"
+#import "AccountManager.h"
+#import "FieldworkRequest.h"
+#import "FieldworkRequestDelegate.h"
+#import "Pest.h"
+#import "ListItemDelegate.h"
+#import "Constants.h"
+#import "AppDelegate.h"
+#import "Utils.h"
+
+@interface TargetPestList : NSObject<FieldworkRequestDelegate>
+{
+    NSMutableArray *_TargetPests;
+    
+    id<ListItemDelegate> _listItemDelegate;
+    
+    int _appointmentId;
+    
+    id<TargetPestListDelegate> _delegate;
+    
+    NSMutableArray *_deletedList;
+    
+}
+@property(nonatomic,retain,readwrite)NSMutableArray *TargetPests;
+@property(nonatomic,retain,readwrite)NSMutableArray *deletedList;
+@property (nonatomic, assign) int appointmentId;
+
+
+- (int)loadedCount;
+
+- (void)refreshWithDelegate:(id<TargetPestListDelegate>) del;
+
+- (NSMutableArray*) gettargetPestArray;
+
+- (void)addPestType:(TargetPest *)targetPest andDelegate:(id<ListItemDelegate>)del;
+
+- (void)deleteTargetPest:(TargetPest *)targetPest andDelegate:(id<ListItemDelegate>)del ;
+
+- (void) parseWithArray:(NSArray*) arr;
+
+
+-(void) syncTargetPests;
+
+@end

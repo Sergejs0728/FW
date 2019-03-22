@@ -1,0 +1,24 @@
+//
+//  AccountManager.h
+//  FieldWork
+//
+//  Created by Samir Kha on 05/01/2013.
+//  Copyright (c) 2013 __MyCompanyName__. All rights reserved.
+//
+
+#import <Foundation/Foundation.h>
+#import "FieldWorkAccount.h"
+
+@interface AccountManager : NSObject
+{
+    FieldWorkAccount *_activeAccount;
+    
+    NSMutableDictionary *_savedAccounts;
+}
+
+@property (nonatomic, readwrite, retain) FieldWorkAccount *activeAccount;
+
++(AccountManager*)Instance;
+
+-(void)saveAccount;
+@end

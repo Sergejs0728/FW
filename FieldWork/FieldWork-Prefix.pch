@@ -1,0 +1,52 @@
+//
+// Prefix header for all source files of the 'FieldWork' target in the 'FieldWork' project
+//
+
+#import <Availability.h>
+
+#ifndef __IPHONE_4_0
+#warning "This project uses features only available in iOS SDK 4.0 and later."
+#endif
+
+//#ifdef __OBJC__
+//    #import <UIKit/UIKit.h>
+//    #import <Foundation/Foundation.h>
+//#endif
+
+
+#if __has_feature(modules)
+@import UIKit;
+@import Foundation;
+#else
+#import <UIKit/UIKit.h>
+#import <Foundation/Foundation.h>
+#endif
+
+#import <CoreData/CoreData.h>
+
+
+#import <FastEasyMapping/FastEasyMapping.h>
+#import <MagicalRecord/MagicalRecord.h>
+#import "NSArray+Extension.h"
+
+#import "AppDelegate.h"
+#import "FWRequestKit.h"
+
+#import "Constants.h"
+#import "Utils.h"
+
+#import "NSDate+Extentsion.h"
+#import "NSManagedObject+Duplicate.h"
+
+#import "UIButton+Block.h"
+#import "UIBarButtonItem+Extension.h"
+
+#define kDrawingFactor 0.2
+
+#ifndef DLog
+#ifdef DEBUG
+#define DLog(_format_, ...) NSLog(_format_, ## __VA_ARGS__)
+#else
+#define DLog(_format_, ...)
+#endif
+#endif

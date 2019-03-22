@@ -1,0 +1,210 @@
+//
+//  MaterialUsageList.m
+//  FieldWork
+//
+//  Created by Samir Kha on 28/01/2013.
+//  Copyright (c) 2013 __MyCompanyName__. All rights reserved.
+//
+
+#import "MaterialUsageList.h"
+#import "AppDelegate.h"
+
+@implementation MaterialUsageList
+@synthesize appointmentId = _appointmentId;
+@synthesize MaterialUsages = _MaterialUsages;
+@synthesize deletedMaterialUsages = _deletedMaterialUsages;
+
+- (id)init {
+    self = [super init];
+    if (self) {
+        _MaterialUsages = [[NSMutableArray alloc] init];
+        _deletedMaterialUsages = [[NSMutableArray alloc] init];
+    }
+    return self;
+}
+
+- (void)parseWithArray:(NSArray *)arr {
+    _MaterialUsages = [[NSMutableArray alloc] init];
+    for (NSDictionary *data in arr)
+    {
+        MaterialUsage *mu = [MaterialUsage materialUsageWithDictionary:data];
+        [_MaterialUsages addObject:mu];
+    }
+}
+
+- (NSMutableArray *)getMaterialUsageArray {
+    return _MaterialUsages;
+}
+
+- (NSMutableArray *)getMaterialUsageRecordArray {
+    NSMutableArray *arr = [[NSMutableArray alloc] init];
+    if (_MaterialUsages) {
+        for (MaterialUsage *mu in _MaterialUsages) {
+            [arr addObjectsFromArray:mu.material_usage_records];
+        }
+    }
+    return arr;
+}
+
+- (void)refreshWithDelegate:(id<MaterialUsageListDelegate>)del {
+    NSLog(@"Refeashing Material Usage");
+    _delegate = del;
+    NSString *url = [NSString stringWithFormat:@"%@appointment_occurrences/%d/material_usages?api_key=%@", FIELD_WORK_URL_BASE, self.appointmentId ,[AccountManager Instance].activeAccount.api_key];
+    FieldworkRequest *request = [[FieldworkRequest alloc] initWithUrl:url andDelegate:self];
+    request.Tag = LOAD_LIST_TAG;
+    [request startRequest];
+}
+
+- (MaterialUsage *)getMaterialUsageById:(int)mid {
+    for (MaterialUsage *mu in self.MaterialUsages) {
+        if (mu.material_usage_id == mid) {
+            return mu;
+        }
+    }
+    return nil;
+}
+
+- (void)addMaterialUsage:(MaterialUsage *)mu withDelegate:(id<ListItemDelegate>)del{
+    _listItemDelegate = del;
+    if (mu.material_usage_id > 0 && ![self.deletedMaterialUsages containsObject:mu])
+    {
+        [self deleteMaterialUsage:[self getMaterialUsageById:mu.material_usage_id] withDelegate:nil];
+    }
+    if (mu.material_usage_id < 0)
+    {
+        [self.MaterialUsages removeObject:[self getMaterialUsageById:mu.material_usage_id] ];
+    }
+    MaterialUsage *mmu = [mu copy];
+    [self.MaterialUsages addObject:mmu];
+    if (![[AppDelegate appDelegate] isReachable]) {
+        mmu.material_usage_id = [Utils RandomId];
+        if (_listItemDelegate) {
+            [_listItemDelegate ListItemAddedSuccessfully];
+        }
+    }else{
+        NSString *mainJson = @"{\"appointment_occurrence\":{\"material_usages_attributes\":[{\"material_id\":%d, \"material_usage_records_attributes\":[%@]}]}}";
+    
+        NSString *innerJson = @"{\"location_area_id\":%d,\"dilution_rate_id\":%d,\"application_method\":\"%@\",\"amount\":%.02f,\"measurement\":\"%@\"}";
+    
+        NSMutableArray *innerJsonArray = [[NSMutableArray alloc] init];
+    
+        int count = [mu.material_usage_records count];
+        
+        for (MaterialUsageRecord *mur in mu.material_usage_records) {
+            NSString *temp = [NSString stringWithFormat:innerJson, mur.location_area_id, mur.dilution_rate_id ,mur.application_method, (mur.amount)/count, mur.measurement];
+             NSLog(@"%f",mur.amount);
+            NSLog(@"%f",(mur.amount)/count);
+            [innerJsonArray addObject:temp];
+        }
+    
+        NSString *mainInnerJson = [innerJsonArray joinWithDelimeter:@","];
+        mainJson = [NSString stringWithFormat:mainJson, mu.material_id ,mainInnerJson];
+        NSLog(@"mainJson:%@",mainJson);
+        NSString *url = [NSString stringWithFormat:@"%@appointment_occurrences/%d?api_key=%@", FIELD_WORK_URL_BASE, self.appointmentId ,[AccountManager Instance].activeAccount.api_key];
+    
+        FieldworkRequest *request = [[FieldworkRequest alloc] initWithUrl:url andDelegate:self andMethod:PUT];
+        request.postData = mainJson;
+        request.Tag = ADD_ITEM_TAG;
+        [request startRequest];
+    }
+    
+}
+
+- (void)deleteMaterialUsage:(MaterialUsage *)mu withDelegate:(id<ListItemDelegate>)del {
+    _listItemDelegate = del;
+    if (![[AppDelegate appDelegate] isReachable]) {
+        
+        [_deletedMaterialUsages addObject:mu];
+        
+        
+    }else{
+        NSString *jsonData = @"{\"appointment_occurrence\":{\"material_usages_attributes\":[{\"id\":%d,\"_destroy\":true}]}}";
+        jsonData = [NSString stringWithFormat:jsonData, mu.material_usage_id];
+        NSString *url = [NSString stringWithFormat:@"%@appointment_occurrences/%d?api_key=%@", FIELD_WORK_URL_BASE, self.appointmentId ,[AccountManager Instance].activeAccount.api_key];
+        FieldworkRequest *request = [[FieldworkRequest alloc] initWithUrl:url andDelegate:self andMethod:PUT];
+        request.Tag = DELETE_LIST_ITEM;
+        request.postData = jsonData;
+        [request startRequest];
+    }
+    [self.MaterialUsages removeObject:mu];
+    if (_listItemDelegate) {
+        [_listItemDelegate ListItemDeletedSuccessfully];
+    }
+}
+
+- (void)syncMaterialUsage {
+    if (self.MaterialUsages != nil) {
+        for (MaterialUsage *mu in self.MaterialUsages) {
+            if (mu.material_usage_id < 0) {
+                [mu syncBoth:self.appointmentId];
+            }
+        }
+        
+        if (self.deletedMaterialUsages.count > 0) {
+            for (MaterialUsage *mu in self.deletedMaterialUsages) {
+                NSLog(@"Deleteing Material Usage with ID : %d", mu.material_usage_id);
+                [mu deleteThis:self.appointmentId];
+            }
+            [self.deletedMaterialUsages removeAllObjects];
+        }
+        [self performSelector:@selector(refreshWithDelegate:) withObject:nil afterDelay:10.0];
+    }
+}
+
+#pragma mark - FieldworkRequestDelegate
+
+- (void)FieldworkRequestDidSucceed:(FieldworkRequest *)request {
+    if ([request.Tag isEqualToString:LOAD_LIST_TAG]) {
+        if (request.IsSuccess) 
+        {
+            self.MaterialUsages = [[NSMutableArray alloc] init];
+            self.deletedMaterialUsages = [[NSMutableArray alloc] init];
+            NSArray *arr = request.responseData;
+            for (NSDictionary *data in arr)
+            {
+                MaterialUsage *mu = [MaterialUsage materialUsageWithDictionary:data];
+                [self.MaterialUsages addObject:mu];
+            }
+            if (_delegate) {
+                [_delegate MaterialUsageListLoaded];
+            }
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"RELOAD_MATERIAL_USAGE_LIST" object:nil];
+        }
+    }
+    
+    if ([request.Tag isEqualToString:ADD_ITEM_TAG]) {
+        [self refreshWithDelegate:nil];
+        if (_listItemDelegate) {
+            [_listItemDelegate ListItemAddedSuccessfully];
+            //[self refreshWithDelegate:nil];
+        }
+    }
+    
+    if ([request.Tag isEqualToString:DELETE_LIST_ITEM]) {
+        if (_listItemDelegate) {
+            [_listItemDelegate ListItemDeletedSuccessfully];
+        }
+    }
+}
+
+- (void)FieldworkRequestDidFail:(FieldworkRequest *)request withError:(NSError *)error{
+    if ([request.Tag isEqualToString:LOAD_LIST_TAG]) {
+        if (_delegate) {
+            [_delegate MaterialUsageListLoadFailed:[error.userInfo objectForKey:@"message"]];
+        }
+    }
+    if ([request.Tag isEqualToString:ADD_ITEM_TAG]) {
+        if (_listItemDelegate) {
+            [_listItemDelegate ListItemAdditionFailedWithError:[error.userInfo objectForKey:@"message"]];
+        }
+    }
+    if ([request.Tag isEqualToString:DELETE_LIST_ITEM]) {
+        if (_listItemDelegate) {
+            [_listItemDelegate ListItemDeletionFailedWithError:[error.userInfo objectForKey:@"message"]];
+        }
+    }
+}
+
+
+
+@end

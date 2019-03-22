@@ -1,0 +1,41 @@
+//
+//  MaterialList.h
+//  FieldWork
+//
+//  Created by Samir Kha on 15/01/2013.
+//  Copyright (c) 2013 __MyCompanyName__. All rights reserved.
+//
+
+#import <Foundation/Foundation.h>
+#import "FieldworkRequestDelegate.h"
+#import "MaterialListDelegate.h"
+#import "FieldworkRequest.h"
+#import "AccountManager.h"
+#import "Material.h"
+#import "ListItemDelegate.h"
+#import "Constants.h"
+
+
+
+@interface MaterialList : NSObject <FieldworkRequestDelegate>
+{
+    NSMutableArray *_Materials;
+    
+    id<MaterialListDelegate>_delegate;
+    
+     id<ListItemDelegate> _itemListDelegate;
+}
+@property(nonatomic,retain,readwrite)NSMutableArray *Materials;
+@property(nonatomic,retain,readwrite)id<MaterialListDelegate>delegate;
+
++ (MaterialList*) Instance;
+
+- (void) refreshList;
+- (NSMutableArray*) getMaterialArray;
+
+- (void)loadWithDelegate:(id<MaterialListDelegate>)del;
+- (Material *)materialbyId:(int)mid;
+
+- (void) addmaterialType:(Material*) material andDelegate:(id<ListItemDelegate>)del;
+
+@end

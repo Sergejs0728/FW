@@ -1,0 +1,173 @@
+//
+//  EnvironmentViewController.m
+//  FieldWork
+//
+//  Created by Samir Khatri on 29/07/2013.
+//
+//
+
+#import "EnvironmentViewController.h"
+
+@interface EnvironmentViewController ()
+
+@end
+
+@implementation EnvironmentViewController
+
+
+
++ (EnvironmentViewController *)initWithAppointment:(Appointment *)app
+{  EnvironmentViewController * environment;
+    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
+        environment =[[EnvironmentViewController alloc]initWithNibName:@"EnvironmentView_iPad" bundle:nil];
+        
+    }else{
+        environment =[[EnvironmentViewController alloc]initWithNibName:@"EnvironmentView" bundle:nil];
+        
+    }
+    environment.appointment= app;
+    environment.title =@"Environment";
+    return environment;
+}
+
+
+- (void)viewDidLoad
+{
+   
+    [super viewDidLoad];
+    mainTable.delegate=self;
+    mainTable.dataSource=self;
+    [mainTable reloadData];
+	
+}
+-(BOOL)textFieldShouldReturn:(UITextField *)textField{
+    [textField resignFirstResponder];
+    return YES;
+}
+
+- (void)didReceiveMemoryWarning
+{
+    [super didReceiveMemoryWarning];
+    
+}
+
+-(void)SaveEnvironment:(id)sender{
+    CustomTableCell *squarecell = (CustomTableCell*)[mainTable cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
+    NSString * squrefeet = squarecell.txt.text;
+    CustomTableCell *directioncell = (CustomTableCell*)[mainTable cellForRowAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:0]];
+    NSString * direction = directioncell.txt.text;
+    CustomTableCell *speedcell = (CustomTableCell*)[mainTable cellForRowAtIndexPath:[NSIndexPath indexPathForRow:2 inSection:0]];
+    NSString * speed = speedcell.txt.text;
+    CustomTableCell *tempCell = (CustomTableCell*)[mainTable cellForRowAtIndexPath:[NSIndexPath indexPathForRow:3 inSection:0]];
+    NSString * temp = tempCell.txt.text;
+       if (squrefeet.length > 0 && direction.length > 0 && speed.length > 0 && temp.length > 0)
+    {
+        self.Appointment.square_feet = squrefeet;
+        self.Appointment.wind_direction = direction;
+        self.Appointment.wind_speed = speed;
+        self.Appointment.temperature = temp;
+        [[ActivityIndicator currentIndicator] displayActivity:@"Please Wait..."];
+        [self.Appointment saveEnvironmentData:self];
+    }
+}
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
+{
+    return 1;
+}
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+{
+    // Return the number of rows in the section.
+    return 4;
+    
+}
+
+
+
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    
+            // section == 2
+        static NSString *CellIdentifier = @"CellAmountCheck";
+        CustomTableCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+        if (cell == nil)
+        {
+            NSArray *topLevelObject = [[NSBundle mainBundle] loadNibNamed:@"CustomLableTextCell" owner:self options:nil];
+            
+            for(id currentObject in topLevelObject)
+            {
+                if([currentObject isKindOfClass:[UITableViewCell class]])
+                {
+                    cell = (CustomTableCell*) currentObject;
+                }
+            }
+        }
+        if(indexPath.row == 0)
+        {
+            cell.lbl.text = @"SqureFeet";
+            cell.txt.text = self.Appointment.square_feet;
+            
+        }
+        else if(indexPath.row == 1)
+        {
+            cell.lbl.text = @"Wind Direction";
+            cell.txt.text = self.Appointment.wind_direction;
+        }
+        else if(indexPath.row == 2)
+        {
+            cell.lbl.text = @"Wind Speed";
+            cell.txt.text = self.Appointment.wind_speed;
+            
+        }
+        else if(indexPath.row == 3)
+        {
+            cell.lbl.text = @"Temperature";
+            cell.txt.text = self.Appointment.temperature;
+            
+        }        cell.txt.keyboardType = UIKeyboardTypeNumbersAndPunctuation;
+        
+        return cell;
+    
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
+    
+}
+
+
+#pragma mark - AppointmentDelegate
+
+- (void)AppointmentSavedSuccessfully {
+    }
+
+- (void)AppointmentSaveFailedWithError:(NSString *)error {
+       
+}
+- (void) InvoiceDataSaved{}
+
+- (void) InvoiceDataSaveFailedWithError:(NSString*) error{}
+
+- (void) PrintFileDownloaded{}
+
+- (void) PrintFileDownloadFailWithError:(NSString*) error{}
+-(void)EnvironmentSaved{
+    
+    [[ActivityIndicator currentIndicator] displayCompleted];
+    [self.navigationController popViewControllerAnimated:YES];
+
+}
+-(void)EnvironmentDataSaveFailedWithError:(NSString *)error{
+    [[ActivityIndicator currentIndicator] displayCompletedWithError:@""];
+    UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"FieldWork"
+                                                     message:error
+                                                    delegate:nil
+                                           cancelButtonTitle:@"Ok"
+                                           otherButtonTitles:nil];
+    [alert show];
+
+}
+
+@end

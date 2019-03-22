@@ -1,0 +1,33 @@
+//
+//  TrapAddController.h
+//  FieldWork
+//
+//  Created by Samir Kha on 22/02/2013.
+//  Copyright (c) 2013 __MyCompanyName__. All rights reserved.
+//
+
+#import <UIKit/UIKit.h>
+#import "CustomTableCell.h"
+#import "Appointment.h"
+#import "CommonAppointmentViewController.h"
+#import "ListItemDelegate.h"
+#import "TrapDetailView.h"
+
+@interface TrapAddController : CommonAppointmentViewController<UITableViewDelegate,UITableViewDataSource,ListItemDelegate>
+{
+    UITableView * _TrapAddTable;
+    NSString * _barcode;
+    CustomerTrap *_customerTrap;
+    UIScrollView * _addscrollview;
+ }
+
+@property (nonatomic ,retain) IBOutlet UITableView * TrapAddTable;
+@property (nonatomic ,retain,readwrite) NSString *barcode;
+@property (nonatomic ,retain) IBOutlet UIScrollView * addscrollview;
+@property (nonatomic, readwrite, retain) CustomerTrap *customerTrap;
+
+-(IBAction)SaveTrapAdd:(id)sender;
+
++ (TrapAddController*) initWithAppointment:(Appointment*) app withCustomerTrap:(CustomerTrap*) ctrap;
+
+@end

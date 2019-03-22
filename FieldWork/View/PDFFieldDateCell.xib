@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="11201" systemVersion="16B2657" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11161"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="gTV-IL-0wX" customClass="PDFFieldDateCell">
+            <rect key="frame" x="0.0" y="0.0" width="315" height="90"/>
+            <autoresizingMask key="autoresizingMask"/>
+            <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
+                <rect key="frame" x="0.0" y="0.0" width="315" height="90"/>
+                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                <subviews>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" minimumScaleFactor="0.69999999999999996" translatesAutoresizingMaskIntoConstraints="NO" id="jsN-Z7-0sC">
+                        <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                        <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                    <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="dqm-IN-QdJ">
+                        <constraints>
+                            <constraint firstAttribute="height" constant="30" id="jZj-ZC-nFe"/>
+                        </constraints>
+                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                        <textInputTraits key="textInputTraits"/>
+                    </textField>
+                </subviews>
+            </view>
+            <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+            <constraints>
+                <constraint firstAttribute="bottom" secondItem="dqm-IN-QdJ" secondAttribute="bottom" constant="10" id="5qd-Cg-tQ9"/>
+                <constraint firstItem="dqm-IN-QdJ" firstAttribute="top" secondItem="jsN-Z7-0sC" secondAttribute="bottom" constant="5" id="A61-xn-YbV"/>
+                <constraint firstItem="jsN-Z7-0sC" firstAttribute="top" secondItem="gTV-IL-0wX" secondAttribute="top" constant="7" id="FzU-n1-IjH"/>
+                <constraint firstItem="jsN-Z7-0sC" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" constant="10" id="GO5-oi-eha"/>
+                <constraint firstItem="dqm-IN-QdJ" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" constant="10" id="Sys-ow-OAs"/>
+                <constraint firstAttribute="trailing" secondItem="dqm-IN-QdJ" secondAttribute="trailing" constant="15" id="fjF-ec-3l3"/>
+                <constraint firstAttribute="trailing" secondItem="jsN-Z7-0sC" secondAttribute="trailing" constant="10" id="rcX-RC-Cj3"/>
+            </constraints>
+            <size key="customSize" width="315" height="80"/>
+            <connections>
+                <outlet property="dateTextField" destination="dqm-IN-QdJ" id="IzT-jO-604"/>
+                <outlet property="label" destination="jsN-Z7-0sC" id="D5T-OC-wxl"/>
+            </connections>
+            <point key="canvasLocation" x="227.5" y="270"/>
+        </collectionViewCell>
+    </objects>
+</document>

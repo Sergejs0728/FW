@@ -1,0 +1,24 @@
+//
+//  CustomerRetrival.h
+//  FieldWork
+//
+//  Created by Samir Khatri on 3/14/13.
+//
+//
+
+#import <Foundation/Foundation.h>
+#import "AppDelegate.h"
+#import "FieldworkRequestDelegate.h"
+#import "FieldworkURLSchema.h"
+#import "CustomerRetrivalDelegate.h"
+
+
+@interface CustomerRetrival : NSObject <FieldworkRequestDelegate>{
+
+    id<CustomerRetrivalDelegate> _delegate;
+    
+}
+
+- (void) retriveCustomerWithId:(int)cust_id andDelegate:(id<CustomerRetrivalDelegate>) del;
+
+@end

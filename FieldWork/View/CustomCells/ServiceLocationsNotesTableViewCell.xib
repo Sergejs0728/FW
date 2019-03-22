@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="11201" systemVersion="16B2657" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11161"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="ServiceLocationsNotesTableViewCell" rowHeight="208" id="KGk-i7-Jjw" customClass="ServiceLocationsNotesTableViewCell">
+            <rect key="frame" x="0.0" y="0.0" width="320" height="233"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+            <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="KGk-i7-Jjw" id="H2p-sc-9uM">
+                <frame key="frameInset" width="320" height="232"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Notes" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="P3B-BG-lQk">
+                        <constraints>
+                            <constraint firstAttribute="height" constant="21" id="1qD-5X-Fww"/>
+                        </constraints>
+                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                        <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="3" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" preferredMaxLayoutWidth="275" translatesAutoresizingMaskIntoConstraints="NO" id="Ch1-7X-Vvl">
+                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                        <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="4tH-2J-e6F">
+                        <constraints>
+                            <constraint firstAttribute="height" constant="25.5" id="WPc-B2-ayV"/>
+                        </constraints>
+                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                        <state key="normal" title="View more...">
+                            <color key="titleColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        </state>
+                        <state key="selected" title="View less...">
+                            <color key="titleColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        </state>
+                        <connections>
+                            <action selector="buttonViewClicked:" destination="KGk-i7-Jjw" eventType="touchUpInside" id="yCc-bn-Mix"/>
+                        </connections>
+                    </button>
+                </subviews>
+                <constraints>
+                    <constraint firstItem="4tH-2J-e6F" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="30" id="4cd-uR-Ml1"/>
+                    <constraint firstItem="P3B-BG-lQk" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="3" id="7SO-UM-MTM"/>
+                    <constraint firstAttribute="trailing" secondItem="Ch1-7X-Vvl" secondAttribute="trailing" constant="15" id="LZF-R7-PRh"/>
+                    <constraint firstAttribute="trailing" secondItem="4tH-2J-e6F" secondAttribute="trailing" constant="15" id="Ocd-ge-R1a"/>
+                    <constraint firstAttribute="bottom" secondItem="4tH-2J-e6F" secondAttribute="bottom" id="Qaa-b8-4jz"/>
+                    <constraint firstItem="Ch1-7X-Vvl" firstAttribute="top" secondItem="P3B-BG-lQk" secondAttribute="bottom" id="YBV-az-zA6"/>
+                    <constraint firstItem="4tH-2J-e6F" firstAttribute="top" secondItem="Ch1-7X-Vvl" secondAttribute="bottom" constant="3" id="hoV-Gj-IUT"/>
+                    <constraint firstItem="P3B-BG-lQk" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="30" id="m4p-p7-Pcp"/>
+                    <constraint firstItem="Ch1-7X-Vvl" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="30" id="vXc-5L-9s3"/>
+                </constraints>
+            </tableViewCellContentView>
+            <connections>
+                <outlet property="buttonView" destination="4tH-2J-e6F" id="Lj9-kb-VyR"/>
+                <outlet property="constraintButtonViewHeight" destination="WPc-B2-ayV" id="Neq-o2-6lv"/>
+                <outlet property="labelNotes" destination="Ch1-7X-Vvl" id="9QB-OQ-gC9"/>
+            </connections>
+            <point key="canvasLocation" x="325" y="518.5"/>
+        </tableViewCell>
+    </objects>
+</document>

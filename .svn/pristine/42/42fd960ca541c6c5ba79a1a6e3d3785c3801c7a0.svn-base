@@ -1,0 +1,17 @@
+//
+//  LoginControllerDelegate.h
+//  FieldWork
+//
+//  Created by Samir Kha on 05/01/2013.
+//  Copyright (c) 2013 __MyCompanyName__. All rights reserved.
+//
+
+#import <Foundation/Foundation.h>
+
+@class LoginController;
+
+@protocol LoginControllerDelegate <NSObject>
+
+-(void)userDidLogin:(LoginController*)viewController;
+
+@end

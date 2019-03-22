@@ -1,0 +1,57 @@
+//
+//  InspectionRecordList.h
+//  FieldWork
+//
+//  Created by Samir Khatri on 2/20/13.
+//
+//
+
+#import <Foundation/Foundation.h>
+#import "ListItemDelegate.h"
+#import "InspectionRecord.h"
+#import "AppDelegate.h"
+#import "Utils.h"
+#import "FieldworkRequest.h"
+#import "FieldworkRequestDelegate.h"
+#import "FieldworkURLSchema.h"
+#import "AccountManager.h"
+
+@interface InspectionRecordList : NSObject<FieldworkRequestDelegate>
+{
+    NSMutableArray *_InspectionRecords;
+    NSMutableArray *_deletedInspectionRecords;
+    
+    id<ListItemDelegate> _listItemDelegate;
+    
+    int _appointmentId;
+
+}
+
+@property (nonatomic, readwrite, retain) NSMutableArray *InspectionRecords;
+@property (nonatomic, readwrite, retain) NSMutableArray *deletedInspectionRecords;
+
+@property (nonatomic, readwrite, retain) id<ListItemDelegate> listItemDelegate;
+
+@property (nonatomic, assign) int appointmentId;
+
+- (void) parseWithArray:(NSArray*) arr andAppointmentId:(int) apptId;
+
+- (void) refresh;
+
+- (NSMutableArray*) getInspectionRecordArray;
+
+- (BOOL) isBarcodeContains:(NSString*) brcode;
+
+- (InspectionRecord*) inspectionRecordByBarcode:(NSString*) brcode;
+
+- (int) loadedCount;
+
+- (InspectionRecord *)getInspectionRecordById:(int)mid;
+
+- (void) addInspectionRecord:(InspectionRecord*) record withDelegate:(id<ListItemDelegate>) del;
+
+- (void) deleteInspectionRecord:(InspectionRecord*) record withDelegate:(id<ListItemDelegate>) del;
+
+- (void) syncInspectionRecords;
+
+@end

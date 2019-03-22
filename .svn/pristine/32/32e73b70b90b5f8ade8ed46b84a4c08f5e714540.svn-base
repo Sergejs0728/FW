@@ -1,0 +1,41 @@
+//
+//  MaterialUsageRecord.h
+//  FieldWork
+//
+//  Created by Samir Kha on 28/01/2013.
+//  Copyright (c) 2013 __MyCompanyName__. All rights reserved.
+//
+
+#import <Foundation/Foundation.h>
+#import "MaterialUsage.h"
+
+
+@class DilutionRates;
+
+@interface MaterialUsageRecord : NSObject
+{
+    int _material_usage_record_id;
+    int _location_area_id;
+    float _amount;
+    NSString *_application_method;
+    int _dilution_rate_id;
+    NSString *_measurement;
+    
+    MaterialUsage *_material_usage;
+}
+
+@property (nonatomic, assign) int material_usage_record_id;
+@property (nonatomic, assign) int location_area_id;
+@property (nonatomic, assign) float amount;
+@property (nonatomic, retain, readwrite) NSString *application_method;
+@property (nonatomic, retain, readwrite) NSString *measurement;
+@property (nonatomic, assign) int dilution_rate_id;
+@property (nonatomic, retain, readwrite) MaterialUsage *material_usage;
+
+
++( MaterialUsageRecord*) materialUsageRecordWithDictionary:(NSDictionary*) dict;
+
+- (DilutionRates*) getDilutionRate;
+
+
+@end

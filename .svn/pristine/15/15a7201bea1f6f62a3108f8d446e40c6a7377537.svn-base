@@ -1,0 +1,130 @@
+//
+//  InspectionRecord.m
+//  FieldWork
+//
+//  Created by Samir Khatri on 2/20/13.
+//
+//
+
+#import "InspectionRecord.h"
+
+@implementation InspectionRecord
+
+- (id)init {
+    if (self = [super init]) {
+        self.inspectionPestRecords = [[NSMutableArray alloc] init];
+    }
+    return self;
+}
+
++ (InspectionRecord *)inspectionRecordWithDictionary:(NSDictionary *)dict {
+    InspectionRecord *record = [[InspectionRecord alloc] init];
+    record.inspectionId = [[dict objectForKey:@"id"] intValue];
+    if ([dict objectForKey:@"notes"] != [NSNull null]) {
+        record.notes = [dict objectForKey:@"notes"];
+    }
+    if ([dict objectForKey:@"barcode"] != [NSNull null]) {
+        record.barcode = [dict objectForKey:@"barcode"];
+    }
+    if ([dict objectForKey:@"evidence"] != [NSNull null]) {
+        record.evidence = [dict objectForKey:@"evidence"];
+    }
+    if ([dict objectForKey:@"location_area_id"] != [NSNull null]) {
+        record.location_area_id = [[dict objectForKey:@"location_area_id"] intValue];
+    }
+    if ([dict objectForKey:@"pests_records"] != [NSNull null]) {
+        NSArray *pest_records = [dict objectForKey:@"pests_records"];
+        if (pest_records != nil && pest_records.count > 0) {
+            for (NSDictionary *pdict in pest_records) {
+                InspectionPestRecord *ipr = [InspectionPestRecord initWithDictionary:pdict];
+                if (ipr) {
+                    [record.inspectionPestRecords addObject:ipr];
+                }
+            }
+        }
+    }
+
+    
+    return record;
+}
+
+
+- (id)copyWithZone:(NSZone *)zone {
+    InspectionRecord *mu = [[InspectionRecord allocWithZone:zone] init];
+    mu.inspectionId = self.inspectionId;
+    mu.notes = self.notes;
+    mu.barcode = self.barcode;
+    mu.evidence = self.evidence;
+    mu.location_area_id = self.location_area_id;
+    mu.inspectionPestRecords = [self.inspectionPestRecords mutableCopy];
+    mu.isClean = self.isClean;
+    return mu;
+}
+
+
+- (void)sync:(int)apptId {
+    NSString *mainJsonData = @"";
+    if (self.inspectionPestRecords.count > 0) {
+        
+        NSString *mainJson = @"{\"appointment_occurrence\":{\"inspection_records_attributes\":[{\"barcode\":\"%@\", \"location_area_id\":%d,\"evidence\":\"%@\",\"pests_records_attributes\":[%@]}]}}";
+        
+        NSString *innerJson = @"{\"pest_type_id\":%d,\"count\":%d}";
+        
+        NSMutableArray *innerJsonArray = [[NSMutableArray alloc] init];
+        
+        for (InspectionPestRecord *ipr in self.inspectionPestRecords) {
+            NSString *temp = [NSString stringWithFormat:innerJson, ipr.pest_type_id, ipr.count];
+            [innerJsonArray addObject:temp];
+        }
+        
+        NSString *mainInnerJson = [innerJsonArray joinWithDelimeter:@","];
+        mainJsonData = [NSString stringWithFormat:mainJson, self.barcode, self.location_area_id, self.evidence ,mainInnerJson];
+    }else{
+        NSString *mainJson = @"{\"appointment_occurrence\":{\"inspection_records_attributes\":[{\"barcode\":\"%@\", \"location_area_id\":%d,\"evidence\":\"%@\"}]}}";
+        mainJsonData = [NSString stringWithFormat:mainJson, self.barcode, self.location_area_id, self.evidence];
+    }
+
+    
+    NSString *url = [NSString stringWithFormat:@"%@appointment_occurrences/%d?api_key=%@", FIELD_WORK_URL_BASE, apptId ,[AccountManager Instance].activeAccount.api_key];
+    
+    FieldworkRequest *request = [[FieldworkRequest alloc] initWithUrl:url andDelegate:self andMethod:PUT];
+    request.postData = mainJsonData;
+    request.Tag = ADD_ITEM_TAG;
+    [request startRequest];
+}
+
+- (void)deleteThis:(int)apptId {
+    NSString *url = [NSString stringWithFormat:@"%@appointment_occurrences/%d/inspection_records/%d?api_key=%@", FIELD_WORK_URL_BASE, apptId , self.inspectionId ,[AccountManager Instance].activeAccount.api_key];
+    FieldworkRequest *request = [[FieldworkRequest alloc] initWithUrl:url andDelegate:self andMethod:DELETE];
+    request.Tag = DELETE_LIST_ITEM;
+    [request startRequest];
+}
+
+#pragma mark - FieldworkRequestDelegate
+
+- (void)FieldworkRequestDidSucceed:(FieldworkRequest *)request {
+    
+}
+- (void)FieldworkRequestDidFail:(FieldworkRequest *)request withError:(NSError *)error {
+    
+}
+-(BOOL) isInspectionClean
+{      
+    if (_isClean) {
+        return true;
+    }  
+    else{
+        return false; 
+    }
+}
+#pragma mark - Properties
+
+@synthesize inspectionId = _inspectionId;
+@synthesize notes = _notes;
+@synthesize barcode = _barcode;
+@synthesize location_area_id = _location_area_id;
+@synthesize evidence = _evidence;
+@synthesize inspectionPestRecords = _inspectionPestRecords;
+@synthesize isClean;
+
+@end

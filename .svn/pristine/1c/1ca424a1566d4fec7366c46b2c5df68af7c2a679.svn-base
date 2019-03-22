@@ -1,0 +1,58 @@
+//
+//  CapturedPestView.h
+//  FieldWork
+//
+//  Created by Samir Kha on 12/02/2013.
+//  Copyright (c) 2013 __MyCompanyName__. All rights reserved.
+//
+
+#import <UIKit/UIKit.h>
+#import "CommonAppointmentViewController.h"
+#import "CustomTableCell.h"
+#import "KeyboardAccessoryHelper.h"
+#import "TableExpanderView.h"
+#import "PestsListController.h"
+#import "InspectionRecord.h"
+
+@interface CapturedPestView : CommonAppointmentViewController<UITableViewDelegate,UITableViewDataSource,KeyBoardHelper, UITextFieldDelegate>
+{
+    NSMutableArray * CapturedPestlist;
+    UITableView * _CapturedPesttable;
+    NSString *barcode;
+    CustomerTrap *_customerTrap;
+    IBOutlet UILabel * CapturedPestlabel;
+    IBOutlet TableExpanderView * _tableContainer;
+     IBOutlet UIView *_buttonHolder;
+    IBOutlet UIScrollView *_scrollView;
+    IBOutlet UIButton *_btnRemovePest;
+    int _sections;
+    
+    NSMutableArray *_inspectionPestRecords;
+    InspectionRecord *_inspectionRecord;
+}
+
+@property (nonatomic, retain) IBOutlet UITableView * CapturedPesttable;
+@property (nonatomic, retain) IBOutlet UILabel * CapturedPestlabel;
+@property (nonatomic, readwrite, retain) UIButton *btnRemovePest;
+@property (nonatomic, retain, readwrite) NSString *barcode;
+@property (nonatomic, readwrite, retain) CustomerTrap *customerTrap;
+@property (nonatomic, readwrite, retain) InspectionRecord *inspectionRecord;
+
+-(IBAction)CapturedPestsavebutn:(id)sender;
+
+
+- (void) setButtonFrameProper;
+
+-(IBAction)celladdbtn:(id)sender;
+
+- (IBAction)removePest:(id)sender;
+
+- (void) addInspectionPestRecord;
+
+- (void) removeInspectionPestRecord;
+
+
++ (CapturedPestView*) initWithAppointment:(Appointment*) appt andCustomerTrap:(CustomerTrap*) ctrap andInspectionRecord:(InspectionRecord*) insp;
+
+
+@end

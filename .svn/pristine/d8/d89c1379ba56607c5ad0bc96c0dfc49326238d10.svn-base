@@ -1,0 +1,14 @@
+//
+//  UIColor+UITableViewBackground.h
+//  FieldWork
+//
+//  Created by Samir Khatri on 1/23/13.
+//
+//
+
+#import <UIKit/UIKit.h>
+
+@interface UIColor (UITableViewBackground)
++ (UIColor *)groupTableViewBackgroundColor;    
++ (UIColor *)ipadColor;
+@end

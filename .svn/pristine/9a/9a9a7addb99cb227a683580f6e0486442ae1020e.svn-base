@@ -1,0 +1,50 @@
+//
+//  TrapDetailView.h
+//  FieldWork
+//
+//  Created by Samir Kha on 12/02/2013.
+//  Copyright (c) 2013 __MyCompanyName__. All rights reserved.
+//
+
+#import <UIKit/UIKit.h>
+#import "CommonAppointmentViewController.h"
+#import "PestEvidenceView.h"
+#import "CapturedPestView.h"
+#import "EvidenceListController.h"
+#import "Appointment.h"
+#import "InspectionRecordList.h"
+#import "TrapListController.h"
+#import "ListItemDelegate.h"
+#import "InspectionRecord.h"
+
+@interface TrapDetailView :CommonAppointmentViewController<UITableViewDelegate,UITableViewDataSource, ListItemDelegate>
+{  
+    UITableView * _TrapDetailtable;
+    NSMutableArray * TrapDetaillist;
+    NSString *_barcode;
+    CustomerTrap *_customerTrap;
+    IBOutlet UILabel * barcodelabel,* typelabel,* buildinglabel,* floorlabel;
+    InspectionRecord *inspectionRecord;
+    IBOutlet UIImageView *_imgRightIcon;
+    UIView * _TrapView;
+    BOOL check;
+    UIView * labelView;;
+   
+    
+       
+}
+@property(nonatomic,retain) IBOutlet UIView * labelView;
+@property(nonatomic,assign) BOOL check;
+@property(nonatomic,retain) IBOutlet UIView * TrapView;
+@property(nonatomic,retain) IBOutlet UITableView * TrapDetailtable;
+@property (nonatomic, retain, readwrite) NSString *barcode;
+@property (nonatomic, readwrite, retain) CustomerTrap *customerTrap;
+@property (nonatomic, readwrite, retain) InspectionRecord *inspectionRecord;
+
+-(IBAction)TrapDetailViewclearbtn:(id)sender;
+-(IBAction)TrapDetailViewsavebtn:(id)sender;
+
++ (TrapDetailView*) initWithAppointment:(Appointment*) app withCustomerTrap:(CustomerTrap*) ctrap WithBoolean:(BOOL)checks;
++ (TrapDetailView*) initWithAppointment:(Appointment*) app withInspectionRecord:(InspectionRecord*) insp;
+
+@end

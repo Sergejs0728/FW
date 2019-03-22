@@ -1,0 +1,81 @@
+//
+//  DilutionRatesList.m
+//  FieldWork
+//
+//  Created by Samir Kha on 18/01/2013.
+//  Copyright (c) 2013 __MyCompanyName__. All rights reserved.
+//
+
+#import "DilutionRatesList.h"
+
+static DilutionRatesList *Singlton = nil;
+
+
+@implementation DilutionRatesList
+
+@synthesize dilutionRates=_dilutionRates;
+
+- (id)init {
+    self = [super init];
+    if (self) {
+        _dilutionRates = [[NSMutableArray alloc] init];
+        _dilutionRates = [[CoreDataHelper Instance] fetchWithTable:DILUTION_RATES];
+        if (_dilutionRates.count <= 0) {
+            [self load];
+        }
+    }
+    return self;
+}
+
++ (DilutionRatesList*) Instance
+{
+    if(Singlton == nil){
+        Singlton = [[DilutionRatesList alloc] init];
+    }
+    
+    return Singlton; 
+
+}
+
+- (int)loadedCount 
+{
+    return _dilutionRates.count;
+}
+- (NSMutableArray*) getDilutionRate
+{
+    return self.dilutionRates;
+    
+}
+
+- (void)load
+{
+        NSString *url = [NSString stringWithFormat:@"%@dilution_rates?api_key=%@", FIELD_WORK_URL_BASE, [AccountManager Instance].activeAccount.api_key];
+        FieldworkRequest *request = [[FieldworkRequest alloc] initWithUrl:url andDelegate:self];
+        [request startRequest];
+
+}
+
+-(void)FieldworkRequestDidSucceed:(FieldworkRequest *)request
+{
+    
+    if (request.IsSuccess) 
+    {
+        [[CoreDataHelper Instance] deleteAll:DILUTION_RATES];
+        self.dilutionRates = [[NSMutableArray alloc] init];
+        NSArray *arr = request.responseData;
+        for (NSDictionary *data in arr)
+        {
+            DilutionRates *dilRate = [DilutionRates DilutionRatesWithDictionary:data];
+            [self.dilutionRates addObject:dilRate];
+        }
+        
+    }
+}
+
+- (void)FieldworkRequestDidFail:(FieldworkRequest *)request withError:(NSError *)error
+{
+    
+}
+
+
+@end

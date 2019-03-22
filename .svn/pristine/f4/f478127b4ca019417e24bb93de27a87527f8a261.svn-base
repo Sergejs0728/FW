@@ -1,0 +1,31 @@
+//
+//  EvidenceListController.h
+//  FieldWork
+//
+//  Created by Samir Khatri on 2/20/13.
+//
+//
+
+#import <UIKit/UIKit.h>
+#import "CommonAppointmentViewController.h"
+#import "NSMutableArray+Join.h"
+#import "InspectionRecord.h"
+
+@interface EvidenceListController : CommonAppointmentViewController<UITableViewDataSource, UITableViewDelegate>
+{
+    NSMutableArray *_evidenceArray;
+    
+    IBOutlet UITableView *_mainTable;
+    
+    InspectionRecord *_inspectionRecord;
+    
+    
+}
+
+@property (nonatomic, readwrite, retain) InspectionRecord *inspectionRecord;
+
++ (EvidenceListController*) initWithAppointment:(Appointment*) appt andInspectionRecord:(InspectionRecord*) ir;
+
+- (IBAction)saveClicked:(id)sender;
+
+@end

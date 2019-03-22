@@ -1,0 +1,140 @@
+//
+//  LocationType.m
+//  FieldWork
+//
+//  Created by Samir Kha on 18/01/2013.
+//  Copyright (c) 2013 __MyCompanyName__. All rights reserved.
+//
+
+#import "LocationType.h"
+#import "LocationArea.h"
+
+
+@implementation LocationType
+
+@dynamic location_type_id;
+@dynamic location_type_name;
+@dynamic location_type_color;
+@dynamic location_areas;
+
++ (void)parseWithArray:(NSArray *)arr {
+    [[CoreDataHelper Instance] deleteAll:LOCATION_TYPES];
+    for (NSDictionary *data in arr) {
+        NSNumber *lid = [NSNumber numberWithInt:[[data objectForKey:@"id"] intValue]];
+        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"location_type_id==%d", lid];
+         if (![[CoreDataHelper Instance] isExists:LOCATION_TYPES predicate:predicate]) {
+             LocationType *ltype = (LocationType*)[[CoreDataHelper Instance] newEntityWithTableName:LOCATION_TYPES];
+             [ltype setLocation_type_id:lid];
+             [ltype setLocation_type_name:[data objectForKey:@"name"]];
+             if ([data objectForKey:@"color"] != [NSNull null]) {
+                 [ltype setLocation_type_color:[data objectForKey:@"color"]];
+             }
+             
+             NSArray *location_area_array = [data objectForKey:@"location_areas"];
+             
+             for (NSDictionary *area in location_area_array) {
+                 
+                 NSNumber *laid = [NSNumber numberWithInt:[[area objectForKey:@"id"] intValue]];
+                 NSPredicate *predicate = [NSPredicate predicateWithFormat:@"location_area_id==%d", laid];
+                 if (![[CoreDataHelper Instance] isExists:LOCATION_AREA predicate:predicate]) {
+                     LocationArea *larea = (LocationArea*) [[CoreDataHelper Instance] newEntityWithTableName:LOCATION_AREA];
+                     [ltype addLocation_areasObject:larea];
+                     [larea setLocation_area_id:laid];
+                     [larea setLocation_area_name:[area objectForKey:@"name"]];
+                 }
+             }
+             [[CoreDataHelper Instance] saveContext];
+         }
+    }
+}
+
++ (NSMutableArray *)getLocationTypes {
+    return [[CoreDataHelper Instance] fetchWithTable:LOCATION_TYPES];
+}
+
++ (NSMutableArray *)getAllLocationAreas {
+    NSMutableArray *types = [LocationType getLocationTypes];
+    NSMutableArray *areas = [[NSMutableArray alloc] init];
+    for (LocationType *lt in types) {
+        [areas addObjectsFromArray:[lt.location_areas allObjects]];
+    }
+    return areas;
+}
+
++ (NSMutableArray *)getLocationAreasByLocationTypeId:(int)lid {
+    NSPredicate *pre = [NSPredicate predicateWithFormat:@"location_type_id==%d", lid];
+    
+    NSMutableArray *mutableFetchResults = [[CoreDataHelper Instance] fetchWithTable:LOCATION_TYPES withPredicate:pre];
+    NSMutableArray *locationAreas = [[NSMutableArray alloc] init];
+    if (mutableFetchResults) {
+        if (mutableFetchResults.count > 0) {
+            LocationType *lt = [mutableFetchResults objectAtIndex:0];
+            [locationAreas addObjectsFromArray:[lt.location_areas allObjects]];
+        }
+    }
+    return locationAreas;
+}
+ 
++ (LocationType *)getLocationTypeById:(int)location_type_id {
+    NSPredicate *pre = [NSPredicate predicateWithFormat:@"location_type_id==%d", location_type_id];
+    
+    NSMutableArray *mutableFetchResults = [[CoreDataHelper Instance] fetchWithTable:LOCATION_TYPES withPredicate:pre];
+    if (mutableFetchResults) {
+        if (mutableFetchResults.count > 0) {
+            return [mutableFetchResults objectAtIndex:0];
+        }
+    }
+    return nil;
+}
+
++ (LocationArea *)locationAreaById:(int)lid {
+    NSMutableArray *areas = [LocationType getAllLocationAreas];
+    for (LocationArea *la in areas) {
+        if ([la.location_area_id isEqualToNumber:[NSNumber numberWithInt:lid]]) {
+            return la;
+        }
+    }
+    return nil;
+}
+
+- (void)addLocationArea:(NSString *)location_area_name withDelegate:(id<ListItemDelegate>)del{
+    LocationArea *la = (LocationArea*)[[CoreDataHelper Instance] newEntityWithTableName:LOCATION_AREA];
+    la.location_area_name = location_area_name;
+    [self addLocation_areasObject:la];
+    [[CoreDataHelper Instance] saveContext];
+    
+    _itemListDelegate = del;
+    NSString *url = [NSString stringWithFormat:@"%@location_types/%d/location_areas?api_key=%@", FIELD_WORK_URL_BASE, [self.location_type_id intValue],[AccountManager Instance].activeAccount.api_key];
+    NSString *data = [NSString stringWithFormat:@"{\"name\":\"%@\"}", location_area_name];
+    FieldworkRequest *request = [[FieldworkRequest alloc] initWithUrl:url andDelegate:self andMethod:POST];
+    request.postData = data;
+    request.Tag = ADD_ITEM_TAG;
+    [request startRequest];
+}
+
+-(void)FieldworkRequestDidSucceed:(FieldworkRequest *)request
+{
+    if ([request.Tag isEqualToString:ADD_ITEM_TAG]) {
+        if (request.IsSuccess) {
+            StaticModelLoader *modelLoder = [[StaticModelLoader alloc] init];
+            [modelLoder loadStaticLists:locationtypes];
+            
+            [_itemListDelegate ListItemAddedSuccessfully];
+        }else{
+            [_itemListDelegate ListItemAdditionFailedWithError:request.message];
+        }
+    }
+}
+
+- (void)FieldworkRequestDidFail:(FieldworkRequest *)request withError:(NSError *)error{
+    
+    if ([request.Tag isEqualToString:ADD_ITEM_TAG]) {
+        if (_itemListDelegate) {
+            [_itemListDelegate ListItemAdditionFailedWithError:[error.userInfo objectForKey:@"message"]];
+        }
+    }
+    
+}
+
+
+@end

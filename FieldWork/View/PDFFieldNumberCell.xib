@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="11201" systemVersion="16B2657" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11161"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="gTV-IL-0wX" customClass="PDFFieldNumberCell">
+            <rect key="frame" x="0.0" y="0.0" width="381" height="90"/>
+            <autoresizingMask key="autoresizingMask"/>
+            <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
+                <rect key="frame" x="0.0" y="0.0" width="381" height="90"/>
+                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                <subviews>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="OQr-Z4-cm5">
+                        <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                        <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                    <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="0" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="2E6-fZ-93w">
+                        <constraints>
+                            <constraint firstAttribute="height" constant="30" id="Fw0-Of-OeA"/>
+                        </constraints>
+                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                        <textInputTraits key="textInputTraits" keyboardType="decimalPad"/>
+                    </textField>
+                </subviews>
+            </view>
+            <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+            <constraints>
+                <constraint firstItem="OQr-Z4-cm5" firstAttribute="top" secondItem="gTV-IL-0wX" secondAttribute="top" constant="7" id="CnZ-A8-XS9"/>
+                <constraint firstAttribute="trailing" secondItem="OQr-Z4-cm5" secondAttribute="trailing" constant="10" id="DZD-30-j3a"/>
+                <constraint firstItem="2E6-fZ-93w" firstAttribute="top" secondItem="OQr-Z4-cm5" secondAttribute="bottom" constant="5" id="KfI-1n-pis"/>
+                <constraint firstItem="2E6-fZ-93w" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" constant="10" id="PPB-8E-2Sh"/>
+                <constraint firstItem="OQr-Z4-cm5" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" constant="10" id="d8F-ad-hG5"/>
+                <constraint firstAttribute="trailing" secondItem="2E6-fZ-93w" secondAttribute="trailing" constant="15" id="eOX-9S-Jl0"/>
+                <constraint firstAttribute="bottom" secondItem="2E6-fZ-93w" secondAttribute="bottom" constant="10" id="jyz-n5-Z9t"/>
+            </constraints>
+            <size key="customSize" width="381" height="80"/>
+            <connections>
+                <outlet property="label" destination="OQr-Z4-cm5" id="5Pi-rh-lR2"/>
+                <outlet property="textField" destination="2E6-fZ-93w" id="IPY-xQ-fbD"/>
+            </connections>
+            <point key="canvasLocation" x="-112.5" y="-19"/>
+        </collectionViewCell>
+    </objects>
+</document>

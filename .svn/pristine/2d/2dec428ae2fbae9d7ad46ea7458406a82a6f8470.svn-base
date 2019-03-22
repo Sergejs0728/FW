@@ -1,0 +1,27 @@
+//
+//  DilutionRates.h
+//  FieldWork
+//
+//  Created by Samir Kha on 18/01/2013.
+//  Copyright (c) 2013 __MyCompanyName__. All rights reserved.
+//
+
+#import <Foundation/Foundation.h>
+#import <CoreData/CoreData.h>
+#import "AppDelegate.h"
+#import "CoreDataHelper.h"
+
+static NSString *DILUTION_RATES = @"DilutionRates";
+
+@interface DilutionRates : NSManagedObject
+
+@property (nonatomic, retain) NSNumber * dilution_id;
+@property (nonatomic, retain) NSString * name;
+
++ (DilutionRates*) DilutionRatesWithDictionary:(NSDictionary*) dict;
+
++ (DilutionRates*) dilutionRateById:(int) did;
+
++ (NSMutableArray*) fetchAll;
+
+@end

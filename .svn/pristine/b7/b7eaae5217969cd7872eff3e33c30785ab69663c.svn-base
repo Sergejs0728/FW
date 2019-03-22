@@ -1,0 +1,38 @@
+//
+//  UserInfo.h
+//  FieldWork
+//
+//  Created by Samir Khatri on 22/05/2013.
+//
+//
+
+#import <Foundation/Foundation.h>
+#import "AccountManager.h"
+#import "FieldworkRequestDelegate.h"
+#import "FieldworkRequest.h"
+
+@interface UserInfo : NSObject <FieldworkRequestDelegate>
+{
+    int _Id;
+    NSString *_licenseNumber;
+    NSString *_firstName;
+    NSString *_lastName;
+    int _accountId;
+    BOOL _mobileCustomerAccess;
+    BOOL _inspectionEnabled;
+}
+
+@property (nonatomic, assign) int Id;
+@property (nonatomic, readwrite, retain) NSString *licenseNumber;
+@property (nonatomic, readwrite, retain) NSString *firstName;
+@property (nonatomic, readwrite, retain) NSString *lastName;
+@property (nonatomic, assign) int accountId;
+@property (nonatomic, assign) BOOL mobileCustomerAccess;
+@property (nonatomic, assign) BOOL inspectionEnabled;
+
++(UserInfo*)Instance;
+
+- (void) loadUser;
+
+
+@end

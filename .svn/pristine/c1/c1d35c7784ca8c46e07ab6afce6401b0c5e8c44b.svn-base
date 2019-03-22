@@ -1,0 +1,140 @@
+//
+//  MaterialUsage.m
+//  FieldWork
+//
+//  Created by Samir Kha on 28/01/2013.
+//  Copyright (c) 2013 __MyCompanyName__. All rights reserved.
+//
+
+#import "MaterialUsage.h"
+#import "MaterialUsageRecord.h"
+
+@implementation MaterialUsage
+@synthesize material_id = _material_id;
+@synthesize material_usage_id = _material_usage_id;
+@synthesize note = _note;
+@synthesize material_usage_records = _material_usage_records;
+@synthesize material=_material;
+@synthesize appointmentId;
+
+- (id)init {
+    if (self = [super init]) {
+        self.material = [[Material alloc] init];
+    }
+    return self;
+}
+
+- (id)copyWithZone:(NSZone *)zone {
+    MaterialUsage *mu = [[MaterialUsage allocWithZone:zone] init];
+    mu.material_id = self.material_id;
+    mu.material_usage_id = self.material_usage_id;
+    mu.material_usage_records = [self.material_usage_records mutableCopy];
+    mu.note = self.note;
+    mu.appointmentId = self.appointmentId;
+    mu.material = self.material;
+    return mu;
+}
+
++ (MaterialUsage *)materialUsageWithDictionary:(NSDictionary *)dict {
+    MaterialUsage * mu = [[MaterialUsage alloc] init];
+    
+    mu.material_usage_id = [[dict objectForKey:@"id"] intValue];
+    mu.material_id = [[dict objectForKey:@"material_id"] intValue];
+    
+    if ([dict objectForKey:@"note"] != [NSNull null]) {
+        mu.note = [dict objectForKey:@"note"];
+    }
+    
+    NSArray *materialUsageArray = [dict objectForKey:@"material_usage_records"];
+    mu.material_usage_records = [[NSMutableArray alloc] init];
+    
+    if (materialUsageArray) {
+        for (NSDictionary *usage_record in materialUsageArray) {
+            MaterialUsageRecord *record = [MaterialUsageRecord materialUsageRecordWithDictionary:usage_record];
+            ////////////// TEMP FIX /////////////////
+            // Amount should be total amount, DONE : 24/04/2013
+            record.amount = record.amount * materialUsageArray.count;
+            /////////////////////////////////////////
+            if (record) {
+                record.material_usage = mu;
+                [mu.material_usage_records addObject:record];
+            }
+        }
+    }
+    
+    return mu;
+}
+
+- (Material *)getMaterial {
+    return [[MaterialList Instance] materialbyId:self.material_id];
+}
+- (void)syncBoth:(int)apptId {
+    self.appointmentId = apptId;
+    if (self.material.materialId < 0) {
+        NSLog(@"Adding New Material for ID : %d", self.material.materialId);
+        NSString *url = [NSString stringWithFormat:@"%@materials?api_key=%@", FIELD_WORK_URL_BASE, [AccountManager Instance].activeAccount.api_key];
+        NSString *data = [NSString stringWithFormat:@"{\"name\":\"%@\",\"epa_number\":\"%@\"}", self.material.name, self.material.epaName];
+        FieldworkRequest *request = [[FieldworkRequest alloc] initWithUrl:url andDelegate:self andMethod:POST];
+        request.postData = data;
+        request.Tag = ADD_MATERIAL_ITEM_TAG;
+        [request startRequest];
+    }else{
+        [self sync:self.appointmentId];
+    }
+}
+
+- (void)sync:(int)apptId {
+    NSLog(@"Syncing Material Usage for ID : %d", self.material_usage_id);
+    NSString *mainJson = @"{\"appointment_occurrence\":{\"material_usages_attributes\":[{\"material_id\":%d, \"material_usage_records_attributes\":[%@]}]}}";
+    
+    NSString *innerJson = @"{\"location_area_id\":%d,\"dilution_rate_id\":%d,\"application_method\":\"%@\",\"amount\":%.02f,\"measurement\":\"%@\"}";
+    
+    NSMutableArray *innerJsonArray = [[NSMutableArray alloc] init];
+    
+    for (MaterialUsageRecord *mur in self.material_usage_records) {
+        NSString *temp = [NSString stringWithFormat:innerJson, mur.location_area_id, mur.dilution_rate_id ,mur.application_method, mur.amount, mur.measurement];
+        [innerJsonArray addObject:temp];
+    }
+    
+    NSString *mainInnerJson = [innerJsonArray joinWithDelimeter:@","];
+    mainJson = [NSString stringWithFormat:mainJson, self.material.materialId ,mainInnerJson];
+    
+    NSString *url = [NSString stringWithFormat:@"%@appointment_occurrences/%d?api_key=%@", FIELD_WORK_URL_BASE, apptId ,[AccountManager Instance].activeAccount.api_key];
+    
+    FieldworkRequest *request = [[FieldworkRequest alloc] initWithUrl:url andDelegate:self andMethod:PUT];
+    request.postData = mainJson;
+    request.Tag = ADD_ITEM_TAG;
+    [request startRequest];
+}
+
+- (void)deleteThis:(int)apptId {
+    NSString *jsonData = @"{\"appointment_occurrence\":{\"material_usages_attributes\":[{\"id\":%d,\"_destroy\":true}]}}";
+    jsonData = [NSString stringWithFormat:jsonData, self.material_usage_id];
+    NSString *url = [NSString stringWithFormat:@"%@appointment_occurrences/%d?api_key=%@", FIELD_WORK_URL_BASE, apptId ,[AccountManager Instance].activeAccount.api_key];
+    FieldworkRequest *request = [[FieldworkRequest alloc] initWithUrl:url andDelegate:self andMethod:PUT];
+    request.Tag = DELETE_LIST_ITEM;
+    request.postData = jsonData;
+    [request startRequest];
+}
+
+
+#pragma mark - FieldworkRequestDelegate
+
+- (void)FieldworkRequestDidSucceed:(FieldworkRequest *)request {
+    if ([request.Tag isEqualToString:ADD_MATERIAL_ITEM_TAG]) {
+        if (request.IsSuccess) {
+            NSDictionary *dict = request.responseData;
+            NSDictionary *material = [dict objectForKey:@"material"];
+            self.material.materialId = [[material objectForKey:@"id"] intValue];
+            
+            [self sync:self.appointmentId];
+        }
+    }
+}
+
+- (void)FieldworkRequestDidFail:(FieldworkRequest *)request withError:(NSError *)error {
+    
+}
+
+
+@end

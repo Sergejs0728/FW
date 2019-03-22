@@ -1,0 +1,170 @@
+//
+//  FieldworkRequest.m
+//  FieldWork
+//
+//  Created by Samir Kha on 05/01/2013.
+//  Copyright (c) 2013 __MyCompanyName__. All rights reserved.
+//
+
+#import "FieldworkRequest.h"
+
+#define TIMEOUT_INTERVAL       20.0
+
+@implementation FieldworkRequest
+
+#pragma Property
+@synthesize delegate = _delegate;
+@synthesize message = _message;
+@synthesize methodType = _methodType;
+@synthesize responseData = _responseData;
+@synthesize IsSuccess = _isSuccess;
+@synthesize StatusCode = _statusCode;
+@synthesize Tag = _Tag;
+@synthesize postData = _postData;
+
+- (id)initWithUrl:(NSString *)urlString andDelegate:(id<FieldworkRequestDelegate>)del 
+{
+    return [self initWithUrl:urlString andDelegate:del andMethod:GET];
+}
+
+- (id)initWithUrl:(NSString *)urlString andDelegate:(id<FieldworkRequestDelegate>)del andMethod:(RequestMethod)method {
+    self = [super init];
+    
+    if (self)
+    {
+        NSURL *url = [NSURL URLWithString:urlString];
+        _request = [[NSMutableURLRequest alloc] initWithURL:url cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:TIMEOUT_INTERVAL];
+        _delegate = del;
+        _methodType = method;
+        _postParameters = [[NSMutableDictionary alloc] init];
+    }
+    
+    return self;
+}
+
+-(void)setParameter:(id)parameter forKey:(NSString *)key
+{
+    [_postParameters setObject:parameter forKey:key];
+}
+
+- (void)startRequest {
+    [_request setValue:@"*/*" forHTTPHeaderField:@"Accept"];
+    if (_methodType == GET) {
+        [_request setHTTPMethod:@"GET"];
+        [_request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
+    } else if(_methodType == POST){
+        [_request setHTTPMethod:@"POST"];
+        [_request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
+        [_request setHTTPBody: [self.postData dataUsingEncoding:NSUTF8StringEncoding]];
+        
+    } else if(_methodType == PUT){
+        [_request setHTTPMethod:@"PUT"];
+        [_request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
+        [_request setHTTPBody: [self.postData dataUsingEncoding:NSUTF8StringEncoding]];
+    } else if(_methodType == DELETE){
+        [_request setHTTPMethod:@"DELETE"];
+        [_request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
+    }
+    _connection = [[NSURLConnection alloc] initWithRequest:_request delegate:self startImmediately:TRUE];
+}
+
+-(void)requestSucceeded
+{
+    [_delegate FieldworkRequestDidSucceed:self];
+}
+
+-(void)requestFailed:(NSError*) error
+{
+    [_delegate FieldworkRequestDidFail:self withError:error];
+}
+
+#pragma NSURLConnectionDelegate
+
+- (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response 
+{
+    _data = [[NSMutableData alloc] init];
+    NSHTTPURLResponse* httpResponse = (NSHTTPURLResponse*)response;
+    self.StatusCode = [httpResponse statusCode];
+}
+
+- (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data 
+{
+    [_data appendData:data];
+}
+
+- (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error 
+{
+    [self performSelectorOnMainThread:@selector(requestFailed:) withObject:error waitUntilDone:FALSE];
+    
+    _data = nil;
+    
+    _connection = nil;
+    
+}
+
+- (void)connectionDidFinishLoading:(NSURLConnection *)connection
+{
+    SBJSON *jsonParser = [[SBJSON alloc] init];
+    NSString *stringValue = [[NSString alloc] initWithData:_data encoding:NSUTF8StringEncoding];
+    NSError *error = nil;
+    id serverData = nil;
+    if(self.StatusCode == 401){
+        error = [NSError errorWithDomain:@"RequestError" code:0 userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"You are not authorised to perform this action", @"message", nil]];
+        self.IsSuccess = NO;
+        [self performSelectorOnMainThread:@selector(requestFailed:) withObject:error waitUntilDone:FALSE];
+        return;
+    } else if (self.StatusCode == 403){
+        error = [NSError errorWithDomain:@"RequestError" code:0 userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"You are forbidden to perform this action", @"message", nil]];
+        self.IsSuccess = NO;
+        [self performSelectorOnMainThread:@selector(requestFailed:) withObject:error waitUntilDone:FALSE];
+        return;
+    }else if (self.StatusCode == 500){
+        error = [NSError errorWithDomain:@"RequestError" code:0 userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"Server error occured, please try again later.", @"message", nil]];
+        self.IsSuccess = NO;
+        [self performSelectorOnMainThread:@selector(requestFailed:) withObject:error waitUntilDone:FALSE];
+        return;
+    }
+    else if (self.StatusCode == 204){
+        self.IsSuccess = YES;
+        [self performSelectorOnMainThread:@selector(requestSucceeded) withObject:nil waitUntilDone:FALSE];
+        return;
+    }
+    @try
+    {
+        serverData = [jsonParser objectWithString:stringValue error:&error];
+        
+        if (![serverData isKindOfClass:[NSDictionary class]] && ![serverData isKindOfClass:[NSArray class]])
+        {
+            error = [NSError errorWithDomain:@"JsonParseError" code:0 userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"Invalid server data format", @"message", nil]];
+            serverData = nil;
+            self.IsSuccess = NO;
+        }
+    }
+    @catch (NSException *exception)
+    {
+        error = [NSError errorWithDomain:@"JsonParseError" code:0 userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"Error proccessing server data", @"message", nil]];
+    }
+    if (serverData) {
+        _responseData = serverData;
+        if(_responseData != nil){
+            self.IsSuccess = YES;
+        }
+    }
+    
+    if (self.IsSuccess)
+    {
+        [self performSelectorOnMainThread:@selector(requestSucceeded) withObject:nil waitUntilDone:FALSE];
+    }else{
+        error = [NSError errorWithDomain:@"RequestError" code:0 userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"Could not complete your request, please try again later.", @"message", nil]];
+        [self performSelectorOnMainThread:@selector(requestFailed:) withObject:error waitUntilDone:FALSE];
+    }
+    
+    _data = nil;
+    
+    //_connection = nil;
+    
+}
+
+
+
+@end

@@ -1,0 +1,19 @@
+//
+//  CustomerTrapListDelegate.h
+//  FieldWork
+//
+//  Created by Samir Khatri on 2/22/13.
+//
+//
+
+#import <Foundation/Foundation.h>
+
+@class CustomerTrapList;
+
+@protocol CustomerTrapListDelegate <NSObject>
+
+- (void) CustoemrTrapListLoaded:(CustomerTrapList *) customerTrapList;
+
+- (void) CustomerTrapListLoadFailedWithError:(NSString*) error;
+
+@end

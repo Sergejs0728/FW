@@ -1,0 +1,53 @@
+//
+//  MaterialUsageRecord.m
+//  FieldWork
+//
+//  Created by Samir Kha on 28/01/2013.
+//  Copyright (c) 2013 __MyCompanyName__. All rights reserved.
+//
+
+#import "MaterialUsageRecord.h"
+#import "DilutionRates.h"
+
+@implementation MaterialUsageRecord
+
+@synthesize material_usage_record_id = _material_usage_record_id;
+@synthesize location_area_id = _location_area_id;
+@synthesize amount = _amount;
+@synthesize application_method = _application_method;
+@synthesize dilution_rate_id = _dilution_rate_id;
+@synthesize measurement = _measurement;
+@synthesize material_usage = _material_usage;
+
+
++ (MaterialUsageRecord *)materialUsageRecordWithDictionary:(NSDictionary *)dict {
+    
+    MaterialUsageRecord *record = [[MaterialUsageRecord alloc] init];
+    record.material_usage_record_id = [[dict objectForKey:@"id"] intValue];
+    if ([dict objectForKey:@"location_area_id"] != [NSNull null]) {
+        record.location_area_id = [[dict objectForKey:@"location_area_id"] intValue];
+    }
+    
+    if ([dict objectForKey:@"amount"] != [NSNull null]) {
+        record.amount = [[dict objectForKey:@"amount"] floatValue];        
+    }
+    if ([dict objectForKey:@"measurement"] != [NSNull null]) {
+        record.measurement = [dict objectForKey:@"measurement"];        
+    }
+    if ([dict objectForKey:@"application_method"] != [NSNull null]) {
+        record.application_method = [dict objectForKey:@"application_method"];        
+    }
+    if ([dict objectForKey:@"dilution_rate_id"] != [NSNull null]) {
+        record.dilution_rate_id = [[dict objectForKey:@"dilution_rate_id"] intValue];        
+    }
+    return record;
+}
+
+- (DilutionRates *)getDilutionRate {
+    DilutionRates *dr = [DilutionRates dilutionRateById:self.dilution_rate_id];
+    return dr;
+}
+
+
+
+@end

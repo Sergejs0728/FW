@@ -1,0 +1,180 @@
+//
+//  TargetPestList.m
+//  FieldWork
+//
+//  Created by Samir Kha on 16/01/2013.
+//  Copyright (c) 2013 __MyCompanyName__. All rights reserved.
+//
+
+#import "TargetPestList.h"
+
+//static TargetPestList *Singlton = nil;
+
+@implementation TargetPestList
+
+@synthesize TargetPests=_TargetPests;
+@synthesize deletedList = _deletedList;
+@synthesize appointmentId = _appointmentId;
+
+- (id)init {
+    self = [super init];
+    if (self) {
+        _TargetPests = [[NSMutableArray alloc] init];
+        _deletedList = [[NSMutableArray alloc] init];
+    }
+    return self;
+}
+
+
+
+- (void)parseWithArray:(NSArray *)arr {
+    _TargetPests = [[NSMutableArray alloc] init];
+    for (NSDictionary *data in arr)
+    {
+        TargetPest *targetPest = [TargetPest targetPestWithDictionary:data];
+        [_TargetPests addObject:targetPest];
+    }
+}
+
+- (int)loadedCount {
+    return _TargetPests.count;
+}
+
+- (NSMutableArray*) gettargetPestArray
+{
+    return _TargetPests;
+}
+
+
+- (void)refreshWithDelegate:(id<TargetPestListDelegate>) del{
+    _delegate = del;
+    if (![[AppDelegate appDelegate] isReachable]) {
+        if (_delegate) {
+            [_delegate TargetPestListLoaded];
+        }
+    }else{
+        NSLog(@"Refreashing Target Pests");
+        NSString *url = [NSString stringWithFormat:@"%@appointment_occurrences/%d/pests_targets?api_key=%@", FIELD_WORK_URL_BASE, self.appointmentId ,[AccountManager Instance].activeAccount.api_key];
+        FieldworkRequest *request = [[FieldworkRequest alloc] initWithUrl:url andDelegate:self];
+        request.Tag = LOAD_LIST_TAG;
+        [request startRequest];
+    }
+}
+
+- (void)syncTargetPests {
+    if (self.TargetPests != nil) {
+        for (TargetPest *tp in self.TargetPests) {
+            if (tp.targetPestId < 0) {
+                NSLog(@"Syncing Target Pest %d", tp.targetPestId);
+                [tp sync:self.appointmentId];
+            }
+        }
+        
+        if (self.deletedList.count > 0) {
+            for (TargetPest *tp in self.deletedList) {
+                NSLog(@"DELETEING Target Pest %d", tp.targetPestId);
+                [tp deleteThis:self.appointmentId];
+            }
+            [self.deletedList removeAllObjects];
+        }
+    }
+}
+
+- (void)addPestType:(TargetPest *)targetPest andDelegate:(id<ListItemDelegate>)del{
+    _listItemDelegate = del;
+    if (![[AppDelegate appDelegate] isReachable]) {
+        targetPest.targetPestId = [Utils RandomId];
+        [self.TargetPests addObject:targetPest];
+        if (_listItemDelegate) {
+            [_listItemDelegate ListItemAddedSuccessfully];
+        }
+    }else{
+        NSString *url = [NSString stringWithFormat:@"%@appointment_occurrences/%d?api_key=%@", FIELD_WORK_URL_BASE, self.appointmentId ,[AccountManager Instance].activeAccount.api_key];
+        NSString *data = @"{\"appointment_occurrence\":{\"pests_targets_attributes\":[{\"pest_type_id\":%d}]}}";
+        data = [NSString stringWithFormat:data, targetPest.pestTypeId];
+    
+        FieldworkRequest *request = [[FieldworkRequest alloc] initWithUrl:url andDelegate:self andMethod:PUT];
+        request.postData = data;
+        request.Tag = ADD_ITEM_TAG;
+        [request startRequest];
+        [self.TargetPests addObject:targetPest];
+    }
+}
+
+- (void)deleteTargetPest:(TargetPest *)targetPest andDelegate:(id<ListItemDelegate>)del {
+    _listItemDelegate = del;
+    if (![[AppDelegate appDelegate] isReachable]) {
+        targetPest.isDeleted = YES;
+        if (targetPest.targetPestId > 0) {
+            [_deletedList addObject:targetPest];
+        }
+        [self.TargetPests removeObject:targetPest];
+        if (_listItemDelegate) {
+            [_listItemDelegate ListItemDeletedSuccessfully];
+        }
+    }else{
+        NSString *url = [NSString stringWithFormat:@"%@appointment_occurrences/%d?api_key=%@", FIELD_WORK_URL_BASE, self.appointmentId ,[AccountManager Instance].activeAccount.api_key];
+        NSString *data = @"{\"appointment_occurrence\":{\"pests_targets_attributes\":[{\"id\":%d, \"_destroy\":true}]}}";
+        data = [NSString stringWithFormat:data, targetPest.targetPestId];
+        FieldworkRequest *request = [[FieldworkRequest alloc] initWithUrl:url andDelegate:self andMethod:PUT];
+        request.postData = data;
+        request.Tag = DELETE_LIST_ITEM;
+        [request startRequest];
+        [self.TargetPests removeObject:targetPest];
+    }
+}
+
+#pragma mark - FieldworkRequestDelegate
+
+- (void)FieldworkRequestDidSucceed:(FieldworkRequest *)request {
+    if ([request.Tag isEqualToString:LOAD_LIST_TAG]) {
+        if (request.IsSuccess) 
+        {
+            self.TargetPests = [[NSMutableArray alloc] init];
+            self.deletedList = [[NSMutableArray alloc] init];
+            NSArray *arr = request.responseData;
+            for (NSDictionary *data in arr)
+            {
+                TargetPest *targetPest = [TargetPest targetPestWithDictionary:data];
+                [self.TargetPests addObject:targetPest];
+            }
+            if (_delegate) {
+                [_delegate TargetPestListLoaded];
+            }
+        }
+    }
+    
+    if ([request.Tag isEqualToString:ADD_ITEM_TAG]) {
+        if (_listItemDelegate) {
+            [_listItemDelegate ListItemAddedSuccessfully];
+        }
+    }
+    
+    if ([request.Tag isEqualToString:DELETE_LIST_ITEM]) {
+        if (_listItemDelegate) {
+            [_listItemDelegate ListItemDeletedSuccessfully];
+        }
+    }
+}
+
+- (void)FieldworkRequestDidFail:(FieldworkRequest *)request withError:(NSError *)error{
+    if ([request.Tag isEqualToString:LOAD_LIST_TAG]) {
+        if (_delegate) {
+            [_delegate TargetPestListLoadFailed:[error.userInfo objectForKey:@"message"]];
+        }
+    }
+    if ([request.Tag isEqualToString:ADD_ITEM_TAG]) {
+        if (_listItemDelegate) {
+            [_listItemDelegate ListItemAdditionFailedWithError:[error.userInfo objectForKey:@"message"]];
+        }
+    }
+    if ([request.Tag isEqualToString:DELETE_LIST_ITEM]) {
+        if (_listItemDelegate) {
+            [_listItemDelegate ListItemDeletionFailedWithError:[error.userInfo objectForKey:@"message"]];
+        }
+    }
+}
+
+
+
+@end

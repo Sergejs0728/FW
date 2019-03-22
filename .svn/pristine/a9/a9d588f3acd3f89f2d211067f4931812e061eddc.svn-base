@@ -1,0 +1,64 @@
+//
+//  AppDelegate.h
+//  FieldWork
+//
+//  Created by Samir Kha on 05/01/2013.
+//  Copyright (c) 2013 __MyCompanyName__. All rights reserved.
+//
+
+
+
+#import <UIKit/UIKit.h>
+#import "LoginController.h"
+#import "AccountManager.h"
+#import "Constants.h"
+#import "PestList.h"
+#import "MaterialList.h"
+#import "DilutionRatesList.h"
+#import "StaticModelLoader.h"
+#import "CustomerList.h"
+#import "Reachability.h"
+#import "SyncHelper.h"
+#import "UIColor+UITableViewBackground.h"
+#import "UserInfo.h"
+
+
+
+@interface AppDelegate : UIResponder <UIApplicationDelegate, UINavigationControllerDelegate, LoginControllerDelegate>{
+    NSManagedObjectModel *managedObjectModel;
+	NSManagedObjectContext *managedObjectContext;	    
+	NSPersistentStoreCoordinator *persistentStoreCoordinator;
+    NSString * _barcode_object;
+    NSString *_username;
+    BOOL MYGlobalVariable;
+    UINavigationController * _navigation;
+
+    
+  }
+
+@property (retain, nonatomic) IBOutlet UIWindow *window;
+
+
+@property (strong, nonatomic) IBOutlet UINavigationController *navigationController;
+@property (nonatomic, retain, readonly) NSManagedObjectModel *managedObjectModel;
+@property (nonatomic, retain, readonly) NSManagedObjectContext *managedObjectContext;
+@property (nonatomic, retain, readonly) NSPersistentStoreCoordinator *persistentStoreCoordinator;
+@property (nonatomic,retain)NSString * barcode_object;
+@property (nonatomic ,retain) UINavigationController * navigation;
+
+
++(AppDelegate*)appDelegate;
+
+- (void) showLogin:(BOOL)animated;
+
+- (void) loadAllLists;
+
+- (NSString *)applicationDocumentsDirectory;
+
+- (BOOL) saveManageObjectContext;
+
+- (BOOL) isReachable;
+
+
+
+@end

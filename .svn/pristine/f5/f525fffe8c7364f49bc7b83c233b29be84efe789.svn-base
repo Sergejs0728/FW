@@ -1,0 +1,53 @@
+//
+//  AppointmentCell.m
+//  FieldWork
+//
+//  Created by Samir Kha on 24/01/2013.
+//  Copyright (c) 2013 __MyCompanyName__. All rights reserved.
+//
+
+#import "AppointmentCell.h"
+
+@implementation AppointmentCell
+
+- (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
+{
+    self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
+    if (self) {
+        // Initialization code
+    }
+    return self;
+}
+
+- (void)setSelected:(BOOL)selected animated:(BOOL)animated
+{
+    [super setSelected:selected animated:animated];
+
+    // Configure the view for the selected state
+}
+
+- (void)setAppointment:(Appointment *)app {
+    Customer *cust = [app getCustomer];
+    _appTitle.text = [cust getDisplayName];
+    NSString *subtitle = [cust.customer_type stringByAppendingString:@" Service"]; 
+    _appSubTitle.text = subtitle;
+    _appStatus.text = app.status;
+    
+    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+    [formatter setDateFormat:@"hh:mm a"]; 
+    [formatter setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];
+    _appTime.text = [formatter stringFromDate:app.starts_at];
+    NSLog(@"STATUS : %@", app.status);
+    if (app.status && [app.status rangeOfString:@"Schedule"].location != NSNotFound) {
+        _appStatus.backgroundColor = [UIColor colorWithRed:255.0 green:204.0/255.0 blue:51.0/255.0 alpha:1.0];
+    } else if (app.status && [app.status rangeOfString:@"Miss"].location != NSNotFound){
+        _appStatus.backgroundColor = [UIColor colorWithRed:204.0/255.0 green:102.0/255.0 blue:102.0/255.0 alpha:1.0];
+    } else if(app.status && [app.status rangeOfString:@"Complete"].location != NSNotFound){
+        _appStatus.backgroundColor = [UIColor colorWithRed:102.0/255.0 green:153.0/255.0 blue:51.0/255.0 alpha:1.0];
+//        _appStatus.backgroundColor = [UIColor blackColor];
+    }else{
+        _appStatus.backgroundColor = [UIColor clearColor];
+    }
+}
+
+@end

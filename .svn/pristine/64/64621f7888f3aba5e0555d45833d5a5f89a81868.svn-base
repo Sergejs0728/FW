@@ -1,0 +1,153 @@
+//
+//  TrapAddController.m
+//  FieldWork
+//
+//  Created by Samir Kha on 22/02/2013.
+//  Copyright (c) 2013 __MyCompanyName__. All rights reserved.
+//
+
+#import "TrapAddController.h"
+
+@implementation TrapAddController
+@synthesize TrapAddTable=_TrapAddTable;
+@synthesize barcode=_barcode;
+@synthesize customerTrap = _customerTrap;
+@synthesize addscrollview=_addscrollview;
+
+
+
++ (TrapAddController*) initWithAppointment:(Appointment*) app withCustomerTrap:(CustomerTrap *)ctrap;
+{
+//    TrapAddController * trap_detail=[[TrapAddController alloc]initWithNibName:@"TrapAddController" bundle:nil];
+   TrapAddController * trap_detail;
+    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
+        trap_detail = [[TrapAddController alloc] initWithNibName:@"TrapAddController_IPad" bundle:nil];        
+    }else{
+        trap_detail = [[TrapAddController alloc] initWithNibName:@"TrapAddController" bundle:nil];
+        
+    }
+
+    trap_detail.title=@"Trap Add";
+    trap_detail.barcode = ctrap.barcode;
+    trap_detail.customerTrap = ctrap;
+    NSLog(@"trap :%@",trap_detail.barcode);
+    trap_detail.Appointment = app;
+    return trap_detail ;
+}
+- (void)viewDidLoad
+{     
+    [super viewDidLoad];
+}
+-(IBAction)SaveTrapAdd:(id)sender
+{
+   [[ActivityIndicator currentIndicator] displayActivity:@"Please Wait..."];
+    Customer *cust =    [self.Appointment getCustomer];
+    CustomTableCell *cell = (CustomTableCell*)[_TrapAddTable cellForRowAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:0]];
+    if (cell) {
+        self.customerTrap.building = [cell.txt.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];;
+    }
+    cell = (CustomTableCell*)[_TrapAddTable cellForRowAtIndexPath:[NSIndexPath indexPathForRow:2 inSection:0]];
+    if (cell) {
+        self.customerTrap.floor = [cell.txt.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];;
+    }
+    cell = (CustomTableCell*)[_TrapAddTable cellForRowAtIndexPath:[NSIndexPath indexPathForRow:3 inSection:0]];
+    if (cell) {
+        self.customerTrap.location_details = [cell.txt.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];;
+    }
+    [cust.customerTrapList addCustomerTrap:self.customerTrap withDelegate:self];
+}
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+{ 
+    return 4;
+}
+- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
+{
+    return @"Trap Add";
+}
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    static NSString *CellIdentifier = @"Cell";
+    CustomTableCell *cell = [_TrapAddTable dequeueReusableCellWithIdentifier:CellIdentifier];
+    if (cell == nil) 
+    {
+        NSArray *topLevelObject = [[NSBundle mainBundle] loadNibNamed:@"CustomLableTextCell" owner:self options:nil];
+        for(id currentObject in topLevelObject)
+        {
+            if([currentObject isKindOfClass:[UITableViewCell class]])
+            {
+                cell = (CustomTableCell*) currentObject;
+            }
+        }
+    }
+    if (indexPath.row == 0)
+    {
+        cell.lbl.text = @"Barcode";
+        cell.lbl.font = [UIFont fontWithName:@"Arial Black" size:50.0];
+        cell.txt.text = self.barcode;
+        cell.txt.font = [UIFont fontWithName:@"Arial Black" size:50.0];
+        cell.selectionStyle = UITableViewCellSelectionStyleNone;
+        cell.txt.userInteractionEnabled=NO;
+    }
+    if (indexPath.row == 1)
+    {
+        cell.lbl.text = @"Building";
+        cell.lbl.font = [UIFont fontWithName:@"Arial Black" size:50.0];
+        NSString * buildingtxt=cell.txt.text;
+        NSLog(@"%@",buildingtxt);
+        cell.txt.font = [UIFont fontWithName:@"Arial Black" size:50.0];
+        cell.txt.userInteractionEnabled=YES;
+        cell.selectionStyle = UITableViewCellSelectionStyleNone;
+    }
+    if (indexPath.row == 2)
+    {
+        cell.lbl.text = @"Floor";
+        cell.lbl.font = [UIFont fontWithName:@"Arial Black" size:50.0];
+        NSString * floortxt=cell.txt.text;
+        NSLog(@"floor: :%@",floortxt);
+        cell.txt.font = [UIFont fontWithName:@"Arial Black" size:50.0];
+        cell.txt.userInteractionEnabled=YES;
+        cell.selectionStyle = UITableViewCellSelectionStyleNone;
+    }
+    if (indexPath.row == 3)
+    {
+        cell.lbl.text = @"Location";
+        cell.lbl.font = [UIFont fontWithName:@"Arial Black" size:50.0];
+        NSString * location=cell.txt.text;
+        NSLog(@"location :%@",location);
+        cell.txt.font = [UIFont fontWithName:@"Arial Black" size:50.0];
+        cell.txt.userInteractionEnabled=YES;
+        cell.selectionStyle = UITableViewCellSelectionStyleNone;
+    }
+    return cell;
+}
+
+- (void)didReceiveMemoryWarning
+{
+    [super didReceiveMemoryWarning];
+}
+- (void)viewDidUnload
+{
+    [super viewDidUnload];
+}
+- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
+{
+      return (interfaceOrientation == UIInterfaceOrientationPortrait);
+}
+
+#pragma mark - ListItemDelegate
+
+- (void)ListItemAddedSuccessfully {
+    [[ActivityIndicator currentIndicator] displayCompleted];
+    TrapDetailView *detailView = [TrapDetailView initWithAppointment:self.Appointment withCustomerTrap:self.customerTrap WithBoolean:NO];
+    
+//    TrapDetailView *detailView = [TrapDetailView initWithAppointment:self.Appointment withCustomerTrap:self.customerTrap];
+    [self.navigationController pushViewController:detailView animated:YES];
+}
+
+- (void)ListItemAdditionFailedWithError:(NSString *)error {
+    [[ActivityIndicator currentIndicator] displayCompletedWithError:@"Fail"];
+}
+- (void) ListItemDeletionFailedWithError:(NSString*) error{}
+- (void) ListItemDeletedSuccessfully{}
+
+
+@end

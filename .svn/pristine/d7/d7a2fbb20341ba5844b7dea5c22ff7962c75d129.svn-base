@@ -1,0 +1,100 @@
+//
+//  SettingController.m
+//  FieldWork
+//
+//  Created by Samir Kha on 16/02/2013.
+//  Copyright (c) 2013 __MyCompanyName__. All rights reserved.
+//
+
+#import "SettingController.h"
+
+
+@implementation SettingController
+@synthesize iplabel,printlabel;
+@synthesize table=_table;
+
++ (SettingController *)init {
+    SettingController *sc;
+    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
+        sc = [[SettingController alloc] initWithNibName:@"SettingView_IPad" bundle:nil];        
+    }else{
+        sc = [[SettingController alloc] initWithNibName:@"SettingView" bundle:nil];
+    }
+
+    
+//    SettingController *sc = [[SettingController alloc] initWithNibName:@"SettingView" bundle:nil];
+    sc.title = @"Setting";
+    return sc;
+}
+-(IBAction)settingsaveclicked:(id)sender
+{
+    CustomTableCell * cell=(CustomTableCell*)[_table cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
+    NSString * ip = cell.txt.text;
+    [UserSettings SaveIpAddress:ip];
+    cell=(CustomTableCell*)[_table cellForRowAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:0]];
+    UISwitch * switchs=(UISwitch*)cell.accessoryView;
+    BOOL switchbool=switchs.isOn;
+    [UserSettings SavePrintOnOff:switchbool];
+    
+    [self.navigationController popViewControllerAnimated:YES];
+}
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+{
+    return 2;
+}
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    static NSString *CellIdentifier = @"Cell";
+    CustomTableCell *cell = [_table dequeueReusableCellWithIdentifier:CellIdentifier];
+    if (cell == nil) 
+    {  
+        NSArray *topLevelObject = [[NSBundle mainBundle] loadNibNamed:@"CustomLableTextCell" owner:self options:nil];
+        
+        for(id currentObject in topLevelObject)
+        {
+            if([currentObject isKindOfClass:[UITableViewCell class]])
+            {
+                cell = (CustomTableCell*) currentObject;
+            }
+        }
+    }
+    if (indexPath.row == 0) {
+        cell.lbl.text = @"IP";
+        cell.lbl.font = [UIFont fontWithName:@"Arial Black" size:50.0];
+        cell.txt.text=[UserSettings getIpAddress];
+    }
+    if (indexPath.row == 1) {
+        cell.lbl.text = @"Print";
+        cell.lbl.font = [UIFont fontWithName:@"Arial Black" size:50.0];
+        CGRect frameSwitch = CGRectMake(215.0, 10.0, 94.0, 27.0);
+        UISwitch *switchView = [[UISwitch alloc] initWithFrame:frameSwitch];
+        cell.accessoryView = switchView;
+        [switchView setOn:[UserSettings getPrintOnOff] animated:NO];
+        [switchView addTarget:self action:@selector(switchChanged:) forControlEvents:UIControlEventValueChanged];
+        cell.txt.enabled=NO;
+    }
+    return cell;
+}
+
+- (void) switchChanged:(id)sender {
+    UISwitch* switchControl = sender;
+    [UserSettings SavePrintOnOff:switchControl.on];
+    NSLog( @"The switch is %@", switchControl.on ? @"ON" : @"OFF" );
+}
+
+
+#pragma mark - View lifecycle
+- (void)viewDidload
+{
+
+}
+- (void)viewDidUnload
+{
+    [super viewDidUnload];
+}
+
+- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
+{
+    return (interfaceOrientation == UIInterfaceOrientationPortrait);
+}
+
+@end

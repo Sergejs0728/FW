@@ -1,0 +1,40 @@
+//
+//  PJ673PrintSettingsViewController.h
+//  BMSPrinterKit
+//
+//  Created by BMS on 8/8/12.
+//  Copyright (c) 2012 Brother Mobile Solutions. All rights reserved.
+//
+
+#import <UIKit/UIKit.h>
+#import "PrintSettingsViewController.h"
+#import "PJ673PrintSettings.h"
+
+@interface PJ673PrintSettingsViewController : UITableViewController <UITableViewDelegate, UITableViewDataSource, PrintSettingsSetter, PrintSettingsResponder>
+{
+}
+
+// caller must set this to initialize to your current settings
+@property (nonatomic, retain) PJ673PrintSettings *pj673PrintSettings;
+
+// Caller can set this to modify the popover size of the entire view controller process.
+// This will be passed along to each of the sub-controllers.
+@property (nonatomic, assign) CGSize popoverSize;
+// These can be used to modify the rowHeight of the table and the font size used 
+// to display the print setting category, to give you a little more control of the content.
+// But, these (and popoverSize) are the only things you are allowed to change.
+@property (nonatomic, assign) int rowHeight;
+@property (nonatomic, assign) int fontSize;
+
+// PrintSettingsSetter Protocol
+// caller MUST set this to receive notifications when printsettings change.
+// It can be set to nil if notifications are not desired.
+// Generally, the only callers will be the main view and any other view that implements
+// a Print Setup button to show the print settings view controller 
+@property (assign, nonatomic) id <PrintSettingsResponder> printSettingsDelegate;
+
+
+
+@end
+
+

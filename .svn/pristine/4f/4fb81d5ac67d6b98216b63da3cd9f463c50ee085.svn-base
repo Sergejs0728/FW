@@ -1,0 +1,44 @@
+//
+//  MaterialUsageRecordController.h
+//  FieldWork
+//
+//  Created by Samir Kha on 11/01/2013.
+//  Copyright (c) 2013 __MyCompanyName__. All rights reserved.
+//
+
+#import <UIKit/UIKit.h>
+#import "CommonAppointmentViewController.h"
+#import "TableExpanderView.h"
+#import "DataTableViewController.h"
+#import "LocationArea.h"
+#import "MaterialUsageCell.h"
+#import "DilutionRates.h"
+#import "KeyboardAccessoryHelper.h"
+#import "MaterialUseListController.h"
+
+@interface MaterialUsageRecordController : CommonAppointmentViewController <UITableViewDataSource, UITableViewDelegate, DataSelectionDelegate, KeyBoardHelper, ListItemDelegate, UITextFieldDelegate>
+{
+    MaterialUsage *_currentMaterialUsage;
+    IBOutlet UILabel *_materialName;
+    IBOutlet UITableView *_tblMainData;
+    IBOutlet UITableView *_tblLocationAreas;
+    NSMutableArray *_dataLable;
+    TableExpanderView *_locationTableExpander;
+    IBOutlet UIScrollView *_mainScrollView;
+    MaterialUsageRecord *commonData;
+    NSMutableArray *_selectedLocations;
+    IBOutlet UIButton *btnSave;
+}
+
++ (MaterialUsageRecordController*) viewControllerWithAppointment:(Appointment*) app andMaterialUsage:(MaterialUsage*) musage;
+
+@property (nonatomic, retain, readwrite) MaterialUsage *currentMaterialUsage;
+@property (nonatomic, retain, readwrite) IBOutlet TableExpanderView *locationTableExpander;
+@property (nonatomic, retain ,readwrite) NSMutableArray *selectedLocations;
+
+
+- (void) expandLocationTable;
+
+- (IBAction)saveMaterialUsage:(id)sender;
+
+@end

@@ -1,0 +1,39 @@
+//
+//  Utils.m
+//  FieldWork
+//
+//  Created by Samir Khatri on 2/18/13.
+//
+//
+
+#import "Utils.h"
+
+@implementation Utils
+
+
++ (int)RandomId {
+    int r = arc4random_uniform(100);
+    r = r * -1;
+    return r;
+}
+
++ (int)RandomIdPlus {
+    int r = arc4random_uniform(100000);
+    
+    return r;
+}
+
++ (NSString*) getNonmilitaryTime:(NSString*) str{
+    
+    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+    [formatter setDateFormat:@"HH:mm"];
+    
+    NSDate *dt = [formatter dateFromString:str];
+    [formatter setDateFormat:@"hh:mm a"];
+    return [formatter stringFromDate:dt];
+}
+
+
+
+
+@end

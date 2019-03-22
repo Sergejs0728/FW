@@ -1,0 +1,62 @@
+//
+//  BRPtouchNetwork.h
+//  BRPtouchPrinterKit
+//
+//  Created by BIL on 12/02/23.
+//  Copyright (c) 2012 Brother Industries, Ltd. All rights reserved.
+//
+
+#import <Foundation/Foundation.h>
+
+#include "BRPtouchNetworkInfo.h"
+
+//  Timeout Error
+#define ERROR_TIMEOUT   -3
+
+//  Return value
+#define RET_FALSE       0
+#define RET_TRUE        1
+
+@protocol BRPtouchNetworkDelegate;
+
+@interface BRPtouchNetwork : NSObject <NSNetServiceBrowserDelegate,NSNetServiceDelegate>
+{
+	id <BRPtouchNetworkDelegate> delegate;
+
+    NSMutableArray*             aryPrinter;
+	NSMutableArray*				aryListData;
+	BOOL						ConnectWiFi;
+	NSNetServiceBrowser*		mServiceBrowser;
+    int                         nInfoIndex;     //  index of printer info
+    int                         nInfoCnt;       //  count of listed printer
+	
+    int                         nFindCnt;       //  counter of address resolve
+    int                         nFindCntAll;    //  counter of all found device
+    BOOL                        bNoMore;        //  status of finding process
+	
+    NSTimer*                    tm;
+
+	BOOL						bSearching;
+//	NSString*					strIPAddress;
+	
+	NSMutableArray*				aryBRPNetInfo;
+	
+	NSMutableString*			strPrinterNameFilter;
+
+}
+
+- (int)startSearch: (int)nTimeout;
+- (NSArray*)getPrinterNetInfo;
+
+- (void)initWithPrinterName:(NSString*)strPrinterName;
+- (BOOL)setPrinterName:(NSString*)strPrinterName;
+
+@property (nonatomic, assign) id <BRPtouchNetworkDelegate> delegate;
+
+@end
+
+@protocol BRPtouchNetworkDelegate <NSObject>
+
+-(void) didFinishedSearch:(id)sender;
+
+@end

@@ -1,0 +1,19 @@
+//
+//  FieldworkRequestDelegate.h
+//  FieldWork
+//
+//  Created by Samir Kha on 05/01/2013.
+//  Copyright (c) 2013 __MyCompanyName__. All rights reserved.
+//
+
+#import <Foundation/Foundation.h>
+
+@class FieldworkRequest;
+
+@protocol FieldworkRequestDelegate <NSObject>
+
+-(void)FieldworkRequestDidSucceed:(FieldworkRequest*) request;
+
+-(void)FieldworkRequestDidFail:(FieldworkRequest*) request withError:(NSError*) error;
+
+@end

@@ -1,0 +1,35 @@
+//
+//  MaterialAddController.h
+//  FieldWork
+//
+//  Created by Samir Kha on 11/01/2013.
+//  Copyright (c) 2013 __MyCompanyName__. All rights reserved.
+//
+
+#import <UIKit/UIKit.h>
+#import "CommonAppointmentViewController.h"
+#import "CustomTableCell.h"
+#import "Material.h"
+#import "MaterialList.h"
+#import "ListItemDelegate.h"
+
+@interface MaterialAddController : CommonAppointmentViewController <UITextFieldDelegate, ListItemDelegate>
+{
+    UITextField *materialNameTxt;
+    UITextField *epATxt;
+    NSString *materialName_;
+    NSString *epA_;
+     IBOutlet UITableView *table;
+    IBOutlet UIButton *addMaterialBtn;
+    
+    
+}
+@property (nonatomic,retain) NSString *materialName;
+@property (nonatomic,retain) NSString *epA;
++ (MaterialAddController*) viewControllerWithAppointment:(Appointment*) app;
+
+//- (IBAction)addMaterialClicked:(id)sender;
+- (IBAction)addMaterialType:(id)sender;
+
+
+@end

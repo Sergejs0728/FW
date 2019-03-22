@@ -1,0 +1,108 @@
+//
+//  PrintSettings.h
+//  BMSPrinterKit
+//
+//  Created by BMS on 9/11/12.
+//  Copyright (c) 2012 Brother Mobile Solutions. All rights reserved.
+//
+// NOTE: This is the super-class that contains properties and methods common to each printer model.
+
+#import <Foundation/Foundation.h>
+
+
+// Used to assure that the CGBitmap is 32-pixel aligned
+#define ALIGN32(x) (((x+31)/32)*32)
+
+// NSUserDefaults
+#define keyPJ673PrintSettings @"PJ-673 Print Settings"
+// common
+#define keyIPAddress @"IPAddress"
+#define keyIPPort @"IPPort"
+#define keyScaleMode @"Scale Mode"
+#define keyOrientation @"Orientation"
+#define keyHalftone @"Halftone"
+#define keyThreshold @"Threshold"
+#define keyCompressionOn @"Compress"
+#define keyMarginTop @"MarginTop"
+#define keyMarginLeft @"MarginLeft"
+#define keyMarginBottom @"MarginBottom"
+#define keyMarginRight @"MarginRight"
+
+// pj673 custom
+#define keyPaperSize @"PaperSize"
+#define keyPaperType @"PaperType"
+#define keyFormFeedMode @"FormFeedMode"
+#define keyExtraFeed @"ExtraFeed"
+#define keyDensity @"Density"
+
+
+
+// Constant Enumerations
+
+typedef enum
+{
+    kHalftoneThreshold = 1,
+    kHalftoneDiffusion
+} HALFTONE;
+
+typedef enum
+{
+    kScaleModeActualSize = 1,
+    kScaleModeFitPage,
+    kScaleModeFitPageAspect
+} SCALEMODE;
+
+typedef enum
+{
+    kOrientationPortrait = 1,
+    kOrientationLandscape
+} ORIENTATION;
+
+typedef struct 
+{
+    int top;
+    int left;
+    int bottom;
+    int right;
+} MARGINS, *pMARGINS;
+
+//*** Range checker MACROS, designed to return a BOOL expression
+// NOTE: IPAddress is an NSString, just check for nil if you want to bounds check it.
+// NOTE: IPPort should ONLY be 9100, but this property's existence is only
+// for potential needs in the future anyway. For now, require it to be 9100.
+#define IPPORT_IN_RANGE(x) (/*x > 0*/ x == 9100)
+#define SCALEMODE_IN_RANGE(x) (x >= kScaleModeActualSize && x <= kScaleModeFitPageAspect)
+#define ORIENTATION_IN_RANGE(x) (x >= kOrientationPortrait && x <= kOrientationLandscape)
+// Not bounds checking margins
+#define MARGINS_IN_RANGE(x) (YES)
+#define HALFTONE_IN_RANGE(x) (x >= kHalftoneThreshold && x <= kHalftoneDiffusion)
+#define COMPRESS_IN_RANGE(x) (x == YES || x == NO)
+#define THRESHOLD_IN_RANGE(x) (x >= 1 && x <= 254)
+
+@interface PrintSettings : NSObject 
+
+@property (nonatomic, copy) NSString *IPAddress;
+@property (nonatomic, assign) int IPPort;
+
+@property (nonatomic, assign) SCALEMODE scaleMode;
+@property (nonatomic, assign) ORIENTATION orientation;
+@property (nonatomic, assign) MARGINS marginDots;
+
+@property (nonatomic, assign) HALFTONE halftone;
+// INCREASE this value to make printout darker. Decrease to make it lighter. Default is 128.
+@property (nonatomic, assign) Byte threshold;
+@property (nonatomic, assign) BOOL compress;
+
+
+// generate strings from constants, for convenience
+//- (NSString *)stringFromPrinterModel: (PRINTERMODEL)printerModel;
+- (NSString *)stringFromIPPort: (int)ipPort;
+- (NSString *)stringFromHalftone: (HALFTONE)halftone;
+- (NSString *)stringFromCompress: (BOOL)compress;   
+- (NSString *)stringFromScaleMode:(SCALEMODE)scaleMode;
+- (NSString *)stringFromOrientation:(ORIENTATION)orientation;
+- (NSString *)stringFromThreshold:(Byte)threshold;
+- (NSString *)stringFromMargins:(MARGINS)margins;
+
+
+@end

@@ -1,0 +1,46 @@
+//
+//  MaterialUsage.h
+//  FieldWork
+//
+//  Created by Samir Kha on 28/01/2013.
+//  Copyright (c) 2013 __MyCompanyName__. All rights reserved.
+//
+
+#import <Foundation/Foundation.h>
+#import "Material.h"
+#import "MaterialList.h"
+#import "NSMutableArray+Join.h"
+#import "FieldworkRequest.h"
+#import "FieldworkRequestDelegate.h"
+#import "FieldworkURLSchema.h"
+#import "Constants.h"
+@interface MaterialUsage : NSObject<FieldworkRequestDelegate, NSCopying>
+{
+    int _material_usage_id;
+    int _material_id;
+    NSString *_note;
+    
+    NSMutableArray *_material_usage_records;
+    Material *_material;
+
+}
+
+@property (nonatomic, assign) int material_usage_id;
+@property (nonatomic, assign) int material_id;
+@property (nonatomic, retain, readwrite) NSString *note;
+@property (nonatomic, readwrite, retain) NSMutableArray *material_usage_records;
+@property (nonatomic, readwrite, retain) Material *material;
+
+@property (nonatomic,assign) int appointmentId;
+
+
++ (MaterialUsage*) materialUsageWithDictionary:(NSDictionary*) dict;
+
+- (Material*) getMaterial;
+
+
+- (void) sync:(int) apptId;
+- (void) syncBoth:(int) apptId;
+- (void) deleteThis:(int) apptId;
+
+@end

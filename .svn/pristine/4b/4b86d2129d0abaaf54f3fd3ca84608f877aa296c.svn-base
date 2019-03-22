@@ -1,0 +1,40 @@
+//
+//  MaterialusetablelistCell.m
+//  FieldWork
+//
+//  Created by Samir Kha on 11/01/2013.
+//  Copyright (c) 2013 __MyCompanyName__. All rights reserved.
+//
+
+#import "MaterialusetablelistCell.h"
+
+@implementation MaterialusetablelistCell
+
+@synthesize lbl1=lbl1_;
+@synthesize lbl2=lbl2_;
+
+- (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
+{
+    self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
+    if (self) {
+        // Initialization code
+    }
+    return self;
+}
+
+- (void)setSelected:(BOOL)selected animated:(BOOL)animated
+{
+    [super setSelected:selected animated:animated];
+
+    // Configure the view for the selected state
+}
+
+- (void)setMaterilUsage:(MaterialUsage *)mur {
+    self.lbl1.text = [mur getMaterial].name;
+    MaterialUsageRecord *record = [mur.material_usage_records objectAtIndex:0];
+    DilutionRates *dr = [record getDilutionRate];
+    NSString *l2 = [NSString stringWithFormat:@"%@, %.02f %@, %@", dr.name, record.amount, record.measurement ,record.application_method];
+    self.lbl2.text = l2;
+}
+
+@end

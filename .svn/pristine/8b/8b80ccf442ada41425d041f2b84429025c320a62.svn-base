@@ -1,0 +1,50 @@
+//
+//  CaptureSignatureController.h
+//  FieldWork
+//
+//  Created by Samir Kha on 11/01/2013.
+//  Copyright (c) 2013 __MyCompanyName__. All rights reserved.
+//
+
+#import <UIKit/UIKit.h>
+#import "CommonAppointmentViewController.h"
+#import "Appointment.h"
+#import "JBSignatureView.h"
+#import "NSData+NSDataBase64Encoding.h"
+#import "UserInfo.h"
+
+
+#define DEGREES_TO_RADIANS(__ANGLE__) ((__ANGLE__) / 180.0 * M_PI)
+
+@protocol JBSignatureControllerDelegate <NSObject>
+@optional
+
+    // Called when the user clicks the cancel button
+-(void)signatureCancelled:(UIViewController *)sender;
+
+    // Called when the user clears their signature or when clearSignature is called.
+-(void)signatureCleared:(UIImage *)clearedSignatureImage signatureController:(UIViewController *)sender;
+@end
+
+
+@interface CaptureSignatureController : CommonAppointmentViewController <JBSignatureControllerDelegate, JBSignatureViewDelegate>
+{
+    CaptureMode _captureMode;
+    UIView *_signatureContainer;
+    JBSignatureView *signatureView_;
+    IBOutlet UILabel *signatureLbl;
+    IBOutlet UILabel *lblLicenseNumber;
+
+}
+
+@property (nonatomic, assign) CaptureMode captureMode;
+@property (nonatomic, retain, readwrite) IBOutlet UIView *signatureContainer;
+@property(nonatomic,unsafe_unretained) id<JBSignatureControllerDelegate> delegate;
+
++ (CaptureSignatureController*) viewControllerWithAppointment:(Appointment*) app withCaptureMode:(CaptureMode)mode;
+
+- (IBAction)cancelClicked:(id)sender;
+- (IBAction)saveSignature:(id)sender;
+-(void)clearSignature ;
+
+@end

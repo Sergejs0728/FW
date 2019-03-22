@@ -1,0 +1,58 @@
+//
+//  AppointmentInformation.h
+//  FieldWork
+//
+//  Created by Samir Kha on 19/01/2013.
+//  Copyright (c) 2013 __MyCompanyName__. All rights reserved.
+//
+
+#import <UIKit/UIKit.h>
+#import "Appointment.h"
+#import "CommonAppointmentViewController.h"
+#import "AppointmentList.h"
+#import "CustomTableCell.h"
+#import "TableExpanderView.h"
+
+@interface AppointmentInformation : CommonAppointmentViewController<UIActionSheetDelegate, AppointmentDelegate, UITableViewDataSource, UITableViewDelegate,UIPickerViewDelegate, UIPickerViewDataSource>
+{
+    IBOutlet UIView *scheduledDateView;
+    IBOutlet UIView *timePickerView;
+    IBOutlet UIView * DateAndTimeView;
+    UIActionSheet *asPickerContainer;
+    IBOutlet UIDatePicker *_timerPicker;
+    IBOutlet UIDatePicker *IPadtimerPicker;
+    IBOutlet UITableView *mainTable;
+    IBOutlet TableExpanderView *tableExpander;
+    IBOutlet UIScrollView *scrollView;
+    BOOL _isChecked;
+    IBOutlet UIDatePicker * _IPaddatePicker;
+    IBOutlet UIDatePicker * _datePicker;
+    IBOutlet UIButton *_btnSave;
+    NSString *selectedMethod;
+    UIPopoverController * popoverviewController;
+   IBOutlet UILabel * _instructionlbl;
+    CGRect newFrame;
+    CGRect frame;
+    int y;
+}
+@property (nonatomic ,retain)  UILabel * instructionlbl;
+@property (nonatomic ,retain)  UIDatePicker *timerPicker;
+
++ (AppointmentInformation *)viewControllerWithAppointment:(Appointment *)app ;
+
+//-(IBAction)clickOnscheduledDate;
+- (void)clickOnStartedAt;
+- (void)clickOnFinishedAt;
+-(void)clickOnDateAndTime;
+- (void) loadPickerWithView:(UIView*) v withTag:(int) tag;
+- (IBAction)saveClicked:(id)sender;
+- (void) resizeControls;
+
+//- (int)checkedRow;
+- (int)checkedRowCall;
+-(IBAction)done:(id)sender;
+-(IBAction)cancel:(id)sender;
+
+- (void) pickerDoneClicked:(int) tag;
+
+@end

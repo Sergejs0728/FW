@@ -1,0 +1,39 @@
+//
+//  PestList.h
+//  FieldWork
+//
+//  Created by Samir Kha on 16/01/2013.
+//  Copyright (c) 2013 __MyCompanyName__. All rights reserved.
+//
+
+#import <Foundation/Foundation.h>
+#import "PestListDelegate.h"
+#import "Pest.h"
+#import "FieldworkRequestDelegate.h"
+#import "AccountManager.h"
+#import "ListItemDelegate.h"
+#import "FieldworkRequest.h"
+
+@interface PestList : NSObject<FieldworkRequestDelegate>
+{
+    NSMutableArray *_Pests;
+    
+    id<PestListDelegate> _delegate;
+    
+    id<ListItemDelegate> _itemListDelegate;
+    
+}
+@property(nonatomic,retain,readwrite)NSMutableArray *Pests;
+@property(nonatomic,retain,readwrite)id<PestListDelegate>delegate;
+
++ (PestList*) Instance;
+- (void)loadWithDelegate:(id<PestListDelegate>)del;
+- (NSMutableArray*) getPestsArray;
+
+- (void) addPestType:(Pest*) pest andDelegate:(id<ListItemDelegate>)del;
+
+- (Pest*) getPestById:(int)pest_type_id;
+
+- (void) refreshList;
+
+@end

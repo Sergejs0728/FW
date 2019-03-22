@@ -1,0 +1,42 @@
+//
+//  InspectionPestRecord.m
+//  FieldWork
+//
+//  Created by Samir Khatri on 2/20/13.
+//
+//
+
+#import "InspectionPestRecord.h"
+
+@implementation InspectionPestRecord
+
+- (id)init {
+    if (self = [super init]) {
+        self.pest = [[Pest alloc] init];
+    }
+    return self;
+}
+
+
++ (InspectionPestRecord *)initWithDictionary:(NSDictionary *)dict {
+    InspectionPestRecord *record = [[InspectionPestRecord alloc] init];
+    record.inspectionPestId = [[dict objectForKey:@"id"] intValue];
+    record.pest_type_id = [[dict objectForKey:@"pest_type_id"] intValue];
+    record.count = [[dict objectForKey:@"count"] intValue];
+    
+    Pest *pt = [[PestList Instance] getPestById:record.pest_type_id];
+    if (pt) {
+        record.pest = pt;
+    }
+    return record;
+}
+
+
+#pragma mark - Properties
+
+@synthesize inspectionPestId = _inspectionPestId;
+@synthesize pest_type_id = _pest_type_id;
+@synthesize count = _count;
+@synthesize pest = _pest;
+
+@end

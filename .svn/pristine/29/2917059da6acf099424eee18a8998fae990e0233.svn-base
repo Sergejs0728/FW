@@ -1,0 +1,35 @@
+//
+//  StaticModelLoader.h
+//  FieldWork
+//
+//  Created by Samir Kha on 18/01/2013.
+//  Copyright (c) 2013 __MyCompanyName__. All rights reserved.
+//
+
+#import <Foundation/Foundation.h>
+#import "FieldworkRequest.h"
+#import "FieldworkRequestDelegate.h"
+#import "FieldworkURLSchema.h"
+#import "AccountManager.h"
+#import "ApplicationMethods.h"
+#import "Statuses.h"
+#import "Measurements.h"
+#import "LocationType.h"
+
+static NSString *application_methods = @"application_methods";
+static NSString *statuses = @"statuses";
+static NSString *measurements = @"measurements";
+static NSString *locationtypes= @"location_types";
+
+@interface StaticModelLoader : NSObject <FieldworkRequestDelegate>
+{
+    
+}
+
+- (void) loadStaticLists;
+
+- (void) loadStaticLists:(NSString*) model_type;
+
+- (void) requestGet:(NSString*) urlPart;
+
+@end

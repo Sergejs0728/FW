@@ -1,0 +1,234 @@
+//
+//  PrinterHelper.m
+//  FieldWork
+//
+//  Created by Samir Kha on 16/02/2013.
+//  Copyright (c) 2013 __MyCompanyName__. All rights reserved.
+//
+
+#import "PrinterHelper.h"
+
+@implementation PrinterHelper
+@synthesize pj673PrintSettings = _pj673PrintSettings;
+@synthesize errors = _errors;
+
+#pragma mark- PrinterConnectionCheck
+
+
+
+-(void)PrinterConnectionCheck
+{
+    int iRet;
+    
+    BMSPrinterDriver *printer = [[BMSPrinterDriver alloc] initWithModel:kPrinterModelPJ673 printSettings:_pj673PrintSettings];
+    
+    iRet = ([printer openWIFIChannel:[UserSettings getIpAddress]
+                             timeout:02]);
+    
+    if (iRet != RET_TRUE)
+    {
+        NSLog(@"Printer not Found!");
+        
+        
+        UIAlertView * Printeralert = [[UIAlertView alloc]initWithTitle:@"Printer" message:@"Printer not Found!" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil, nil];
+        [Printeralert show];
+  
+      
+    }
+    else{
+        
+        
+    }
+    
+}
+
+
+- (BOOL)isPrinterConnected {
+    int iRet;
+    
+    BMSPrinterDriver *printer = [[BMSPrinterDriver alloc] initWithModel:kPrinterModelPJ673 printSettings:_pj673PrintSettings];
+    
+    
+    
+    
+    iRet = ([printer openWIFIChannel:[UserSettings getIpAddress]
+                             timeout:02]);
+    
+    if (iRet != RET_TRUE)
+    {
+        return NO;
+    }
+    return YES;
+}
+
+- (void)printFile:(NSString *)path {
+    
+    if (![self isPrinterConnected]) {
+        UIAlertView *alert1 = [[UIAlertView alloc] initWithTitle:@"Error"
+                                                         message:@"Please varify the printer connection. Printer is not available."
+                                                        delegate:nil
+                                               cancelButtonTitle:@"OK"
+                                               otherButtonTitles:nil];
+        
+        [[NSOperationQueue mainQueue] addOperationWithBlock:^
+         {
+         [alert1 show];
+             // Your code that presents the alert view(s)
+         }];
+        
+       
+        
+        return;
+    }
+    
+     _pj673PrintSettings = [[PJ673PrintSettings alloc] init];
+     [_pj673PrintSettings loadPreferences];
+    
+    [self PrinterConnectionCheck];
+    
+   
+    _pj673PrintSettings.IPAddress = [UserSettings getIpAddress];
+    NSURL *pdfURL = [NSURL fileURLWithPath:path];
+    
+    //[self printPDFUsingProgressView:pdfURL];
+    [self printPDFUsingBMSSDK:pdfURL];
+    
+    /* ---- OLD SDK ----
+    
+    BRPtouchPrintInfo*	printInfo;
+    printInfo = [[BRPtouchPrintInfo alloc] init];
+    
+    printInfo.strPaperName = @"A4_CutSheet";
+    printInfo.nPrintMode = PRINT_FIT;
+    printInfo.nDensity = 1;
+    printInfo.nOrientation = ORI_PORTRATE;
+    printInfo.nHalftone = HALFTONE_ERRDIF;
+    printInfo.nHorizontalAlign = ALIGN_CENTER;
+    printInfo.nVerticalAlign = ALIGN_MIDDLE;
+    printInfo.nPaperAlign = PAPERALIGN_LEFT;
+    
+    
+    BRPtouchPrinter*	ptp;
+    ptp = [[BRPtouchPrinter alloc] initWithPrinterName:@"Brother PJ-673"];
+    [ptp setIPAddress:[UserSettings getIpAddress]];
+   //  
+        
+	//	Set printInfo
+	[ptp setPrintInfo:printInfo];
+    NSLog(@"Starting Print");
+    int ret = [ptp sendFile:path :1];
+    NSLog(@"Print DONE");
+    if (ret == RET_FALSE || ret == ERROR_TIMEOUT) {
+        UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"FieldWork"
+                                                         message:@"Can not print service report."
+                                                        delegate:nil
+                                               cancelButtonTitle:@"Ok"
+                                               otherButtonTitles:nil];
+        [alert show];
+    }
+    
+    //    [ptp sendFileEx:path timeout:5];
+    */
+}
+
+-(void) printPDFUsingProgressView: (NSURL *)pdfURL
+{
+    int iRet;
+    
+    size_t pdfPageCount = [self getPDFPageCount:pdfURL];
+    
+    if (pdfPageCount > 0)
+    {
+        // print using the Progress View.
+        BMSPrinterDriver *printer = [[BMSPrinterDriver alloc]
+                                     initWithModel:kPrinterModelPJ673
+                                     printSettings:_pj673PrintSettings];
+        
+        // Specify page range if desired, otherwise this will print ALL pages.
+        iRet = [printer printPDFFileWithProgressView:pdfURL
+                                           firstPage:1
+                                            lastPage:pdfPageCount
+                                     usingParentView:self];
+        
+        
+    }
+    
+}
+
+-(void)printPDFUsingBMSSDK: (NSURL *)pdfURL
+{
+    
+    if (![self isPrinterConnected]) {
+        UIAlertView *alert1 = [[UIAlertView alloc] initWithTitle:@"Error"
+                                                        message:@"Please varify the printer connection. Printer is not available."
+                                                       delegate:nil
+                                              cancelButtonTitle:@"OK"
+                                              otherButtonTitles:nil];
+        //[alert1 show];
+        return;
+    }
+    
+    size_t pdfPageCount = [self getPDFPageCount:pdfURL];
+    
+    if (pdfPageCount > 0)
+    {
+        int ret;
+        
+        BMSPrinterDriver *printer = [[BMSPrinterDriver alloc] initWithModel:kPrinterModelPJ673 printSettings:_pj673PrintSettings];
+        
+        // print with NO progress, this is ALWAYS a BLOCKING call
+        // ***NOTE: Assure timeout is large enough to print any particular page
+        // ***NOTE: Specify page range if desired in firstPage/lastPage. As written here,
+        // this will print ALL pages.
+        // ***NOTE: This does NOT use BRPtouchSDK to send the print data, because
+        // BRPtouchSDK does not support printing multiple pages unless the data for ALL pages
+        // is sent at the SAME time. As such, the non-blocking method is currently
+        // unavailable.
+        
+        ret = [printer printPDFFilePathURL:pdfURL
+                                 firstPage:1
+                                  lastPage:pdfPageCount
+                                   timeout:30];//60
+        
+        
+           
+        
+        
+        //***** Optional: Show alert message in case of error
+        if (ret != RET_TRUE)
+        {
+            NSString *theMessage = [NSString stringWithFormat:@"An error occurred in print.\nError code = %d", ret];
+            
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error"
+                                                            message:theMessage
+                                                           delegate:nil
+                                                  cancelButtonTitle:@"OK"
+                                                  otherButtonTitles:nil];
+            [alert show];
+            
+        }
+     
+ 
+    }
+    
+}
+
+
+// utility method to determine how many pages the PDF file contains.
+- (size_t)getPDFPageCount: (NSURL *)pdfURL
+{
+    
+    // Open PDF File to get page count
+    CGPDFDocumentRef pdfDocRef;
+    size_t pdfPageCount=0;
+    pdfDocRef = CGPDFDocumentCreateWithURL((__bridge CFURLRef)pdfURL);
+    if (pdfDocRef != NULL)
+    {
+        pdfPageCount = CGPDFDocumentGetNumberOfPages(pdfDocRef);
+        CGPDFDocumentRelease(pdfDocRef);
+    }
+    
+    return pdfPageCount;
+}
+
+@end

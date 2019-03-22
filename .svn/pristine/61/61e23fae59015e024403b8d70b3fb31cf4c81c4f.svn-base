@@ -1,0 +1,31 @@
+//
+//  UserSettings.h
+//  FieldWork
+//
+//  Created by Samir Kha on 16/02/2013.
+//  Copyright (c) 2013 __MyCompanyName__. All rights reserved.
+//
+#define IpAddresskey @"IP_ADDRESS_KEY"
+#define PrintOnOffkey @"PRINT_ON_OFF"
+#define LAST_CUSTOMER_LOADED @"LAST_CUSTOMER_LOADED"
+#define LAST_SYNCED @"LAST_SYNCED"
+
+#import <Foundation/Foundation.h>
+
+@interface UserSettings : NSObject
+{
+
+}
++ (void) SaveIpAddress:(NSString*) ip;
++ (void) SavePrintOnOff:(BOOL)switchs;
++ (NSString*) getIpAddress;
++ (BOOL) getPrintOnOff;
+
++(void) SaveLastCustomerLoaded:(NSDate*) dt;
++(NSDate*) getLastCustomerLoaded;
+
++(void) SaveLastSynced:(NSDate*) dt;
++(NSDate*) getLastSynced;
+
+
+@end

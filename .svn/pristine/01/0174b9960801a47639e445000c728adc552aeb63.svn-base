@@ -1,0 +1,131 @@
+//
+//  AppointmentList.m
+//  FieldWork
+//
+//  Created by Samir Kha on 06/01/2013.
+//  Copyright (c) 2013 __MyCompanyName__. All rights reserved.
+//
+
+
+
+#import "AppointmentList.h"
+#import "Appointment.h"
+static AppointmentList* singleton = nil;
+
+@implementation AppointmentList
+@synthesize Appointments = _Appointments;
+@synthesize delegate = _delegate;
+
+- (id)init {
+    self = [super init];
+    if (self) {
+        _Appointments = [[NSMutableArray alloc] init];
+        _delegate = nil;
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshAppointmentsAutomatic:) name:REFRESH_APPOINTMENT_NOTIFICATION object:nil];
+    }
+    return self;
+}
+
++ (AppointmentList *)Instance {
+    if (singleton == nil)
+        singleton = [[AppointmentList alloc] init];
+    
+    return singleton;
+}
+
+- (int)loadedCount {
+    return _Appointments.count;
+}
+
+- (void)addAppointment:(Appointment *)appt {
+    int index = -1;
+    if(self.Appointments != nil){
+        for (int i = 0; i < self.Appointments.count; i++) {
+            Appointment *cu = [self.Appointments objectAtIndex:i];
+            if (cu.Id == appt.Id) {
+                index = i;
+            }
+        }
+    }
+    if (index != -1) {
+        [self.Appointments removeObjectAtIndex:index];
+    }
+    [self.Appointments addObject:appt];
+}
+
+-(Appointment *)objectAtIndex:(int)index {
+    return [self.Appointments objectAtIndex:index];
+}
+
+- (void)loadWithDelegate:(id<AppointmentListDelegate>)del {
+    _delegate = del;
+    NSLog(@"----Appointment Loading Start.....");
+    if ([self loadedCount] <= 0) {
+        NSString *url = [NSString stringWithFormat:@"%@appointment_occurrences?api_key=%@", FIELD_WORK_URL_BASE, [AccountManager Instance].activeAccount.api_key];
+        FieldworkRequest *request = [[FieldworkRequest alloc] initWithUrl:url andDelegate:self];
+        
+        [request startRequest];
+    }else{
+        [_delegate AppointmentListLoaded];
+    }
+}
+
+- (void)refreshAppointmentsAutomatic:(BOOL)loadAutomatically {
+    NSLog(@"REFRESHING APPOINTMENT.......");
+    _Appointments = [[NSMutableArray alloc] init];
+    if (loadAutomatically) {
+        [self loadWithDelegate:nil];
+    }
+    
+}
+
+- (BOOL)hasNextRecords:(NSDate *)dt {
+    int daysToAdd = 1;
+    NSDate *nextdate = [dt dateByAddingTimeInterval:60*60*24*daysToAdd];
+    return [self getAppointmentByDate:nextdate].count > 0;
+}
+
+
+- (NSMutableArray *)getAppointmentByDate:(NSDate *)dt {
+    NSMutableArray *arr = [[NSMutableArray alloc] init];
+    for (Appointment *app in self.Appointments) {
+        if ([app.starts_at isSameDayAs:dt]) {
+            [arr addObject:app];
+        }
+    }
+    return arr;
+}
+
+-(void)CallDelegate
+{
+    if (_delegate) {
+        [_delegate AppointmentListLoaded];
+    }
+}
+
+#pragma FieldworkRequestDelegate
+
+- (void)FieldworkRequestDidSucceed:(FieldworkRequest *)request {
+    
+    if (request.IsSuccess) {
+        NSArray *arr = request.responseData;
+        self.Appointments = [[NSMutableArray alloc] init];
+        for (NSDictionary *data in arr) {
+            Appointment *app = [Appointment appointmentWithDictionary:data];
+            [[CustomerList Instance] retriveCustomer:app.customer_id];
+            [self.Appointments addObject:app];
+        }
+            // sleep(3);
+        NSLog(@"----Appointment Loading End.....");
+        
+        //[_delegate AppointmentListLoaded];
+        [self performSelector:@selector(CallDelegate) withObject:nil afterDelay:2.0];
+    }
+}
+
+- (void)FieldworkRequestDidFail:(FieldworkRequest *)request withError:(NSError *)error {
+    [[ActivityIndicator currentIndicator] displayCompletedWithError:@"Fail"];
+    [_delegate AppointmentListLoadFailed:[error.userInfo objectForKey:@"message"]];
+}
+
+@end

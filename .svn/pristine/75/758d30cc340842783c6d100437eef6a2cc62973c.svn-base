@@ -1,0 +1,168 @@
+//
+//  Appointment.h
+//  FieldWork
+//
+//  Created by Samir Kha on 06/01/2013.
+//  Copyright (c) 2013 __MyCompanyName__. All rights reserved.
+//
+
+#import <Foundation/Foundation.h>
+#import "Customer.h"
+#import "CustomerList.h"
+#import "SignaturePoint.h"
+#import "NSMutableArray+Join.h"
+#import "FieldworkRequest.h"
+#import "FieldworkRequestDelegate.h"
+#import "FieldworkURLSchema.h"
+#import "TargetPestList.h"
+#import "MaterialUsageList.h"
+#import "AppDelegate.h"
+#import "Utils.h"
+#import "JSONKit.h"
+#import "PaymentInfo.h"
+#import "Location.h"
+
+@class TargetPestList;
+@class InspectionRecordList;
+
+static NSString *SAVE_SIGNATURE = @"SAVE_SIGNATURE";
+static NSString *SAVE_APPOINTMENT = @"SAVE_APPOINTMENT";
+static NSString *SAVE_PDF =@"SAVE_PDF";
+static NSString *SAVE_INVOICE = @"SAVE_INVOICE";
+static NSString *SAVE_ENVIRONMENT = @"SAVE_ENVIRONMENT";
+static NSString *DELETE_MATERIAL_USAGE = @"DELETE_MATERIAL_USAGE";
+static NSString *SAVE_PRICE = @"SAVE_PRICE";
+
+
+@protocol AppointmentDelegate <NSObject>
+
+- (void) AppointmentSavedSuccessfully;
+
+- (void) AppointmentSaveFailedWithError:(NSString*) error;
+
+- (void) InvoiceDataSaved;
+
+- (void) InvoiceDataSaveFailedWithError:(NSString*) error;
+
+- (void) PrintFileDownloaded;
+
+- (void) PrintFileDownloadFailWithError:(NSString*) error;
+
+- (void) EnvironmentSaved;
+
+- (void) EnvironmentDataSaveFailedWithError:(NSString*) error;
+
+@end
+
+
+typedef enum _CaptureMode
+{
+    CustomerMode,
+    TechnicianMode
+} CaptureMode;
+
+@interface Appointment : NSObject < FieldworkRequestDelegate>
+{
+    int _Id;
+    NSDate *_starts_at;
+    NSString *_status;
+    int _customer_id;
+    int _service_id;
+    int _duration;
+    NSDate *_ends_at;
+    NSString *_started_at_time;
+      NSString *_finished_at_time;
+    NSMutableArray *_customer_signature;
+    NSMutableArray *_technician_signature;
+    
+    NSString *_notes;
+    NSString *_instruction;
+    NSString *_technician_signature_name;
+    BOOL _invoice_approved;
+    int _invoice_number;
+    BOOL _invoice_paid;
+    NSString *_invoice_payment_method;
+    NSString *_invoice_check_number;
+    TargetPestList *_targetPestList;
+    MaterialUsageList *_materialUsageList;
+    float _price;
+    float _invoice_amount;
+    id<AppointmentDelegate> _apptDelegate;
+    
+    BOOL _IsInvoiceChanged;
+    BOOL _IsSignatureChanged;
+    BOOL _IsEnviornmentChanged;
+    NSString * _square_feet;
+    NSString * _wind_direction;
+    NSString * _wind_speed;
+    NSString * _temperature;
+    NSString * _worker_lat;
+    NSString * _worker_lng;
+
+    InspectionRecordList *_inspectionRecordList;
+    PaymentInfo *_payment_info;
+    NSData *_datapdf;
+    
+    
+}
+@property (nonatomic ,retain)NSString *worker_lat;
+@property (nonatomic ,retain)NSString *worker_lng;
+
+@property (nonatomic, assign) int Id;
+@property (nonatomic, retain, readwrite) NSDate *starts_at;
+@property (nonatomic, retain, readwrite) NSString *status;
+
+
+@property (nonatomic, assign) int customer_id;
+@property (nonatomic, assign) int service_id;
+@property (nonatomic, retain, readwrite) NSDate *ends_at;
+@property (nonatomic, retain, readwrite) NSString *started_at_time;
+@property (nonatomic, retain, readwrite) NSString *finished_at_time;
+@property (nonatomic, assign) int duration;
+@property (nonatomic, retain, readwrite) NSMutableArray *customer_signature;
+@property (nonatomic, retain, readwrite) NSMutableArray *technician_signature;
+@property (nonatomic, retain, readwrite) NSString *notes;
+@property (nonatomic, retain, readwrite) NSString *technician_signature_name;
+@property (nonatomic, assign) BOOL invoice_approved;
+@property (nonatomic, assign) int invoice_number;
+@property (nonatomic, assign) BOOL invoice_paid;
+@property (nonatomic, retain, readwrite) NSString *invoice_payment_method;
+@property (nonatomic, retain, readwrite) NSString *invoice_check_number;
+@property (nonatomic, retain, readwrite) TargetPestList *targetPestList;
+@property (nonatomic, retain, readwrite) MaterialUsageList *materialUsageList;
+@property (nonatomic, assign) float price;
+@property (nonatomic, assign) float invoice_amount;
+@property (nonatomic,retain) NSString *instruction;
+
+@property (nonatomic, retain, readwrite) NSString *square_feet;
+@property (nonatomic, retain, readwrite) NSString *wind_direction;
+@property (nonatomic, retain, readwrite) NSString *wind_speed;
+@property (nonatomic, retain, readwrite) NSString *temperature;
+
+@property (nonatomic ,readwrite ,retain) NSData *datapdf;
+@property (nonatomic, assign) BOOL IsInvoiceChanged;
+@property (nonatomic, assign) BOOL IsSignatureChanged;
+@property (nonatomic, assign) BOOL IsEnviornmentChanged;
+
+@property (nonatomic, readwrite, retain) InspectionRecordList *inspectionRecordList;
+@property (nonatomic, readwrite, retain) PaymentInfo *payment_info;
+
++ (Appointment*) appointmentWithDictionary:(NSDictionary*)dict;
++ (NSDate*) getDateFromString:(NSString*) str;
++ (NSString*) ServiceReportPath;
+- (Customer*) getCustomer;
+
+- (void) saveAppointmentWithDelegate:(id<AppointmentDelegate>) del;
+- (void) saveNotesWithDelegate:(id<AppointmentDelegate>) del;
+- (void) printServiceReportWithDelegate:(id<AppointmentDelegate>) del;
+- (void) saveSignaturesWithMode:(CaptureMode) mode;
+- (void) saveInvoiceData:(id<AppointmentDelegate>)del;
+- (void) saveEnvironmentData:(id<AppointmentDelegate>)del;
+//- (void) savePrice;
+- (void) addMaterialUsage:(MaterialUsage*) materialUsage withDelegate:(id<ListItemDelegate>)del;
+- (void) downloadPDFfile;
+- (NSString *)appointmentPDFfile;
+- (void) uploadPDFfile;
+//- (void) savePaymentData:(id<AppointmentDelegate>)del;
+
+@end

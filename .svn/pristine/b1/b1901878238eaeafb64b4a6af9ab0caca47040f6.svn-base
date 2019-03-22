@@ -1,0 +1,62 @@
+//
+//  Statuses.m
+//  FieldWork
+//
+//  Created by Samir Kha on 18/01/2013.
+//  Copyright (c) 2013 __MyCompanyName__. All rights reserved.
+//
+
+#import "Statuses.h"
+
+
+@implementation Statuses
+
+@dynamic statusName;
+@dynamic statusValue;
+
++ (NSMutableArray *)getStatues {
+    return [[CoreDataHelper Instance] fetchWithTable:STATUSES];
+}
+
+- (void)loadFromService {
+    NSString *url = [NSString stringWithFormat:@"%@statuses?api_key=%@", FIELD_WORK_URL_BASE, [AccountManager Instance].activeAccount.api_key];
+    FieldworkRequest *request = [[FieldworkRequest alloc] initWithUrl:url andDelegate:self];
+    request.Tag = @"Statuses";
+    [request startRequest];
+}
+
++ (void)parseWithArray:(NSArray *)arr {
+    [[CoreDataHelper Instance] deleteAll:STATUSES];
+    for (NSDictionary *data in arr)
+    {
+        NSString *name = [data objectForKey:@"name"];
+        NSString *val = [data objectForKey:@"value"];
+        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"statusValue==%@", val];
+        if (![[CoreDataHelper Instance] isExists:STATUSES predicate:predicate]) {
+            Statuses *ss = (Statuses*)[[CoreDataHelper Instance] newEntityWithTableName:STATUSES];
+            [ss setStatusName:name];
+            [ss setStatusValue:val];
+            
+            [[CoreDataHelper Instance] saveContext];
+        }
+    }
+
+}
+
+#pragma FieldworkRequestDelegate
+
+- (void)FieldworkRequestDidSucceed:(FieldworkRequest *)request {
+    if (request.IsSuccess) 
+    {
+        NSArray *arr = request.responseData;
+        NSLog(@"%@",arr);
+                
+    }
+}
+
+- (void)FieldworkRequestDidFail:(FieldworkRequest *)request withError:(NSError *)error{
+    
+}
+
+
+@end

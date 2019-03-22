@@ -1,0 +1,91 @@
+    //
+    //  SyncHelper.m
+    //  FieldWork
+    //
+    //  Created by Samir Khatri on 2/18/13.
+    //
+    //
+
+#import "SyncHelper.h"
+
+static SyncHelper *singleton = nil;
+
+@implementation SyncHelper
+
+@synthesize lastSynced = _lastSynced;
+
++ (SyncHelper *)Instance {
+    if (singleton == nil)
+        singleton = [[SyncHelper alloc] init];
+    
+    return singleton;
+}
+
+- (void)startSync {
+        //    [self performSelectorInBackground:@selector(startPestSyncing) withObject:nil];
+    [self startPestSyncing];
+    [self startMaterialSyncing];
+    [self startInspectionSyncing];
+    [self startAppointmentSyncing];
+        //[[AppointmentList Instance] refreshAppointmentsAutomatic:YES];
+}
+
+
+- (void)startPestSyncing {
+    NSMutableArray *apptArr = [[AppointmentList Instance] Appointments];
+    for (Appointment *appt in apptArr) {
+
+        NSLog(@"Syncing TARGET PEST APPOINTMENT with ID : %d", appt.Id);
+        [appt.targetPestList syncTargetPests];
+        
+    }
+}
+
+
+- (void)startMaterialSyncing {
+    NSMutableArray *apptArr = [[AppointmentList Instance] Appointments];
+    for (Appointment *appt in apptArr) {
+        NSLog(@"Syncing MATERIAL USAGE APPOINTMENT with ID : %d", appt.Id);
+        [appt.materialUsageList syncMaterialUsage];
+    }
+}
+
+- (void)startInspectionSyncing {
+    NSMutableArray *apptArr = [[AppointmentList Instance] Appointments];
+    for (Appointment *appt in apptArr) {
+        [appt.inspectionRecordList syncInspectionRecords];
+        Customer *cust = [appt getCustomer];
+        for (CustomerTrap *trap in cust.customerTrapList.customerTraps) {
+             NSLog(@"Syncing TARGET PEST APPOINTMENT with ID : %d", trap.customerTrapId);
+            if (trap.customerTrapId < 0) {
+                [trap sync:cust.Id];
+            }
+        }
+    }
+}
+
+- (void)startAppointmentSyncing {
+    NSMutableArray *apptArr = [[AppointmentList Instance] Appointments];
+    for (Appointment *appt in apptArr) {
+//        if (appt.IsInvoiceChanged) {
+//            [appt saveInvoiceData:nil];
+//        }
+        if (appt.payment_info.isChanged) {
+            //[appt savePaymentData:nil];
+        }
+        if (appt.IsSignatureChanged) {
+            [appt saveSignaturesWithMode:CustomerMode];
+            [appt saveSignaturesWithMode:TechnicianMode];
+        }
+        if(appt.IsEnviornmentChanged){
+            [appt saveEnvironmentData:nil];
+        }
+        [appt saveAppointmentWithDelegate:nil];
+        [appt saveNotesWithDelegate:nil];
+    }
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:REFRESH_APPOINTMENT_NOTIFICATION object:nil];
+    
+}
+
+@end

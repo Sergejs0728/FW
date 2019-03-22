@@ -1,0 +1,52 @@
+//
+//  LocationType.h
+//  FieldWork
+//
+//  Created by Samir Kha on 18/01/2013.
+//  Copyright (c) 2013 __MyCompanyName__. All rights reserved.
+//
+
+#import <Foundation/Foundation.h>
+#import <CoreData/CoreData.h>
+#import "CoreDataHelper.h"
+#import "FieldworkRequest.h"
+#import "FieldworkRequestDelegate.h"
+#import "ListItemDelegate.h"
+
+@class LocationArea;
+
+static NSString *LOCATION_TYPES = @"LocationType";
+static NSString *LOCATION_AREA = @"LocationArea";
+
+@interface LocationType : NSManagedObject <FieldworkRequestDelegate>{
+    id<ListItemDelegate> _itemListDelegate;
+}
+
+@property (nonatomic, retain) NSNumber * location_type_id;
+@property (nonatomic, retain) NSString * location_type_name;
+@property (nonatomic, retain) NSString * location_type_color;
+@property (nonatomic, retain) NSSet *location_areas;
+
++ (void) parseWithArray:(NSArray*) arr;
+
++ (NSMutableArray*) getLocationTypes;
+
++ (NSMutableArray*) getAllLocationAreas;
+
++ (NSMutableArray*) getLocationAreasByLocationTypeId:(int) lid;
+
++ (LocationArea*) locationAreaById:(int)lid;
+
++ (LocationType*) getLocationTypeById:(int) location_type_id;
+
+- (void) addLocationArea:(NSString*) location_area_name withDelegate:(id<ListItemDelegate>)del;
+
+@end
+
+@interface LocationType (CoreDataGeneratedAccessors)
+
+- (void)addLocation_areasObject:(LocationArea *)value;
+- (void)removeLocation_areasObject:(LocationArea *)value;
+- (void)addLocation_areas:(NSSet *)values;
+- (void)removeLocation_areas:(NSSet *)values;
+@end

@@ -1,0 +1,50 @@
+//
+//  PaymentInfo.m
+//  FieldWork
+//
+//  Created by Samir Khatri on 19/08/2013.
+//
+//
+
+#import "PaymentInfo.h"
+
+@implementation PaymentInfo
+@synthesize payment_id=_payment_id;
+@synthesize payment_method=_payment_method;
+@synthesize create_from_mobile=_create_from_mobile;
+@synthesize isChanged=_isChanged;
+@synthesize check_number=_check_number;
+@synthesize amount=_amount;
+
++(PaymentInfo *)parsePaymentWithDict:(NSDictionary *)dict{
+    
+    PaymentInfo *payment = [[PaymentInfo alloc] init];
+    
+    if([dict objectForKey:@"id"] != [NSNull null])
+    {
+        payment.payment_id = [[dict objectForKey:@"id"] intValue];
+    }
+    if([dict objectForKey:@"payment_method"] != [NSNull null])
+    {
+        payment.payment_method = [dict objectForKey:@"payment_method"];
+    }
+    
+    
+    if([dict objectForKey:@"created_from_mobile"] != [NSNull null])
+    {
+        payment.create_from_mobile = [[dict objectForKey:@"created_from_mobile"] boolValue];
+    }
+    
+    if([dict objectForKey:@"check_number"] != [NSNull null])
+    {
+        payment.check_number = [dict objectForKey:@"check_number"];
+    }
+    if([dict objectForKey:@"amount"] != [NSNull null])
+    {
+        payment.amount = [[dict objectForKey:@"amount"]floatValue] ;
+    }
+    payment.isChanged=NO;
+    return payment;
+}
+
+@end

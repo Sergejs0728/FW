@@ -1,0 +1,20 @@
+//
+//  CustomerRetrivalDelegate.h
+//  FieldWork
+//
+//  Created by Samir Khatri on 3/14/13.
+//
+//
+
+#import <Foundation/Foundation.h>
+
+
+@class Customer;
+
+@protocol CustomerRetrivalDelegate <NSObject>
+
+- (void) CustomerRetrived:(Customer*) cust;
+
+- (void) CustomerRetrivalFailedWithError:(NSString*) error;
+
+@end

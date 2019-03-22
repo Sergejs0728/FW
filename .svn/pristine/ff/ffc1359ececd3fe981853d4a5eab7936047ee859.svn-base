@@ -1,0 +1,21 @@
+//
+//  LocationArea.h
+//  FieldWork
+//
+//  Created by Samir Kha on 18/01/2013.
+//  Copyright (c) 2013 __MyCompanyName__. All rights reserved.
+//
+
+#import <Foundation/Foundation.h>
+#import <CoreData/CoreData.h>
+
+
+@interface LocationArea : NSManagedObject
+
+@property (nonatomic, retain) NSNumber * location_area_id;
+@property (nonatomic, retain) NSString * location_area_name;
+
+
+- (NSString*) getLocationAreaName;
+
+@end

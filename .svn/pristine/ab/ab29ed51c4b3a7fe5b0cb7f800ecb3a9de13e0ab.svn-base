@@ -1,0 +1,79 @@
+//
+//  PJ673PrintSettings.h
+//  BMSPrinterKit
+//
+//  Created by BMS on 9/11/12.
+//  Copyright (c) 2012 Brother Mobile Solutions. All rights reserved.
+//
+
+#import "PrintSettings.h"
+
+typedef enum
+{
+    kPaperSizeLetter=1,
+    kPaperSizeLegal,
+    kPaperSizeA4,
+} PJPAPERSIZE;
+
+typedef enum
+{
+    kPaperTypeRoll = 1,
+    kPaperTypeCutsheet,
+    kPaperTypePerfRoll,
+    kPaperTypePerfRollRetract
+} PJPAPERTYPE;
+
+typedef enum
+{
+    kFormFeedModeNoFeed=1,
+    kFormFeedModeFixedPage,
+    kFormFeedModeEndOfPage,
+    kFormFeedModeEndOfPageRetract
+} PJFORMFEEDMODE;
+
+typedef enum
+{
+    kDensity0 = 0, // start this one at 0 rather than 1. "stringFromDensity" in particular requires this.
+    kDensity1,
+    kDensity2,
+    kDensity3,
+    kDensity4,
+    kDensity5,
+    kDensity6,
+    kDensity7,
+    kDensity8,
+    kDensity9,
+    kDensity10,
+    kDensityUsePrinterSetting
+} PJDENSITY;
+
+//*** Range checker MACROS, designed to return a BOOL expression
+#define PJPAPERSIZE_IN_RANGE(x) (x >= kPaperSizeLetter && x <= kPaperSizeA4)
+#define PJPAPERTYPE_IN_RANGE(x) (x >= kPaperTypeRoll && x <= kPaperTypePerfRollRetract)
+#define PJFORMFEEDMODE_IN_RANGE(x) (x >= kFormFeedModeNoFeed && x <= kFormFeedModeEndOfPageRetract)
+// Arbitrarily restrict extraFeed to 11" at 300 dpi. There is no reason to be larger.
+#define EXTRAFEED_IN_RANGE(x) (x >= 0 && x <= 3300)
+#define PJDENSITY_IN_RANGE(x) (x >= kDensity0 && x <= kDensityUsePrinterSetting)
+
+
+@interface PJ673PrintSettings : PrintSettings
+
+@property (nonatomic, assign) PJPAPERSIZE paperSize;
+@property (nonatomic, assign) PJPAPERTYPE paperType;
+@property (nonatomic, assign) PJFORMFEEDMODE formFeedMode;
+@property (nonatomic,assign) int extraFeed; // used with kFormFeedModeNoFeed only
+@property (nonatomic, assign) PJDENSITY density;
+
+// save/load Preferences
+- (void) loadPreferences;
+- (void) savePreferences;
+
+
+// generate strings from constants, for convenience
+- (NSString *)stringFromPaperType: (PJPAPERTYPE)paperType;
+- (NSString *)stringFromPaperSize: (PJPAPERSIZE)paperSize;
+- (NSString *)stringFromFormFeedMode: (PJFORMFEEDMODE)ffmode;   
+- (NSString *)stringFromDensity: (PJDENSITY)density;   
+- (NSString *)stringFromExtraFeed:(int)extraFeed;
+
+@end

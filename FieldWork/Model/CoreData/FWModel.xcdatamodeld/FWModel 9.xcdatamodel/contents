@@ -1,0 +1,617 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="13772" systemVersion="" minimumToolsVersion="Xcode 7.3" sourceLanguage="Objective-C" userDefinedModelVersionIdentifier="">
+    <entity name="ActivityLevel" representedClassName="ActivityLevel" syncable="YES">
+        <attribute name="account_id" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="created_at" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="entity_id" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="updated_at" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
+    </entity>
+    <entity name="ApplicationMethods" representedClassName="ApplicationMethods" syncable="YES">
+        <attribute name="entity_id" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="methodName" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
+    <entity name="Appointment" representedClassName="Appointment" syncable="YES">
+        <attribute name="appointment_condition_ids" optional="YES" attributeType="Transformable" syncable="YES"/>
+        <attribute name="arrival_time_end" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="arrival_time_start" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="auto_generates_invoice" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="balance_forward" optional="YES" attributeType="Float" defaultValueString="0.0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="callback" optional="YES" attributeType="Boolean" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="confirmed" optional="YES" attributeType="Boolean" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="confirmed_by" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="corrective_action_ids" optional="YES" attributeType="Transformable" syncable="YES"/>
+        <attribute name="created_at" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="customer_id" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="customer_signature" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="discount" optional="YES" attributeType="Float" defaultValueString="0.0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="discount_amount" optional="YES" attributeType="Float" defaultValueString="0.0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="duration" optional="YES" attributeType="Float" defaultValueString="0.0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="ends_at" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="ends_at_date" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="ends_at_time" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="entity_id" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="entity_status" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="error_sync_message" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="finished_at_time" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="hide_invoice_information" optional="YES" attributeType="Boolean" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="instructions" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="is_editing_now" optional="YES" attributeType="Boolean" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="is_sync" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="last_sync_date" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="notes" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="private_notes" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="purchase_order_no" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="recommendation_ids" optional="YES" attributeType="Transformable" syncable="YES"/>
+        <attribute name="report_number" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="service_location_id" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="service_route_ids" optional="YES" attributeType="Transformable" syncable="YES"/>
+        <attribute name="specific" optional="YES" attributeType="Boolean" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="square_feet" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="started_at_time" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="starts_at" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="starts_at_date" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="starts_at_time" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="status" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="tax_amount" optional="YES" attributeType="Float" defaultValueString="0.0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="tax_rate_id" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="technician_signature" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="technician_signature_name" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="temperature" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="updated_at" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="wind_direction" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="wind_speed" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="worker_lat" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="worker_lng" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="NO" syncable="YES"/>
+        <relationship name="attachments" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="PDFAttachment" inverseName="appointment" inverseEntity="PDFAttachment" syncable="YES"/>
+        <relationship name="inspection_records" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="InspectionRecord" inverseName="appointment" inverseEntity="InspectionRecord" syncable="YES"/>
+        <relationship name="invoice" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="Invoice" inverseName="appointment" inverseEntity="Invoice" syncable="YES"/>
+        <relationship name="line_items" optional="YES" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="LineItem" inverseName="appointment" inverseEntity="LineItem" syncable="YES"/>
+        <relationship name="material_usages" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="MaterialUsage" inverseName="appointment" inverseEntity="MaterialUsage" syncable="YES"/>
+        <relationship name="pdf_forms" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="FWPDFForm" inverseName="appointment" inverseEntity="FWPDFForm" syncable="YES"/>
+        <relationship name="photo_attachments" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="PhotoAttachment" inverseName="appointment" inverseEntity="PhotoAttachment" syncable="YES"/>
+        <relationship name="tax_rate" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="TaxRates" inverseName="appointments" inverseEntity="TaxRates" syncable="YES"/>
+        <relationship name="unit_records" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="UnitInspection" inverseName="appointment" inverseEntity="UnitInspection" syncable="YES"/>
+    </entity>
+    <entity name="BaitConditions" representedClassName="BaitConditions" syncable="YES">
+        <attribute name="bait_condition_name" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="entity_id" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+    </entity>
+    <entity name="BillingTerms" representedClassName="BillingTerms" syncable="YES">
+        <attribute name="days" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="entity_id" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="is_default" optional="YES" attributeType="Boolean" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
+    <entity name="Conditions" representedClassName="Conditions" syncable="YES">
+        <attribute name="entity_id" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
+    <entity name="Contact" representedClassName="Contact" syncable="YES">
+        <attribute name="contact_description" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="email" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="email_invoices" optional="YES" attributeType="Boolean" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="email_work_orders" optional="YES" attributeType="Boolean" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="entity_id" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="first_name" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="last_name" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="phone" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="phone_ext" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="phone_kind" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="phones" optional="YES" attributeType="Transformable" syncable="YES"/>
+        <attribute name="phones_exts" optional="YES" attributeType="Transformable" syncable="YES"/>
+        <attribute name="phones_kinds" optional="YES" attributeType="Transformable" syncable="YES"/>
+        <attribute name="title" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
+    <entity name="Customer" representedClassName="Customer" syncable="YES">
+        <attribute name="account_number" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="balance" optional="YES" attributeType="Float" defaultValueString="0.0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="billing_attention" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="billing_city" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="billing_contact" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="billing_county" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="billing_name" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="billing_phone" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="billing_phone_ext" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="billing_phone_kind" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="billing_phones" optional="YES" attributeType="Transformable" syncable="YES"/>
+        <attribute name="billing_phones_exts" optional="YES" attributeType="Transformable" syncable="YES"/>
+        <attribute name="billing_phones_kinds" optional="YES" attributeType="Transformable" syncable="YES"/>
+        <attribute name="billing_state" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="billing_street" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="billing_street2" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="billing_suite" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="billing_term_id" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="billing_zip" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="customer_name" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="customer_type" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="email_marketing" optional="YES" attributeType="Boolean" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="entity_id" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="entity_status" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="first_name" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="inspections_enabled" optional="YES" attributeType="Boolean" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="invoice_email" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="last_name" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="lat" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="lng" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="name_prefix" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="payment_methods" optional="YES" attributeType="Transformable" syncable="YES"/>
+        <attribute name="send_report_email" optional="YES" attributeType="Boolean" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="site" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="service_locations" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="ServiceLocation" inverseName="customer" inverseEntity="ServiceLocation" syncable="YES"/>
+    </entity>
+    <entity name="CustomerDevice" representedClassName="CustomerDevice" syncable="YES">
+        <attribute name="barcode" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="building" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="customer_id" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="device_area_id" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="entity_id" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="entity_status" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="floor" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="location_details" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="notes" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="number" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="service_frequency" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="service_location_id" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="trap_type_id" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+    </entity>
+    <entity name="DeviceArea" representedClassName="DeviceArea" syncable="YES">
+        <attribute name="account_id" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="created_at" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="entity_id" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="updated_at" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
+    </entity>
+    <entity name="DeviceTypes" representedClassName="DeviceTypes" syncable="YES">
+        <attribute name="device_name" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="entity_id" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+    </entity>
+    <entity name="DilutionRates" representedClassName="DilutionRates" syncable="YES">
+        <attribute name="account_id" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="created_at" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="entity_id" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="entity_id1" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="name1" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="updated_at" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
+    </entity>
+    <entity name="Estimate" representedClassName="Estimate" syncable="YES">
+        <attribute name="created_at" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="customer_id" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="discount" optional="YES" attributeType="Float" defaultValueString="0.0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="duration" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="entity_id" optional="YES" attributeType="Integer 32" defaultValueString="0.0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="entity_status" optional="YES" attributeType="Integer 32" defaultValueString="0.0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="estimate_number" optional="YES" attributeType="Integer 32" defaultValueString="0.0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="expires_on" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="issued_on" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="notes" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="price" optional="YES" attributeType="Float" defaultValueString="0.0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="purchase_order_number" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="service_location_id" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="service_route_ids" optional="YES" attributeType="Transformable" syncable="YES"/>
+        <attribute name="starts_at" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="starts_at_date" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="starts_at_time" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="status" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="tax_amount" optional="YES" attributeType="Float" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="tax_rate_id" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="total" optional="YES" attributeType="Float" defaultValueString="0.0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="updated_at" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
+        <relationship name="attachments" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="PDFAttachment" inverseName="estimate" inverseEntity="PDFAttachment" syncable="YES"/>
+        <relationship name="line_items" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="LineItem" inverseName="estimate" inverseEntity="LineItem" syncable="YES"/>
+        <relationship name="pdf_forms" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="FWPDFForm" inverseName="estimate" inverseEntity="FWPDFForm" syncable="YES"/>
+        <relationship name="photo_attachments" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="PhotoAttachment" inverseName="estimate" inverseEntity="PhotoAttachment" syncable="YES"/>
+    </entity>
+    <entity name="Evidences" representedClassName="Evidences" syncable="YES">
+        <attribute name="entity_id" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
+    <entity name="FlatConditions" representedClassName="FlatConditions" syncable="YES">
+        <attribute name="account_id" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="created_at" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="entity_id" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="updated_at" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
+    </entity>
+    <entity name="FlatType" representedClassName="FlatType" syncable="YES">
+        <attribute name="account_id" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="created_at" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="entity_id" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="updated_at" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
+    </entity>
+    <entity name="FWPDFForm" representedClassName="FWPDFForm" elementID="PDFForm" syncable="YES">
+        <attribute name="document_content_type" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="document_file_name" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="document_file_size" optional="YES" attributeType="Integer 64" defaultValueString="0.0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="document_url" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="entity_id" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="use_acrobat" optional="YES" attributeType="Boolean" usesScalarValueType="NO" syncable="YES"/>
+        <relationship name="appointment" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Appointment" inverseName="pdf_forms" inverseEntity="Appointment" syncable="YES"/>
+        <relationship name="attachment" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="PDFAttachment" inverseName="pdf_form" inverseEntity="PDFAttachment" syncable="YES"/>
+        <relationship name="estimate" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Estimate" inverseName="pdf_forms" inverseEntity="Estimate" syncable="YES"/>
+        <relationship name="fields" optional="YES" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="PDFField" inverseName="pdf_form" inverseEntity="PDFField" syncable="YES"/>
+    </entity>
+    <entity name="InspectionPest" representedClassName="InspectionPest" syncable="YES">
+        <attribute name="count" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="entity_id" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="entity_status" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="pest_type_id" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+    </entity>
+    <entity name="InspectionRecord" representedClassName="InspectionRecord" syncable="YES">
+        <attribute name="bait_condition_id" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="barcode" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="building" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="device_area_id" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="device_number" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="entity_id" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="entity_status" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="evidence" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="evidence_ids" optional="YES" attributeType="Transformable" syncable="YES"/>
+        <attribute name="exception" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="floor" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="is_clean" optional="YES" attributeType="Boolean" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="location_area_id" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="notes" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="removed" optional="YES" attributeType="Boolean" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="scanned_on" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="trap_condition_id" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="trap_id" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="trap_number" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="trap_type_id" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <relationship name="appointment" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Appointment" inverseName="inspection_records" inverseEntity="Appointment" syncable="YES"/>
+        <relationship name="material_usages" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="MaterialUsage" syncable="YES"/>
+        <relationship name="pests_records" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="InspectionPest" syncable="YES"/>
+    </entity>
+    <entity name="Invoice" representedClassName="Invoice" syncable="YES">
+        <attribute name="approved" optional="YES" attributeType="Boolean" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="callback" optional="YES" attributeType="Boolean" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="discount" optional="YES" attributeType="Float" defaultValueString="0.0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="discount_amount" optional="YES" attributeType="Float" defaultValueString="0.0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="invoice_number" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="tax_amount" optional="YES" attributeType="Float" defaultValueString="0.0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="total" optional="YES" attributeType="Float" defaultValueString="0.0" usesScalarValueType="NO" syncable="YES"/>
+        <relationship name="appointment" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Appointment" inverseName="invoice" inverseEntity="Appointment" syncable="YES"/>
+        <relationship name="payments" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Payment" syncable="YES"/>
+    </entity>
+    <entity name="LineItem" representedClassName="LineItem" syncable="YES">
+        <attribute name="entity_id" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="entity_status" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="lineitem_type" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="payable_id" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="payable_type" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="price" optional="YES" attributeType="Float" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="quantity" optional="YES" attributeType="Float" defaultValueString="0.0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="taxable" optional="YES" attributeType="Boolean" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="total" optional="YES" attributeType="Float" defaultValueString="0.0" usesScalarValueType="NO" syncable="YES"/>
+        <relationship name="appointment" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Appointment" inverseName="line_items" inverseEntity="Appointment" syncable="YES"/>
+        <relationship name="estimate" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Estimate" inverseName="line_items" inverseEntity="Estimate" syncable="YES"/>
+    </entity>
+    <entity name="LocationArea" representedClassName="LocationArea" syncable="YES">
+        <attribute name="entity_id" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="location_area_name" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
+    <entity name="LocationType" representedClassName="LocationType" syncable="YES">
+        <attribute name="entity_id" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="location_type_color" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="location_type_name" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="location_areas" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="LocationArea" syncable="YES"/>
+    </entity>
+    <entity name="Material" representedClassName="Material" syncable="YES">
+        <attribute name="active_ingredient" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="active_ingredient_percent" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="default_dilution_rate_id" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="entity_id" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="entity_status" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="epa_number" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="price" optional="YES" attributeType="Float" defaultValueString="0.0" usesScalarValueType="NO" syncable="YES"/>
+    </entity>
+    <entity name="MaterialUsage" representedClassName="MaterialUsage" syncable="YES">
+        <attribute name="entity_id" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="entity_status" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="inspection_record_id" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="material_id" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="notes" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="appointment" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Appointment" inverseName="material_usages" inverseEntity="Appointment" syncable="YES"/>
+        <relationship name="material_usage_records" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="MaterialUsageRecord" syncable="YES"/>
+    </entity>
+    <entity name="MaterialUsageRecord" representedClassName="MaterialUsageRecord" syncable="YES">
+        <attribute name="amount" optional="YES" attributeType="Float" defaultValueString="0.0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="application_device_type_id" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="application_method" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="application_method_id" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="device" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="dilution_rate_id" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="entity_id" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="location_area_id" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="lot_number" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="measurement" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="target_pests" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="TargetPest" syncable="YES"/>
+    </entity>
+    <entity name="Measurements" representedClassName="Measurements" syncable="YES">
+        <attribute name="measurement" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
+    <entity name="Payment" representedClassName="Payment" syncable="YES">
+        <attribute name="amount" optional="YES" attributeType="Float" defaultValueString="0.0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="check_number" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="created_from_mobile" optional="YES" attributeType="Boolean" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="entity_id" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="payment_date" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="payment_method" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
+    <entity name="PDFAttachment" representedClassName="PDFAttachment" syncable="YES">
+        <attribute name="appointment_occurrence_id" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="attached_pdf_form_content_type" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="attached_pdf_form_file_name" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="attached_pdf_form_file_size" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="attachment_content_type" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="attachment_file_name" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="attachment_file_size" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="comments" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="entity_id" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="entity_status" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="pdf_file_name" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="pdf_form_id" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="updated_at" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
+        <relationship name="appointment" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Appointment" inverseName="attachments" inverseEntity="Appointment" syncable="YES"/>
+        <relationship name="estimate" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Estimate" inverseName="attachments" inverseEntity="Estimate" syncable="YES"/>
+        <relationship name="field_values" optional="YES" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="PDFField" inverseName="pdf_attachment" inverseEntity="PDFField" syncable="YES"/>
+        <relationship name="pdf_form" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="FWPDFForm" inverseName="attachment" inverseEntity="FWPDFForm" syncable="YES"/>
+    </entity>
+    <entity name="PDFField" representedClassName="PDFField" syncable="YES">
+        <attribute name="default_value" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="field_type" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="field_value" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="hidden" optional="YES" attributeType="Boolean" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="label" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="max_length" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="options" optional="YES" attributeType="Transformable" syncable="YES"/>
+        <attribute name="pdf_name" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="required" optional="YES" attributeType="Boolean" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="selected_options" optional="YES" attributeType="Transformable" syncable="YES"/>
+        <relationship name="pdf_attachment" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="PDFAttachment" inverseName="field_values" inverseEntity="PDFAttachment" syncable="YES"/>
+        <relationship name="pdf_form" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="FWPDFForm" inverseName="fields" inverseEntity="FWPDFForm" syncable="YES"/>
+    </entity>
+    <entity name="Pest" representedClassName="Pest" syncable="YES">
+        <attribute name="entity_id" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="entity_status" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
+    <entity name="PestActivity" representedClassName="PestActivity" syncable="YES">
+        <attribute name="activity_level_id" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="created_at" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="entity_id" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="entity_status" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="pest_type_id" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="unit_record_id" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="updated_at" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
+    </entity>
+    <entity name="PhotoAttachment" representedClassName="PhotoAttachment" syncable="YES">
+        <attribute name="appointment_occurrence_id" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="attachment_content_type" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="attachment_file_name" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="attachment_file_size" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="comments" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="entity_id" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="entity_status" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="sync_status" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="updated_at" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
+        <relationship name="appointment" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Appointment" inverseName="photo_attachments" inverseEntity="Appointment" syncable="YES"/>
+        <relationship name="estimate" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Estimate" inverseName="photo_attachments" inverseEntity="Estimate" syncable="YES"/>
+    </entity>
+    <entity name="Recommendations" representedClassName="Recommendations" syncable="YES">
+        <attribute name="entity_id" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
+    <entity name="ServiceLocation" representedClassName="ServiceLocation" syncable="YES">
+        <attribute name="attention" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="city" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="contact_name" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="country" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="county" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="customer_id" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="email" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="entity_id" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="hide_balance" optional="YES" attributeType="Boolean" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="lat" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="lng" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="location_type_id" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="notes" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="phone" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="phone_ext" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="phone_kind" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="phones" optional="YES" attributeType="Transformable" syncable="YES"/>
+        <attribute name="phones_exts" optional="YES" attributeType="Transformable" syncable="YES"/>
+        <attribute name="phones_kinds" optional="YES" attributeType="Transformable" syncable="YES"/>
+        <attribute name="service_route_id" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="state" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="street" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="street2" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="suite" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="tax_rate_id" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="zip" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="contacts" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Contact" syncable="YES"/>
+        <relationship name="customer" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Customer" inverseName="service_locations" inverseEntity="Customer" syncable="YES"/>
+        <relationship name="devices" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="CustomerDevice" syncable="YES"/>
+        <relationship name="flats" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Unit" inverseName="service_location" inverseEntity="Unit" syncable="YES"/>
+        <relationship name="floors" optional="YES" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="StageModel" inverseName="serviceLocation" inverseEntity="StageModel" syncable="YES"/>
+    </entity>
+    <entity name="ServiceRoutes" representedClassName="ServiceRoutes" syncable="YES">
+        <attribute name="entity_id" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="service_route_name" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
+    <entity name="Services" representedClassName="Services" syncable="YES">
+        <attribute name="account_id" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="color" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="entity_id" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="frequency" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="price" optional="YES" attributeType="Decimal" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="service_description" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
+    <entity name="StageModel" representedClassName="StageModel" syncable="YES">
+        <attribute name="building" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="changed" optional="YES" attributeType="Boolean" defaultValueString="0.0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="deleted" optional="YES" attributeType="Boolean" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="entity_id" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="filePath" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="floor" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="image_url" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="notes" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="title" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="updated_at" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="vg_url" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="serviceLocation" maxCount="1" deletionRule="Nullify" destinationEntity="ServiceLocation" inverseName="floors" inverseEntity="ServiceLocation" syncable="YES"/>
+    </entity>
+    <entity name="Statuses" representedClassName="Statuses" syncable="YES">
+        <attribute name="color" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="font_color" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="status_name" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="status_value" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
+    <entity name="TargetPest" representedClassName="TargetPest" syncable="YES">
+        <attribute name="entity_id" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="entity_status" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="pest_type_id" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+    </entity>
+    <entity name="TaxRates" representedClassName="TaxRates" syncable="YES">
+        <attribute name="code" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="entity_id" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="is_default" optional="YES" attributeType="Boolean" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="rate" optional="YES" attributeType="Float" defaultValueString="0.0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="service_taxable" optional="YES" attributeType="Boolean" usesScalarValueType="NO" syncable="YES"/>
+        <relationship name="appointments" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Appointment" inverseName="tax_rate" inverseEntity="Appointment" syncable="YES"/>
+    </entity>
+    <entity name="TrapConditions" representedClassName="TrapConditions" syncable="YES">
+        <attribute name="entity_id" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="trap_condition_name" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
+    <entity name="TrapTypes" representedClassName="TrapTypes" syncable="YES">
+        <attribute name="entity_id" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="trap_type_name" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
+    <entity name="Unit" representedClassName="Unit" syncable="YES">
+        <attribute name="created_at" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="entity_id" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="entity_status" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="flat_type_id" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="notes" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="tenant_email_1" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="tenant_email_2" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="tenant_name" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="tenant_phone_1" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="tenant_phone_2" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="unit_number" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="updated_at" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
+        <relationship name="service_location" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="ServiceLocation" inverseName="flats" inverseEntity="ServiceLocation" syncable="YES"/>
+    </entity>
+    <entity name="UnitInspection" representedClassName="UnitInspection" syncable="YES">
+        <attribute name="appointment_occurrence_id" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="created_at" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="entity_id" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="entity_status" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="flat_condition_id" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="flat_type_id" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="notes" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="service_time" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="tenant_email_1" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="tenant_email_2" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="tenant_name" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="tenant_phone_1" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="tenant_phone_2" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="tenant_signature" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="unit_number" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="unit_status_id" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="updated_at" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
+        <relationship name="appointment" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Appointment" inverseName="unit_records" inverseEntity="Appointment" syncable="YES"/>
+        <relationship name="material_usages" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="MaterialUsage" syncable="YES"/>
+        <relationship name="pests_activities" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="PestActivity" syncable="YES"/>
+    </entity>
+    <entity name="UnitStatus" representedClassName="UnitStatus" syncable="YES">
+        <attribute name="account_id" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="created_at" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="entity_id" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="updated_at" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
+    </entity>
+    <entity name="User" representedClassName="User" syncable="YES">
+        <attribute name="account_features" optional="YES" attributeType="Transformable" syncable="YES"/>
+        <attribute name="account_id" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="country" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="entity_id" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="first_name" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="hide_customer_details" optional="YES" attributeType="Boolean" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="inspections_enabled" optional="YES" attributeType="Boolean" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="is_admin" optional="YES" attributeType="Boolean" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="last_name" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="license_number" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="mobile_customers_access" optional="YES" attributeType="Boolean" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="service_route_id" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="show_balance_forward" optional="YES" attributeType="Boolean" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="show_environment_fields" optional="YES" attributeType="Boolean" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="show_photos" optional="YES" attributeType="Boolean" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="stripe_pk" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
+    <entity name="UserSetting" representedClassName="UserSetting" syncable="YES">
+        <attribute name="air_print_on_off" optional="YES" attributeType="Boolean" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="print_on_off" optional="YES" attributeType="Boolean" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="printer_ip" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
+    <elements>
+        <element name="ActivityLevel" positionX="18" positionY="153" width="128" height="120"/>
+        <element name="ApplicationMethods" positionX="9" positionY="54" width="128" height="75"/>
+        <element name="Appointment" positionX="-9" positionY="54" width="128" height="945"/>
+        <element name="BaitConditions" positionX="0" positionY="45" width="128" height="75"/>
+        <element name="BillingTerms" positionX="-36" positionY="9" width="128" height="105"/>
+        <element name="Conditions" positionX="27" positionY="72" width="128" height="75"/>
+        <element name="Contact" positionX="0" positionY="135" width="128" height="255"/>
+        <element name="Customer" positionX="45" positionY="180" width="128" height="585"/>
+        <element name="CustomerDevice" positionX="18" positionY="153" width="128" height="240"/>
+        <element name="DeviceArea" positionX="0" positionY="135" width="128" height="120"/>
+        <element name="DeviceTypes" positionX="-63" positionY="-18" width="128" height="75"/>
+        <element name="DilutionRates" positionX="0" positionY="45" width="128" height="150"/>
+        <element name="Estimate" positionX="0" positionY="135" width="128" height="435"/>
+        <element name="Evidences" positionX="-18" positionY="27" width="128" height="75"/>
+        <element name="FlatConditions" positionX="27" positionY="162" width="128" height="120"/>
+        <element name="FlatType" positionX="0" positionY="135" width="128" height="120"/>
+        <element name="FWPDFForm" positionX="0" positionY="135" width="128" height="210"/>
+        <element name="InspectionPest" positionX="0" positionY="135" width="128" height="105"/>
+        <element name="InspectionRecord" positionX="36" positionY="180" width="128" height="390"/>
+        <element name="Invoice" positionX="0" positionY="135" width="128" height="180"/>
+        <element name="LineItem" positionX="9" positionY="153" width="128" height="225"/>
+        <element name="LocationArea" positionX="27" positionY="162" width="128" height="75"/>
+        <element name="LocationType" positionX="36" positionY="171" width="128" height="105"/>
+        <element name="Material" positionX="27" positionY="171" width="128" height="165"/>
+        <element name="MaterialUsage" positionX="45" positionY="189" width="128" height="150"/>
+        <element name="MaterialUsageRecord" positionX="-9" positionY="135" width="128" height="210"/>
+        <element name="Measurements" positionX="18" positionY="63" width="128" height="60"/>
+        <element name="Payment" positionX="9" positionY="144" width="128" height="135"/>
+        <element name="PDFAttachment" positionX="9" positionY="144" width="128" height="300"/>
+        <element name="PDFField" positionX="0" positionY="135" width="128" height="240"/>
+        <element name="Pest" positionX="18" positionY="162" width="128" height="90"/>
+        <element name="PestActivity" positionX="0" positionY="135" width="128" height="150"/>
+        <element name="PhotoAttachment" positionX="9" positionY="144" width="128" height="210"/>
+        <element name="Recommendations" positionX="0" positionY="144" width="128" height="75"/>
+        <element name="ServiceLocation" positionX="54" positionY="189" width="128" height="525"/>
+        <element name="ServiceRoutes" positionX="9" positionY="144" width="128" height="75"/>
+        <element name="Services" positionX="0" positionY="135" width="128" height="135"/>
+        <element name="StageModel" positionX="9" positionY="144" width="128" height="225"/>
+        <element name="Statuses" positionX="36" positionY="81" width="128" height="105"/>
+        <element name="TargetPest" positionX="0" positionY="144" width="128" height="90"/>
+        <element name="TaxRates" positionX="-9" positionY="36" width="128" height="150"/>
+        <element name="TrapConditions" positionX="-54" positionY="-9" width="128" height="75"/>
+        <element name="TrapTypes" positionX="18" positionY="63" width="128" height="75"/>
+        <element name="Unit" positionX="9" positionY="144" width="128" height="240"/>
+        <element name="UnitInspection" positionX="27" positionY="162" width="128" height="345"/>
+        <element name="UnitStatus" positionX="0" positionY="135" width="128" height="120"/>
+        <element name="User" positionX="0" positionY="135" width="128" height="285"/>
+        <element name="UserSetting" positionX="9" positionY="144" width="128" height="90"/>
+    </elements>
+</model>

@@ -1,0 +1,78 @@
+//
+//  UserSettings.m
+//  FieldWork
+//
+//  Created by Samir Kha on 16/02/2013.
+//  Copyright (c) 2013 __MyCompanyName__. All rights reserved.
+//
+
+#import "UserSettings.h"
+
+@implementation UserSettings
+
++ (void) SaveIpAddress:(NSString*) ip
+{
+    NSUserDefaults * defaults=[NSUserDefaults standardUserDefaults];
+    [defaults setValue:ip forKey:IpAddresskey];
+    [defaults synchronize];
+}
++ (NSString*) getIpAddress
+{
+    NSUserDefaults * defaults=[NSUserDefaults standardUserDefaults];
+    NSString * ip=@"169.254.100.1";
+    if ([defaults valueForKey:IpAddresskey]!= nil) {
+        ip=[defaults valueForKey:IpAddresskey];
+        
+    }
+    return ip;
+}
++ (void) SavePrintOnOff:(BOOL)switchs
+{
+    NSUserDefaults * defaults=[NSUserDefaults standardUserDefaults];
+    [defaults setBool:switchs forKey:PrintOnOffkey];
+    [defaults synchronize];
+
+   
+}
++ (BOOL) getPrintOnOff
+{
+    NSUserDefaults * defaults=[NSUserDefaults standardUserDefaults];
+    BOOL switchs=YES;
+    if ([defaults valueForKey:PrintOnOffkey]!= nil) {
+        switchs=[defaults boolForKey:PrintOnOffkey];
+        
+    }
+    return switchs;
+}
+
++ (void)SaveLastCustomerLoaded:(NSDate *)dt {
+    NSUserDefaults * defaults=[NSUserDefaults standardUserDefaults];
+    [defaults setObject:dt forKey:LAST_CUSTOMER_LOADED];
+    [defaults synchronize];
+}
+
++ (NSDate *)getLastCustomerLoaded {
+    NSUserDefaults * defaults=[NSUserDefaults standardUserDefaults];
+    NSDate *dt = nil;
+    if ([defaults valueForKey:LAST_CUSTOMER_LOADED] != nil) {
+        dt = [defaults objectForKey:LAST_CUSTOMER_LOADED];
+    }
+    return dt;
+}
+
++ (void)SaveLastSynced:(NSDate *)dt {
+    NSUserDefaults * defaults=[NSUserDefaults standardUserDefaults];
+    [defaults setObject:dt forKey:LAST_SYNCED];
+    [defaults synchronize];
+}
+
++ (NSDate *)getLastSynced {
+    NSUserDefaults * defaults=[NSUserDefaults standardUserDefaults];
+    NSDate *dt = nil;
+    if ([defaults valueForKey:LAST_SYNCED] != nil) {
+        dt = [defaults objectForKey:LAST_SYNCED];
+    }
+    return dt;
+}
+
+@end

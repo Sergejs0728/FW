@@ -1,0 +1,33 @@
+//
+//  DashBoardViewController.h
+//  FieldWork
+//
+//  Created by Samir Kha on 06/01/2013.
+//  Copyright (c) 2013 __MyCompanyName__. All rights reserved.
+//
+
+#import <UIKit/UIKit.h>
+#import "AppointmentList.h"
+#import "ScheduleViewController.h"
+#import "CustomerListViewController.h"
+#import "AppDelegate.h"
+#import "CustomerList.h"
+#import "SettingController.h"
+
+@interface DashBoardViewController : BaseViewController <UIAlertViewDelegate>
+{
+    
+}
+
+- (IBAction)appointmentClicked:(id)sender;
+
+- (IBAction)customerClicked:(id)sender;
+
+- (IBAction)settingClicked:(id)sender;
+
+- (IBAction)refreshClicked:(id)sender;
+
+
+
+
+@end

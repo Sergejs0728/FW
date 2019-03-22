@@ -1,0 +1,24 @@
+//
+//  AppointmentCell.h
+//  FieldWork
+//
+//  Created by Samir Kha on 24/01/2013.
+//  Copyright (c) 2013 __MyCompanyName__. All rights reserved.
+//
+
+#import <UIKit/UIKit.h>
+#import "Appointment.h"
+#import "Customer.h"
+
+@interface AppointmentCell : UITableViewCell
+{
+    IBOutlet UILabel *_appTitle;
+    IBOutlet UILabel *_appSubTitle;
+    IBOutlet UILabel *_appStatus;
+    IBOutlet UILabel *_appTime;
+}
+
+- (void) setAppointment:(Appointment*) app;
+
+
+@end

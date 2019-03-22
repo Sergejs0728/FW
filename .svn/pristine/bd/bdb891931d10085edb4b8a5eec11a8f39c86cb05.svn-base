@@ -1,0 +1,51 @@
+//
+//  DilutionRates.m
+//  FieldWork
+//
+//  Created by Samir Kha on 18/01/2013.
+//  Copyright (c) 2013 __MyCompanyName__. All rights reserved.
+//
+
+#import "DilutionRates.h"
+
+
+@implementation DilutionRates
+
+@dynamic dilution_id;
+@dynamic name;
+
++ (DilutionRates*) DilutionRatesWithDictionary:(NSDictionary*) dict
+{
+    int did = [[dict objectForKey:@"id"] intValue];
+    DilutionRates *dilRate = [DilutionRates dilutionRateById:did];
+    if (dilRate) {
+        return dilRate;
+    }
+    dilRate = (DilutionRates*)[[CoreDataHelper Instance] newEntityWithTableName:DILUTION_RATES];
+    
+    dilRate.dilution_id = [NSNumber numberWithInt:[[dict objectForKey:@"id"] intValue]];
+    dilRate.name = [dict objectForKey:@"name"];
+    
+    [[CoreDataHelper Instance] saveContext];
+    return dilRate;
+}
+
++ (DilutionRates *)dilutionRateById:(int)did {
+    NSPredicate *pre = [NSPredicate predicateWithFormat:@"dilution_id==%d", did];
+    
+    NSMutableArray *mutableFetchResults = [[CoreDataHelper Instance] fetchWithTable:DILUTION_RATES withPredicate:pre];
+    if (mutableFetchResults) {
+        if (mutableFetchResults.count > 0) {
+            return [mutableFetchResults objectAtIndex:0];
+        }
+    }
+    return nil;
+
+}
+
++ (NSMutableArray *)fetchAll {
+    return [[CoreDataHelper Instance] fetchWithTable:DILUTION_RATES];
+}
+
+
+@end

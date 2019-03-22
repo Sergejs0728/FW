@@ -1,0 +1,39 @@
+//
+//  CustomerTrap.h
+//  FieldWork
+//
+//  Created by Samir Khatri on 2/20/13.
+//
+//
+
+#import <Foundation/Foundation.h>
+#import "FieldworkRequest.h"
+#import "FieldworkRequestDelegate.h"
+#import "FieldworkURLSchema.h"
+#import "AccountManager.h"
+#import "Constants.h"
+#import "Utils.h"
+
+@interface CustomerTrap : NSObject <FieldworkRequestDelegate>
+{
+    int _customerTrapId;
+    NSString *_barcode;
+    NSString *_building;
+    NSString *_floor;
+    NSString *_location_details;
+    NSString *_notes;
+}
+
+@property (nonatomic, assign) int customerTrapId;
+@property (nonatomic, readwrite, retain) NSString *barcode;
+@property (nonatomic, readwrite, retain) NSString *building;
+@property (nonatomic, readwrite, retain) NSString *floor;
+@property (nonatomic, readwrite, retain) NSString *location_details;
+@property (nonatomic, readwrite, retain) NSString *notes;
+
+
++ (CustomerTrap*) customerTrapWithDictionsry:(NSDictionary*) dict;
+
+- (void) sync:(int) custId;
+
+@end

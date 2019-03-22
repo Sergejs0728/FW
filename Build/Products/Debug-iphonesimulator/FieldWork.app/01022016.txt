@@ -1,0 +1,39 @@
+1. adding appointment
+- it could pre-select location when customer has only one location
+- it could pre-select service route from location default route or set it to current user's route by default
+- after creating appointment it does not show it automatically in list, it only appears after refreshing - -Already Solved
+
+- when adding line item, I don't know if it should show all services/materials on tap, like on web, but it only shows it if you enter at least one letter
+
+2. not sure what option 'Offline mode' does. When I set it on, nothing changes, and when I check it its always off. - -Already Solved
+
+
+3. adding customer
+- there is no customer type selection (only Commercial/Residential), i guess we need to add list of customer types to api as well
+- it could choose default tax rate and service route for location - Solved
+- it could pre-set location name to 'Main Location' - Solved
+- when user belongs to multiple branches, it hangs on saving, because customer is required to belong to some specific branch, so we need some way to resolve it for mobile. Also, it seems it doesn't work well if server returns error (422 in this case), just hangs with 'Saving customer...' message.
+
+4. customer page
+- it doesn't show ext for phone numbers on customer page -Solved
+
+5. customers list
+- after navigating back from customer page, filter value is the same, but list is not filtered anymore
+- filter works weird sometimes, try entering Testt, and then remove last letter - it displays no customers for me. 
+- also, I think if we hide letters for which there is no customers, it would look better
+
+6. work pool
+- reload button doesn't seem to work - Already Done
+- it shows 'arrive by' time and duration, but work pool appointments doesn't have specific time. Also, I don't think those values are valid, they seem fixed - Solved
+- if you tap on appointment, it shows 'New Appointment' screen, I don't think it should be called like that, also there is some odd Service Location block after technician select
+- on save:
+  - it doesn't set time
+  - if I didn't change technician, it clears it (also, it could pre-select current user I guess)
+  - it duplicates line item
+  - it doesn't save instructions
+  - it shows appointments list, but this appointment is not showing, you need to refresh appointments to get it
+
+7. Editing work order
+- private/public notes are edited on the same page, but there are two areas to tap on. Also, their order on that page is reversed (public/private)
+- when adding target pests you need to confirm selection with button on the top right, but it doesn't required on other screens, usually back button works, but not in this case
+- not sure how to add end time and complete work order, there is no buttons under 'SIGNATURES' header, and 'End Time' does not respond on taps

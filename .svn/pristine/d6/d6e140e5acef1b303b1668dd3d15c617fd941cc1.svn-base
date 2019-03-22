@@ -1,0 +1,188 @@
+//
+//  DataPersistance.m
+//  FieldWork
+//
+//  Created by Samir Kha on 06/03/2013.
+//  Copyright (c) 2013 __MyCompanyName__. All rights reserved.
+//
+
+#import "DataPersistance.h"
+
+@implementation DataPersistance
+
+
+- (NSString *)apptJson:(Appointment *)app {
+    NSMutableDictionary *mainDict = [[NSMutableDictionary alloc] init];
+    
+    
+    
+    NSNumber *idd = [NSNumber numberWithInt:app.Id];
+    [mainDict setValue:idd forKey:@"Id"];
+    
+    NSNumber *price = [NSNumber numberWithInt:app.price];
+    [mainDict setValue:price forKey:@"price"];
+    
+    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+    [formatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
+    
+    NSString *starts_at =  [NSString stringWithFormat:@"%@",[formatter stringFromDate:app.starts_at]];
+    [mainDict setValue:starts_at forKey:@"starts_at"];
+    
+    NSNumber *duration = [NSNumber numberWithInt:app.duration];
+    [mainDict setValue:duration forKey:@"duration"];
+    
+    NSString *status = [NSString stringWithFormat:app.status];
+    [mainDict setValue:status forKey:@"status"];
+    
+    if (app.notes != nil) {
+        NSString *notes = [NSString stringWithFormat:app.notes];
+        [mainDict setValue:notes forKey:@"notes"];
+    }
+    
+    [mainDict setValue:app.technician_signature forKey:@"technician_signature"];
+    
+    if (app.technician_signature_name != nil) {
+        [mainDict setValue:app.technician_signature_name forKey:@"technician_signature_name"];
+       }
+    
+        
+    [mainDict setValue:app.customer_signature forKey:@"customer_signature"];
+    
+    NSNumber *customer_id = [NSNumber numberWithInt:app.customer_id];
+    [mainDict setValue:customer_id forKey:@"customer_id"];
+    
+    NSNumber *service_id = [NSNumber numberWithInt:app.service_id];
+    [mainDict setValue:service_id forKey:@"service_id"];
+    
+    NSString *ends_at =  [NSString stringWithFormat:@"%@",[formatter stringFromDate:app.ends_at]];
+    [mainDict setValue:ends_at forKey:@"ends_at"];
+    
+    NSString *started_at_time = [NSString stringWithFormat:app.started_at_time];
+    [mainDict setValue:started_at_time forKey:@"started_at_time"];
+    
+    NSString * finished_at_time = [NSString stringWithFormat:app.finished_at_time];
+    [mainDict setValue:finished_at_time forKey:@"finished_at_time"];
+    
+    // invoice    
+    
+    NSMutableDictionary *invoice = [[NSMutableDictionary alloc] init];
+    
+    [invoice setValue:[NSNumber numberWithBool:app.invoice_number] forKey:@"approved"];
+    
+    [invoice setValue:[NSNumber numberWithInt:app.invoice_number] forKey:@"invoice_number"];
+    
+    [invoice setValue:[NSNumber numberWithBool:app.invoice_paid] forKey:@"paid"];
+    
+    [invoice setValue:app.invoice_payment_method forKey:@"payment_method"];
+    
+    [invoice setValue:app.invoice_check_number forKey:@"check_number"];
+    
+    
+    
+    //inspection_records    
+    
+    
+
+    NSMutableArray * inspection_records = [[NSMutableArray array]init];
+   
+    NSMutableDictionary *records = [[NSMutableDictionary alloc]init];
+    
+    
+    
+    for (InspectionRecord *ir in app.inspectionRecordList.InspectionRecords)
+    {
+        //ir.inspectionId;
+        [records setValue:[NSNumber numberWithInt:ir.inspectionId] forKey:@"id"];
+        [records setValue:[NSNumber numberWithInt:ir.location_area_id] forKey:@"location_area_id"];
+        [records setValue:ir.barcode forKey:@"barcode"];   
+        
+        if (ir.notes!= nil)
+        { 
+            [records setValue:ir.notes forKey:@"notes"];
+        }
+        if (ir.notes!= nil)
+        {
+            [records setValue:ir.evidence forKey:@"evidence"];
+        }
+       // pests_records      
+        NSMutableArray * pests_records = [[NSMutableArray array] init];       
+ 
+        NSMutableDictionary *Pestrecord = [[NSMutableDictionary alloc] init];  
+        
+        for (InspectionPestRecord *ma_record in ir.inspectionPestRecords) 
+         {
+                     
+         [Pestrecord setValue:[NSNumber numberWithInt:ma_record.inspectionPestId] forKey:@"id"];
+         
+         [Pestrecord setValue:[NSNumber numberWithInt:ma_record.pest_type_id] forKey:@"pest_type_id"];
+        [Pestrecord setValue:[NSNumber numberWithInt:ma_record.count] forKey:@"count"];
+       
+                }
+     
+    }  
+
+//material_usages   
+    NSMutableArray * material_usages = [[NSMutableArray array] init];       
+ 
+    NSMutableDictionary *material = [[NSMutableDictionary alloc] init];  
+    
+    for (MaterialUsage *ma in  app.materialUsageList.MaterialUsages) {
+        
+        [material setValue:[NSNumber numberWithInt:ma.material_usage_id ] forKey:@"id"];
+        
+        [material setValue:[NSNumber numberWithInt:ma.material_id] forKey:@"material_id"];
+        if (ma.note != nil) {
+            [records setValue:ma.note forKey:@"notes"];
+        }
+        
+        
+        //material_usage_records   
+        
+
+        NSMutableArray * material_usage_records = [[NSMutableArray array] init];       
+       // NSLog(@"%@",material_usage_records);
+       
+        NSMutableDictionary *materialrecord = [[NSMutableDictionary alloc] init];  
+        
+        for (MaterialUsageRecord *ma_record in  ma.material_usage_records) 
+        {
+            
+            [materialrecord setValue:[NSNumber numberWithInt:ma_record.material_usage_record_id] forKey:@"id"];
+            
+            [materialrecord setValue:[NSNumber numberWithInt:ma_record.location_area_id] forKey:@"location_area_id"];
+            
+            [materialrecord setValue:[NSNumber numberWithFloat:ma_record.amount] forKey:@"amount"];
+            
+            [materialrecord setValue:ma_record.measurement forKey:@"measurement"];
+            [materialrecord setValue:ma_record.application_method forKey:@"application_method"];
+            [materialrecord setValue:[NSNumber numberWithInt:ma_record.dilution_rate_id] forKey:@"dilution_rate_id"];
+//NSLog(@"material_usage_records :%@",materialrecord);
+        }
+    }
+    
+//NSLog(@"material_usages :%@",material);
+    //pests_targets
+    
+    NSMutableArray * pests_targetsArray = [[NSMutableArray array] init];       
+   // NSLog(@"%@",pests_targetsArray);
+   
+    NSMutableDictionary *pests_targetsDic = [[NSMutableDictionary alloc] init];  
+    
+    for (TargetPest *pestrecord in  app.targetPestList.TargetPests) 
+    {
+        //  TargetPest
+        
+        [pests_targetsDic setValue:[NSNumber numberWithInt:pestrecord.self.appointmentId] forKey:@"appointment_occurrence_id"];
+        [pests_targetsDic setValue:[NSNumber numberWithInt:pestrecord.targetPestId] forKey:@"id"];
+        [pests_targetsDic setValue:[NSNumber numberWithInt:pestrecord.pestTypeId] forKey:@"pest_type_id"];
+        
+    }
+  //   NSLog(@"pests_targets :%@",pests_targetsDic);
+     
+    NSString *json = [mainDict JSONRepresentation];
+   // NSLog(@"MAIN JSON : %@", json);
+    return json;
+}
+
+
+@end

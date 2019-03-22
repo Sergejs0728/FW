@@ -1,0 +1,50 @@
+//
+//  ScheduleViewController.h
+//  FieldWork
+//
+//  Created by Samir Kha on 06/01/2013.
+//  Copyright (c) 2013 __MyCompanyName__. All rights reserved.
+//
+
+#import <UIKit/UIKit.h>
+#import "AppointmentList.h"
+#import "AppointmentListDelegate.h"
+#import "ActivityIndicator.h"
+#import "AppointmentDetailController.h"
+#import "AppointmentCell.h"
+
+
+@interface ScheduleViewController : BaseViewController <AppointmentListDelegate, UITableViewDelegate, UITableViewDataSource>{
+    
+    IBOutlet UILabel *lblSelectedDate;
+    IBOutlet UITableView *tblAppList;
+    NSMutableArray *appointmentArray;
+    NSDate *_selecteddate;
+    
+    IBOutlet UILabel *_lblTotalApp;
+    IBOutlet UILabel *_lblTotalAmount;
+    
+    IBOutlet UIView *dateView;
+    IBOutlet UIView *appointmentView;
+    
+    IBOutlet UIButton *previousBtn;
+    IBOutlet UIButton *nextBtn;
+    
+    BOOL _isLoading;
+  
+}
+
+@property (nonatomic, retain, readwrite) NSDate *selecteddate;
+@property (nonatomic, retain) UITableView *tblAppList;
+
++ (ScheduleViewController*) init;
+
+- (void) reloadAppointment;
+
+- (IBAction)nextClicked:(id)sender;
+- (IBAction)previousClicked:(id)sender;
+
+- (void) showSelectedDate;
+- (void) loadTable;
+
+@end

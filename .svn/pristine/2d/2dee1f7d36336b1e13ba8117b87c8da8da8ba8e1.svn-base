@@ -1,0 +1,43 @@
+//
+//  ApplicationMethods.m
+//  FieldWork
+//
+//  Created by Samir Kha on 18/01/2013.
+//  Copyright (c) 2013 __MyCompanyName__. All rights reserved.
+//
+
+#import "ApplicationMethods.h"
+
+
+@implementation ApplicationMethods
+
+@dynamic methodName;
+-(void)FieldworkRequestDidSucceed:(FieldworkRequest*) request{}
+-(void)FieldworkRequestDidFail:(FieldworkRequest*) request withError:(NSError*) error{}
++ (NSMutableArray *)getAppMethods {
+    return [[CoreDataHelper Instance] fetchWithTable:APPLICATION_METHODS];
+}
+
+- (void)loadFromService {
+    NSString *url = [NSString stringWithFormat:@"%@application_methods?api_key=%@", FIELD_WORK_URL_BASE, [AccountManager Instance].activeAccount.api_key];
+    FieldworkRequest *request = [[FieldworkRequest alloc] initWithUrl:url andDelegate:self];
+    request.Tag = @"ApplicationMethods";
+    [request startRequest];
+}
+
++ (void)parseWithArray:(NSArray *)arr {
+    [[CoreDataHelper Instance] deleteAll:APPLICATION_METHODS];
+    for (NSString *method in arr)
+    {
+        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"methodName==%@", method];
+        if (![[CoreDataHelper Instance] isExists:APPLICATION_METHODS predicate:predicate]) {
+            ApplicationMethods *ap = (ApplicationMethods*)[[CoreDataHelper Instance] newEntityWithTableName:APPLICATION_METHODS];
+            [ap setMethodName:method];
+            [[CoreDataHelper Instance] saveContext];
+        }
+    }
+    NSLog(@"getAppMethods :%@",[self getAppMethods]);
+}
+
+
+@end
